@@ -4,81 +4,49 @@ import "entity"
 import "actions"
 import "tile"
 import "map"
+import "mapgen"
+import "behaviors"
 
-Keys = { "left": 17,
-		 "right": 18,
-		 "up": 19,
-		 "down": 20 }
-
-MapGenerator = {}
-
-MapGenerator.fillRect = function(map, x, y, width, height, tile)
-	for y0 in range(y, height)
-		for x0 in range(x, width)
-			map.tiles[y0][x0] = tile()
-		end for
-	end for
+entity.Entity.makePlayer = function(map)
+	spawnPoint = map.findSpawnPoint()
+	player = entity.Entity.make(spawnPoint)
+	player.isPlayer = true
+	player.behaviors.push(behaviors.Behavior.makeUserInput())
+	return player
 end function
 
-MapGenerator.pillar = function(map, x, y, tile)
-	map.tiles[y - 1][x] = tile()
-	map.tiles[y][x] = tile()
-	map.tiles[y + 1][x] = tile()
-	map.tiles[y][x - 1] = tile()
-	map.tiles[y][x + 1] = tile()
+entity.Entity.makeKobold = function(map)
+	spawnPoint = map.findSpawnPoint()
+	kobold = entity.Entity.make(spawnPoint)
+	kobold.tile.foregroundColor = color.orange
+	kobold.tile.char = "k";
+	kobold.behaviors.push(behaviors.Behavior.makeRandomWalk())
+	return kobold
 end function
-
-MapGenerator.sampleLevel = function()
-	map = map.Map.make
-	self.fillRect(map, 1, 1, map.width - 2, map.height - 2, @tile.Tile.makeFloor)
-
-	numPillars = 10
-	for n in range(1, numPillars)
-		px = floor(rnd() * (map.width - 4)) + 2
-		py = floor(rnd() * (map.height - 4)) + 2
-		self.pillar(map, px, py, @tile.Tile.makeWall)
-	end for
-
-	return map
-end function
-
 
 sounds.Sounds.initialize()
 
 isRunning = true
-map = MapGenerator.sampleLevel
+map = mapgen.MapGenerator.sampleLevel()
 
-// Find a spawn point.
-foundSpawnPoint = false
-px = 0
-py = 0
-while not foundSpawnPoint
-	px = floor(rnd() * map.width)
-	py = floor(rnd() * map.height)
-	if not map.blocksMovement(px, py) then
-		foundSpawnPoint = true
-	end if
-end while
-player = entity.Entity.make(px, py)
+player = entity.Entity.makePlayer(map)
+map.entities.push(player)
+map.entities.push(entity.Entity.makeKobold(map))
+map.entities.push(entity.Entity.makeKobold(map))
+map.entities.push(entity.Entity.makeKobold(map))
+map.entities.push(entity.Entity.makeKobold(map))
+map.entities.push(entity.Entity.makeKobold(map))
 
-text.clear
-map.draw
-player.draw
+text.clear()
+map.draw()
+
+for e in map.entities
+	e.draw()
+end for
 
 while isRunning
-	action = actions.EntityAction.wait
-
-	delta = point.Point.make(0, 0)
-	k = key.get.code
-	if k == Keys.up then
-		action = actions.EntityAction.walk(0, 1)
-	else if k == Keys.down then
-		action = actions.EntityAction.walk(0, -1)
-	else if k == Keys.left then
-		action = actions.EntityAction.walk(-1, 0)
-	else if k == Keys.right then
-		action = actions.EntityAction.walk(1, 0)
-	end if
-	
-	action.apply(player, map)
+	for e in map.entities
+		action = e.act()
+		action.apply(e, map)
+	end for
 end while

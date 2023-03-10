@@ -5,19 +5,22 @@ Tile.char = " "
 Tile.backgroundColor = color.black
 Tile.foregroundColor = color.gray
 
-Tile.makeFloor = function()
+Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blocksVision)
 	t = new Tile
-	t.char = "."
+	t.char = char
+	t.foregroundColor = foregroundColor
+	t.backgroundColor = backgroundColor
+	t.blocksMovement = blocksMovement
+	t.blocksVision = blocksVision
 	return t
 end function
 
+Tile.makeFloor = function()
+	return Tile.make(".", color.gray, color.black, false, false)
+end function
+
 Tile.makeWall = function()
-	t = new Tile
-	t.blocksMovement = true
-	t.blocksVision = true
-	t.char = "#"
-	t.foregroundColor = color.silver
-	return t
+	return Tile.make("#", color.silver, color.clear, true, true)
 end function
 
 Tile.draw = function(x, y)

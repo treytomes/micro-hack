@@ -1,23 +1,28 @@
+import "actions"
 import "point"
+import "tile"
 
 Entity = {}
-Entity.make = function(x, y)
+
+Entity.make = function(pnt)
 	e = new Entity
-	e.position = point.Point.make(x, y)
-	e.backgroundColor = color.black
-	e.foregroundColor = color.white
-	e.tile = "@"
+	e.tile = tile.Tile.make("@", color.white, color.black, false, false)
+	e.position = pnt
+	e.isPlayer = false
+	e.behaviors = []
 	return e
 end function
 
 Entity.draw = function()
-	text.setCellColor self.position.x, self.position.y, self.foregroundColor
-	text.setCellBackColor self.position.x, self.position.y, self.backgroundColor
-	text.setCell self.position.x, self.position.y, self.tile
+	self.tile.draw(self.position.x, self.position.y)
 end function
 
-Entity.erase = function()
-	text.setCell self.position.x, self.position.y, " "
-	text.setCellColor self.position.x, self.position.y, color.clear
-	text.setCellBackColor self.position.x, self.position.y, color.black
+Entity.act = function()
+	for b in self.behaviors
+		action = b.act(self)
+		if action != actions.EntityAction.wait then
+			return action
+		end if
+	end for
+	return actions.EntityAction.wait
 end function
