@@ -1,10 +1,57 @@
 import "actions"
 import "point"
+import "math"
 
 Behavior = {}
 
 Behavior.act = function()
 	return actions.EntityAction.wait
+end function
+
+Behavior.attack = function(source, target)
+	attackRoll = math.rollDice(1, 20)
+	attackBonus = source.baseAttackBonus + source.strengthModifier
+	if attackRoll + attackBonus >= target.armorClass then
+		// Its a hit!
+		weaponDamage = source.weaponDamage
+		target.currentHP -= weaponDamage
+
+		// Calculate entity death if necessary.
+		if target.currentHP <= 0 then
+			hud.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
+		else
+			hud.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
+		end if
+		return true
+	else
+		// The attack misses.
+		hud.messages.report(source.name + " attacks " + target.name + ", but misses.")
+		return false
+	end if
+end function
+
+Behavior.onEntityCollision = function(sourceEntity, targetEntity)
+	// Assume every entity has the fighter class.
+	// Assume melee attacks.
+	// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
+	
+	// 1. Calculate initiative order.
+
+	sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
+	targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
+
+	// 2. Highest initiative goes first.
+	firstEntity = sourceEntity
+	secondEntity = targetEntity
+	if targetInitiative > sourceInitiative then
+		firstEntity = targetEntity
+		secondEntity = sourceEntity
+	end if
+
+	// 3. Attack roll.
+	if not self.attack(firstEntity, secondEntity) then
+		self.attack(secondEntity, firstEntity)
+	end if
 end function
 
 Behavior.makeRandomWalk = function()
@@ -21,7 +68,7 @@ Behavior.makeRandomWalk = function()
 		self.currentDirection.y = dy
 	end function
 
-	b.act = function(entity)
+	b.act = function(entity, map)
 		action = actions.EntityAction.wait
 		if rnd() > 0.5 then
 			self.chooseNewDirection()
@@ -37,15 +84,15 @@ Behavior.makeRandomWalk = function()
 	return b
 end function
 
-Keys = { "left": 17,
-		 "right": 18,
-		 "up": 19,
-		 "down": 20 }
-
 Behavior.makeUserInput = function()
+	Keys = { "left": 17,
+			"right": 18,
+			"up": 19,
+			"down": 20 }
+
 	b = new Behavior
 
-	b.act = function(entity)
+	b.act = function(entity, map)
 		delta = point.Point.make(0, 0)
 		k = key.get.code
 		if k == Keys.up then

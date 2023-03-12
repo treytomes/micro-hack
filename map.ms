@@ -28,13 +28,19 @@ Map.blocksVision = function(x, y)
 	return self.tiles[y][x].blocksVision
 end function
 
-Map.isEntityAt = function(pnt)
+Map.getEntityAt = function(pnt)
 	for e in self.entities
-		if e.position.x == pnt.x and e.position.y == pnt.y then
-			return true
+		if e != null then
+			if e.position.x == pnt.x and e.position.y == pnt.y then
+				return e
+			end if
 		end if
 	end for
-	return false
+	return null
+end function
+
+Map.isEntityAt = function(pnt)
+	return self.getEntityAt(pnt) != null
 end function
 
 Map.findSpawnPoint = function()

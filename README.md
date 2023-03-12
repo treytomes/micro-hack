@@ -1,4 +1,5 @@
 # µ-hack
+
 Traditional roguelike written for the Mini Micro.
 
 Use the arrow keys to walk around.
@@ -6,8 +7,56 @@ Use the arrow keys to walk around.
 Actions are defined in "actions.ms".  Ultimately each action will have an Action Point cost associated with it that will be affected by the entity's speed.
 Behaviors are a collection of semi-intelligent chunks that can be run together as a list.  Behaviors affect entity state and can generate actions.
 
+
 # Ideas
+
 The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
+
+
+# TODO
+
+* Add a speed attribute and give each action a cost.
+* After field-of-view is implemented, add the perception attribute to control how far an entity can see.
+* Implement inventory and items.
+* Need more UI.
+
+
+# Entities
+
+Every entity, includes the player, has a race, class, and weapon.
+Each entity also has the following attributes:
+* level
+* dexterity
+* strength
+* constitution
+* maxHP
+* currentHP
+* constitutionModifier
+* dexterityModifier
+* strengthModifier
+* armorClass
+* baseAttackBonus
+* maxCarryingCapacity
+* maxPushCapacity
+* weaponDamage
+
+
+# Basic Attack Algorithm
+
+1. Determine initiative order: Roll a d20 for each combatant and add their initiative modifier (usually their Dexterity modifier). Sort the results from highest to lowest to determine the order of actions.
+
+2. Begin combat: The combatant with the highest initiative goes first. They can move up to their speed and take one action on their turn, such as attacking with a weapon, casting a spell, or using an ability. If they have multiple attacks or actions available, they can use them as appropriate.
+
+3. Attack roll: To attack with a weapon, the attacker rolls a d20 and adds their attack bonus, which includes their proficiency bonus (if proficient with the weapon) and their Strength or Dexterity modifier (depending on the weapon). If the result is equal to or higher than the target's Armor Class (AC), the attack hits.
+
+4. Damage roll: If the attack hits, the attacker rolls the weapon's damage dice and adds any relevant modifiers (such as their Strength modifier for a melee weapon). The target then subtracts this amount from their hit points (HP).
+
+5. Reaction: The target may have a reaction available to them, which they can use to defend themselves or counterattack. For example, they may be able to use the "Shield" spell to increase their AC, or the "Riposte" maneuver to make an attack of opportunity.
+
+6. Repeat: The combatant with the next highest initiative goes next, and the process repeats until all combatants have taken their turn. Once everyone has acted, the round is over and a new round begins with a new initiative order.
+
+7. End of combat: Combat ends when all enemies are defeated or when one side surrenders or flees.
+
 
 # References
 * [MiniScript](https://miniscript.org/)
