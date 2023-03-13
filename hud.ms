@@ -1,5 +1,34 @@
+Message = {}
+
+Message.make = function(text, foregroundColor = null, backgroundColor = null)
+	m = new Message()
+	self.maxLifeSpan = 5
+	m.lifeSpan = 5
+	m.text = text
+	if foregroundColor == null then
+		m.foregroundColor = color.white
+	else
+		m.foregroundColor = foregroundColor
+	end if
+	if backgroundColor == null then
+		m.backgroundColor = color.black
+	else
+		m.backgroundColor = backgroundColor
+	end if
+
+	return m
+end function
+
+Message.draw = function(hudDisplay, row)
+	hudDisplay.row = row
+	hudDisplay.column = 0
+	ratio = self.lifeSpan / self.maxLifeSpan
+	hudDisplay.color = color.lerp(color.clear, self.foregroundColor, ratio)
+	hudDisplay.backColor = color.lerp(color.clear, self.backgroundColor, ratio)
+	hudDisplay.print(self.text)
+end function
+
 MessageLog = {}
-MessageLog.maxSize = 5
 
 MessageLog.make = function()
 	log = new MessageLog
@@ -12,27 +41,46 @@ MessageLog.clear = function()
 	self.messages = []
 end function
 
-MessageLog.draw = function(inverse)
+MessageLog.update = function()
 	if self.messages.len == 0 then
 		return
 	end if
-
-	hudText.color = color.white
-	hudText.backColor = color.black
+	
 	for n in range(0, self.messages.len - 1)
-		if inverse then
-			hudText.row = n
-		else
-			hudText.row = 25 - n
+		m = self.messages[n]
+		if m != null then
+			m.lifeSpan -= 1
+			if m.lifeSpan <= 0 then
+				self.messages[n] = null
+			end if
 		end if
-		hudText.column = 0
-		hudText.print(self.messages[n])
+	end for
+
+	n = 0
+	while n < self.messages.len
+		if self.messages[n] == null then
+			self.messages.remove(n)
+		else
+			n += 1
+		end if
+	end while
+end function
+
+MessageLog.draw = function(hudDisplay, inverse)
+	if self.messages.len == 0 then
+		return
+	end if
+	
+	for n in range(0, self.messages.len - 1)
+		row = n
+		if not inverse then
+			row = 25 - n
+		end if
+
+		self.messages[n].draw(hudDisplay, row)
 	end for
 end function
 
-MessageLog.report = function(msg)
-	self.messages.insert(0, msg)
-	while self.messages.len > self.maxSize
-		self.messages.pop()
-	end while
+MessageLog.report = function(msg, foregroundColor = null, backgroundColor = null)
+	self.messages.insert(0, Message.make(msg, foregroundColor, backgroundColor))
 end function

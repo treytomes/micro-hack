@@ -22,7 +22,6 @@ EntityAction.walk = function(delta)
 		else
 			bumpedEntity = map.getEntityAt(newPos)
 			if bumpedEntity == null then
-				map.drawTile(entity.position.x, entity.position.y)
 				entity.position.add(self.delta)
 			else
 				entity.onEntityCollision(bumpedEntity)

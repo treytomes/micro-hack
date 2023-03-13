@@ -23,8 +23,8 @@ Tile.makeWall = function()
 	return Tile.make("#", color.silver, color.clear, true, true)
 end function
 
-Tile.draw = function(x, y)
-	text.setCellColor x, y, self.foregroundColor
-	text.setCellBackColor x, y, self.backgroundColor
-	text.setCell x, y, self.char
+Tile.draw = function(tileDisplay, x, y)
+	tileDisplay.setCellColor x, y, self.foregroundColor
+	tileDisplay.setCellBackColor x, y, self.backgroundColor
+	tileDisplay.setCell x, y, self.char
 end function

@@ -69,19 +69,28 @@ map.entities.push(entity.Entity.makeKobold(map))
 map.entities.push(entity.Entity.makeKobold(map))
 map.entities.push(entity.Entity.makeKobold(map))
 
+hud.messages = hud.MessageLog.make()
 text.clear()
 
 display(0).mode = displayMode.text
 hudText = display(0)
 hudText.delimiter = ""
-hud.messages = hud.MessageLog.make()
 
 display(1).mode = displayMode.text
-entityText = display(1)
+particleText = display(1)
+particleText.delimiter = ""
+
+display(2).mode = displayMode.text
+entityText = display(2)
 entityText.delimiter = ""
 
+display(3).mode = displayMode.text
+mapText = display(3)
+mapText.delimiter = ""
+
 while isRunning
-	map.draw()
+	// The map doesn't necessarily need to be drawn each time.
+	map.draw(mapText)
 
 	entityText.clear()
 	for e in map.entities
@@ -101,11 +110,16 @@ while isRunning
 	hudText.column = 0
 	hudText.color = color.white
 	hudText.backColor = color.black
-	hudText.print "HP: " + player.currentHP + " / " + player.maxHP
-	
-	hud.messages.draw(player.position.y > (26 / 2))
 
-	for n in range(0, map.entities.len - 1)
+	statusBar = "HP: " + player.currentHP + " / " + player.maxHP
+	statusBar = statusBar + " " * (67 - statusBar.len)
+	hudText.print(statusBar)
+	
+	hud.messages.draw(hudText, player.position.y > (26 / 2))
+	hud.messages.update()
+
+	n = 0
+	while n < map.entities.len
 		e = map.entities[n]
 		if e != null then
 			if e.currentHP > 0 then
@@ -115,7 +129,8 @@ while isRunning
 				map.entities[n] = null
 			end if
 		end if
-	end for
+		n += 1
+	end while
 
 	n = 0
 	while n < map.entities.len
