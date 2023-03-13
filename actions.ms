@@ -6,6 +6,16 @@ EntityAction = {}
 EntityAction.wait = function()
 	action = new EntityAction
 	action.apply = function(entity, map)
+		oldHP = entity.currentHP
+		recoveredHP = entity.class.rollForHP()
+		entity.currentHP += recoveredHP
+		if entity.currentHP > entity.maxHP then
+			entity.currentHP = entity.maxHP
+		end if
+		delta = entity.currentHP - oldHP
+		if delta != 0 then
+			Service.makeMessageParticles(entity.position.x, entity.position.y, delta, color.green)
+		end if
 	end function
 	return action
 end function

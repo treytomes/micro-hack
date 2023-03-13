@@ -59,14 +59,14 @@ Map.findSpawnPoint = function()
 	return point.Point.make(x, y)
 end function
 
-Map.drawTile = function(mapText, x, y)
-	self.tiles[y][x].draw(mapText, x, y)
+Map.drawTile = function(display, x, y)
+	self.tiles[y][x].draw(display, x, y)
 end function
 
-Map.draw = function(mapText)
+Map.draw = function(display)
 	for y in range(self.height)
 		for x in range(self.width)
-			self.drawTile(mapText, x, y)
+			self.drawTile(display, x, y)
 		end for
 	end for
 end function

@@ -18,14 +18,16 @@ Behavior.attack = function(source, target)
 
 		// Calculate entity death if necessary.
 		if target.currentHP <= 0 then
-			hud.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
+			Service.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
+			Service.makeDamageParticles(target.position.x, target.position.y)
 		else
-			hud.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
+			Service.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
+			Service.makeMessageParticles(target.position.x, target.position.y, weaponDamage, color.red)
 		end if
 		return true
 	else
 		// The attack misses.
-		hud.messages.report(source.name + " attacks " + target.name + ", but misses.")
+		Service.messages.report(source.name + " attacks " + target.name + ", but misses.")
 		return false
 	end if
 end function

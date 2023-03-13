@@ -13,6 +13,49 @@ Entity.make = function(pnt)
 	return e
 end function
 
+Entity.makePlayer = function(map)
+	spawnPoint = map.findSpawnPoint()
+	e = self.make(spawnPoint)
+	e.isPlayer = true
+
+	e.race = races.RaceDescriptions.human
+	e.name = "player" //e.race.name
+	e.class = classes.ClassDescriptions.fighter
+	e.weapon = weapons.WeaponDescriptions.shortsword
+
+	e.level = 1
+	e.dexterity = e.class.rollForDexterity()
+	e.strength = e.class.rollForStrength()
+	e.constitution = e.class.rollForConstitution()
+	e.maxHP = e.class.rollForHP() + e.constitutionModifier
+	e.currentHP = e.maxHP
+
+	e.behaviors.push(behaviors.Behavior.makeUserInput())
+	return e
+end function
+
+Entity.makeKobold = function(map)
+	spawnPoint = map.findSpawnPoint()
+	e = self.make(spawnPoint)
+	e.tile.foregroundColor = color.orange
+	e.tile.char = "k";
+
+	e.race = races.RaceDescriptions.kobold
+	e.name = e.race.name
+	e.class = classes.ClassDescriptions.fighter
+	e.weapon = weapons.WeaponDescriptions.unarmed
+
+	e.level = 1
+	e.dexterity = e.class.rollForDexterity()
+	e.strength = e.class.rollForStrength()
+	e.constitution = 7
+	e.maxHP = e.class.rollForHP() + e.constitutionModifier
+	e.currentHP = e.maxHP
+
+	e.behaviors.push(behaviors.Behavior.makeRandomWalk())
+	return e
+end function
+
 Entity.draw = function(textDisplay)
 	//self.tile.draw(self.position.x, self.position.y)
 	x = self.position.x

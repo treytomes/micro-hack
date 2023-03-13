@@ -12,136 +12,153 @@ import "weapons"
 import "races"
 import "classes"
 import "entity"
+import "particles"
 
-entity.Entity.makePlayer = function(map)
-	spawnPoint = map.findSpawnPoint()
-	e = entity.Entity.make(spawnPoint)
-	e.isPlayer = true
+Display = {}
+Service = {}
 
-	e.race = races.RaceDescriptions.human
-	e.name = "player" //e.race.name
-	e.class = classes.ClassDescriptions.fighter
-	e.weapon = weapons.WeaponDescriptions.shortsword
-
-	e.level = 1
-	e.dexterity = e.class.rollForDexterity()
-	e.strength = e.class.rollForStrength()
-	e.constitution = e.class.rollForConstitution()
-	e.maxHP = e.class.rollForHP() + e.constitutionModifier
-	e.currentHP = e.maxHP
-
-	e.behaviors.push(behaviors.Behavior.makeUserInput())
-	return e
-end function
-
-entity.Entity.makeKobold = function(map)
-	spawnPoint = map.findSpawnPoint()
-	e = entity.Entity.make(spawnPoint)
-	e.tile.foregroundColor = color.orange
-	e.tile.char = "k";
-
-	e.race = races.RaceDescriptions.kobold
-	e.name = e.race.name
-	e.class = classes.ClassDescriptions.fighter
-	e.weapon = weapons.WeaponDescriptions.unarmed
-
-	e.level = 1
-	e.dexterity = e.class.rollForDexterity()
-	e.strength = e.class.rollForStrength()
-	e.constitution = 7
-	e.maxHP = e.class.rollForHP() + e.constitutionModifier
-	e.currentHP = e.maxHP
-
-	e.behaviors.push(behaviors.Behavior.makeRandomWalk())
-	return e
-end function
-
-sounds.Sounds.initialize()
-
-isRunning = true
-map = mapgen.MapGenerator.sampleLevel()
-
-player = entity.Entity.makePlayer(map)
-map.entities.push(player)
-map.entities.push(entity.Entity.makeKobold(map))
-map.entities.push(entity.Entity.makeKobold(map))
-map.entities.push(entity.Entity.makeKobold(map))
-map.entities.push(entity.Entity.makeKobold(map))
-map.entities.push(entity.Entity.makeKobold(map))
-
-hud.messages = hud.MessageLog.make()
-text.clear()
-
-display(0).mode = displayMode.text
-hudText = display(0)
-hudText.delimiter = ""
-
-display(1).mode = displayMode.text
-particleText = display(1)
-particleText.delimiter = ""
-
-display(2).mode = displayMode.text
-entityText = display(2)
-entityText.delimiter = ""
-
-display(3).mode = displayMode.text
-mapText = display(3)
-mapText.delimiter = ""
-
-while isRunning
-	// The map doesn't necessarily need to be drawn each time.
-	map.draw(mapText)
-
-	entityText.clear()
+drawEntities = function(display, map)
+	display.clear()
 	for e in map.entities
-		e.draw(entityText)
+		e.draw(display)
 	end for
+end function
 
-	// Draw the HUD.
-	hudText.color = color.clear
-	hudText.backColor = color.clear
-	hudText.clear()
-	hudText.row = 26
+drawHUD = function(display, player)
+	display.color = color.clear
+	display.backColor = color.clear
+	display.clear()
+	display.row = 26
 	if player.position.y <= (26 / 2) then
-		hudText.row = 0
+		display.row = 0
 	else
-		hudText.row = 26
+		display.row = 26
 	end if
-	hudText.column = 0
-	hudText.color = color.white
-	hudText.backColor = color.black
+	display.column = 0
+	display.color = color.white
+	display.backColor = color.black
 
 	statusBar = "HP: " + player.currentHP + " / " + player.maxHP
 	statusBar = statusBar + " " * (67 - statusBar.len)
-	hudText.print(statusBar)
+	display.print(statusBar)
 	
-	hud.messages.draw(hudText, player.position.y > (26 / 2))
-	hud.messages.update()
+	Service.messages.draw(display, player.position.y > (26 / 2))
+	Service.messages.update()
+end function
 
-	n = 0
-	while n < map.entities.len
-		e = map.entities[n]
-		if e != null then
-			if e.currentHP > 0 then
-				action = e.act(map)
-				action.apply(e, map)
+generateDisplays = function()
+	display(0).mode = displayMode.text
+	Display.hud = display(0)
+	Display.hud.delimiter = ""
+
+	display(1).mode = displayMode.text
+	Display.particles = display(1)
+	Display.particles.delimiter = ""
+
+	display(2).mode = displayMode.text
+	Display.entities = display(2)
+	Display.entities.delimiter = ""
+
+	display(3).mode = displayMode.text
+	Display.map = display(3)
+	Display.map.delimiter = ""
+end function
+
+updateParticles = function(deltaTime)
+	if Service.fountains.len > 0 then
+		n = 0
+		while n < Service.fountains.len
+			f = Service.fountains[n]
+			f.draw(Display.particles, deltaTime)
+			if not f.isAlive then
+				Service.fountains.remove(n)
 			else
-				map.entities[n] = null
+				n += 1
 			end if
-		end if
-		n += 1
-	end while
-
-	n = 0
-	while n < map.entities.len
-		if map.entities[n] == null then
-			map.entities.remove(n)
-		else
-			n += 1
-		end if
-	end while
-
-	if player.currentHP <= 0 then
-		hud.messages.report("YOU ARE DEAD!")
+		end while
 	end if
-end while
+end function
+
+main = function()
+	sounds.Sounds.initialize()
+
+	isRunning = true
+	map = mapgen.MapGenerator.sampleLevel()
+
+	player = entity.Entity.makePlayer(map)
+	map.entities.push(player)
+	map.entities.push(entity.Entity.makeKobold(map))
+	map.entities.push(entity.Entity.makeKobold(map))
+	map.entities.push(entity.Entity.makeKobold(map))
+	map.entities.push(entity.Entity.makeKobold(map))
+	map.entities.push(entity.Entity.makeKobold(map))
+
+	Service.messages = hud.MessageLog.make()
+
+	Service.fountains = []
+	Service.makeDamageParticles = function(x, y)
+		Service.fountains.push(particles.ParticleFountain.makeDamageParticles(x, y))
+	end function
+
+	Service.makeMessageParticles = function(x, y, message, foregroundColor)
+		Service.fountains.push(particles.ParticleFountain.makeMessageParticles(x, y, message, foregroundColor))
+	end function
+
+	text.clear()
+
+	generateDisplays()
+
+	// The map doesn't necessarily need to be drawn each time.
+	map.draw(Display.map)
+	drawEntities(Display.entities, map)
+	drawHUD(Display.hud, player)
+
+	deltaTime = 0
+	while isRunning
+		frameStart = time * 1000
+
+		// FPS
+		//text.row = 10
+		//text.column = 10
+		//print 1.0 / (deltaTime / 1000)
+
+		updateParticles(deltaTime)
+
+		// The next step in the game occurs when the player presses a key.
+		if key.available then
+			n = 0
+			while n < map.entities.len
+				e = map.entities[n]
+				if e != null then
+					if e.currentHP > 0 then
+						action = e.act(map)
+						action.apply(e, map)
+					else
+						map.entities[n] = null
+					end if
+				end if
+				n += 1
+			end while
+
+			n = 0
+			while n < map.entities.len
+				if map.entities[n] == null then
+					map.entities.remove(n)
+				else
+					n += 1
+				end if
+			end while
+
+			if player.currentHP <= 0 then
+				Service.messages.report("YOU ARE DEAD!")
+			end if
+
+			drawEntities(Display.entities, map)
+			drawHUD(Display.hud, player)
+		end if
+
+		deltaTime = time * 1000 - frameStart
+	end while
+end function
+
+main()
