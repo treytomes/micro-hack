@@ -29,6 +29,7 @@ Entity.makePlayer = function(map)
 	e.constitution = e.class.rollForConstitution()
 	e.maxHP = e.class.rollForHP() + e.constitutionModifier
 	e.currentHP = e.maxHP
+	e.perception = 8
 
 	e.behaviors.push(behaviors.Behavior.makeUserInput())
 	return e
@@ -51,6 +52,7 @@ Entity.makeKobold = function(map)
 	e.constitution = 7
 	e.maxHP = e.class.rollForHP() + e.constitutionModifier
 	e.currentHP = e.maxHP
+	e.perception = 12
 
 	e.behaviors.push(behaviors.Behavior.makeRandomWalk())
 	return e
@@ -115,4 +117,8 @@ end function
 
 Entity.weaponDamage = function()
 	return self.weapon.rollDice()
+end function
+
+Entity.rangeOfVision = function()
+	return self.perception
 end function

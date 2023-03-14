@@ -28,6 +28,13 @@ Map.blocksVision = function(x, y)
 	return self.tiles[y][x].blocksVision
 end function
 
+Map.isVisible = function(x, y)
+	if x < 0 or x >= self.width or y < 0 or y >= self.height then
+		return false
+	end if
+	return self.tiles[y][x].isCurrentlyVisible
+end function
+
 Map.getEntityAt = function(pnt)
 	for e in self.entities
 		if e != null then
@@ -60,7 +67,19 @@ Map.findSpawnPoint = function()
 end function
 
 Map.drawTile = function(display, x, y)
-	self.tiles[y][x].draw(display, x, y)
+	t = self.tiles[y][x]
+
+	if t.isCurrentlyVisible then
+		t.draw(display, x, y)
+	else if t.hasBeenVisited then
+		display.setCellColor x, y, "#444444"
+		display.setCellBackColor x, y, color.black
+		display.setCell x, y, t.char
+	else
+		display.setCellColor x, y, color.black
+		display.setCellBackColor x, y, color.gray
+		display.setCell x, y, "="
+	end if
 end function
 
 Map.draw = function(display)

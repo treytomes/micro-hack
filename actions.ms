@@ -1,5 +1,6 @@
 import "point"
 import "sounds"
+import "fov"
 
 EntityAction = {}
 
@@ -32,7 +33,10 @@ EntityAction.walk = function(delta)
 		else
 			bumpedEntity = map.getEntityAt(newPos)
 			if bumpedEntity == null then
-				entity.position.add(self.delta)
+				entity.position = entity.position.add(self.delta)
+				if entity.isPlayer then
+					Service.fov.refresh(entity.position.x, entity.position.y, entity.rangeOfVision, map)
+				end if
 			else
 				entity.onEntityCollision(bumpedEntity)
 			end if

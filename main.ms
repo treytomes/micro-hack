@@ -13,6 +13,7 @@ import "races"
 import "classes"
 import "entity"
 import "particles"
+import "fov"
 
 Display = {}
 Service = {}
@@ -20,7 +21,9 @@ Service = {}
 drawEntities = function(display, map)
 	display.clear()
 	for e in map.entities
-		e.draw(display)
+		if map.isVisible(e.position.x, e.position.y) then
+			e.draw(display)
+		end if
 	end for
 end function
 
@@ -94,7 +97,10 @@ main = function()
 	map.entities.push(entity.Entity.makeKobold(map))
 
 	Service.messages = hud.MessageLog.make()
+	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
 
+	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
+	
 	Service.fountains = []
 	Service.makeDamageParticles = function(x, y)
 		Service.fountains.push(particles.ParticleFountain.makeDamageParticles(x, y))
@@ -108,7 +114,6 @@ main = function()
 
 	generateDisplays()
 
-	// The map doesn't necessarily need to be drawn each time.
 	map.draw(Display.map)
 	drawEntities(Display.entities, map)
 	drawHUD(Display.hud, player)
@@ -142,7 +147,7 @@ main = function()
 
 			n = 0
 			while n < map.entities.len
-				if map.entities[n] == null then
+				if map.entities[n] == null or map.entities[n].currentHP <= 0 then
 					map.entities.remove(n)
 				else
 					n += 1
@@ -152,7 +157,8 @@ main = function()
 			if player.currentHP <= 0 then
 				Service.messages.report("YOU ARE DEAD!")
 			end if
-
+	
+			map.draw(Display.map)
 			drawEntities(Display.entities, map)
 			drawHUD(Display.hud, player)
 		end if

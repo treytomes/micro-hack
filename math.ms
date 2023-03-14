@@ -6,3 +6,17 @@ rollDice = function(numDice, numSides)
 	end for
 	return sum
 end function
+
+max = function(a, b)
+	if a > b then
+		return a
+	end if
+	return b
+end function
+
+min = function(a, b)
+	if a < b then
+		return a
+	end if
+	return b
+end function

@@ -12,6 +12,10 @@ Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blo
 	t.backgroundColor = backgroundColor
 	t.blocksMovement = blocksMovement
 	t.blocksVision = blocksVision
+
+	t.isCurrentlyVisible = false
+	t.hasBeenVisited = false
+	
 	return t
 end function
 

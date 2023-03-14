@@ -16,8 +16,9 @@ The random walking algorithm works fine.  Attach it to a slime monster that will
 
 # TODO
 
+* Implement a dungeon map generator.
 * Add a speed attribute and give each action a cost.
-* After field-of-view is implemented, add the perception attribute to control how far an entity can see.
+* Need to make the kobolds just a bit smarter.
 * Implement inventory and items.
 * Need more UI.
 * Need to tweak the HP recovery mechanic.  It's too easy to heal yourself.

@@ -145,14 +145,7 @@ ParticleFountain.draw = function(dsp, deltaTime)
 		p = self.particles[n]
 		p.update(dsp, deltaTime)
 		if p.isDead then
-			self.particles[n] = null
-		end if
-		n += 1
-	end while
-
-	n = 0
-	while n < self.particles.len
-		if self.particles[n] == null then
+			p.erase(dsp)
 			self.particles.remove(n)
 		else
 			n += 1
