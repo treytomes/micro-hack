@@ -11,18 +11,32 @@ Behaviors are a collection of semi-intelligent chunks that can be run together a
 
 # Ideas
 
-The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
+* The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
 
 
 # TODO
 
-* Hide particles if they fall outside the field of view.
-* Implement a dungeon map generator.
-* Add a speed attribute and give each action a cost.
+* Add doors to rooms.
 * Need to make the kobolds just a bit smarter.
+* Add a speed attribute and give each action a cost.
 * Implement inventory and items.
 * Need more UI.
 * Need to tweak the HP recovery mechanic.  It's too easy to heal yourself.
+* Implement a BSP map generator.
+* Implement a cavern generator.
+* Implement a town generator.
+* Need NPCs.
+
+## Kobold camps
+
+* Designate one room in a dungeon as a kobold camp.
+* Decorate the room with "campy"-things.
+* Kobolds will randomly spawn in their camp room, as long as the room isn't too crowded.
+* The campfire tile should burn anything that steps into it.
+
+
+# Need to decide
+* Should I hide particles if they fall outside the field of view?
 
 
 # Entities
