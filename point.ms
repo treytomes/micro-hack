@@ -3,16 +3,15 @@ Point.make = function(x, y)
 	p = new Point
 	p.x = x
 	p.y = y
-
-	p.multiply = function(n)
-		return self.make(n * self.x, n * self.y)
-	end function
-
-	p.negate = function()
-		return self.make(-self.x, -self.y)
-	end function
-
 	return p
+end function
+
+Point.multiply = function(n)
+	return self.make(n * self.x, n * self.y)
+end function
+
+Point.negate = function()
+	return self.make(-self.x, -self.y)
 end function
 
 Point.add = function(pnt)

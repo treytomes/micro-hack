@@ -20,3 +20,13 @@ min = function(a, b)
 	end if
 	return b
 end function
+
+isInRange = function(n, min, max)
+	return min <= n and n <= max
+end function
+
+random = function(minValue, maxValue)
+	delta = maxValue - minValue + 1
+	baseValue = floor(rnd() * delta) + minValue
+	return baseValue
+end function

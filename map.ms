@@ -1,4 +1,5 @@
 import "point"
+import "math"
 import "tile"
 
 Map = {}
@@ -55,8 +56,9 @@ Map.findSpawnPoint = function()
 	x = 0
 	y = 0
 	while not found
-		x = floor(rnd() * self.width)
-		y = floor(rnd() * self.height)
+		// I brought in the range a bit, as you will never spawn on the map edge.
+		x = math.random(1, self.width - 2)
+		y = math.random(1, self.height - 2)
 		if not self.blocksMovement(x, y) then
 			if not self.isEntityAt(point.Point.make(x, y)) then
 			 found = true
@@ -78,7 +80,7 @@ Map.drawTile = function(display, x, y)
 	else
 		display.setCellColor x, y, color.black
 		display.setCellBackColor x, y, color.gray
-		display.setCell x, y, "="
+		display.setCell x, y, "#"
 	end if
 end function
 

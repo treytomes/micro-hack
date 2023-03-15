@@ -67,12 +67,12 @@ generateDisplays = function()
 	Display.map.delimiter = ""
 end function
 
-updateParticles = function(deltaTime)
+updateParticles = function(deltaTime, map)
 	if Service.fountains.len > 0 then
 		n = 0
 		while n < Service.fountains.len
 			f = Service.fountains[n]
-			f.draw(Display.particles, deltaTime)
+			f.draw(Display.particles, deltaTime, map)
 			if not f.isAlive then
 				Service.fountains.remove(n)
 			else
@@ -86,7 +86,8 @@ main = function()
 	sounds.Sounds.initialize()
 
 	isRunning = true
-	map = mapgen.MapGenerator.sampleLevel()
+	//map = mapgen.MapGenerator.buildArena()
+	map = mapgen.MapGenerator.buildRandomDungeon()
 
 	player = entity.Entity.makePlayer(map)
 	map.entities.push(player)
@@ -127,7 +128,7 @@ main = function()
 		//text.column = 10
 		//print 1.0 / (deltaTime / 1000)
 
-		updateParticles(deltaTime)
+		updateParticles(deltaTime, map)
 
 		// The next step in the game occurs when the player presses a key.
 		if key.available then

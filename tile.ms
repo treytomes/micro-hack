@@ -20,11 +20,11 @@ Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blo
 end function
 
 Tile.makeFloor = function()
-	return Tile.make(".", color.gray, color.black, false, false)
+	return Tile.make(".", "#663311", color.black, false, false)
 end function
 
 Tile.makeWall = function()
-	return Tile.make("#", color.silver, color.clear, true, true)
+	return Tile.make("#", color.brown, color.black, true, true)
 end function
 
 Tile.draw = function(tileDisplay, x, y)

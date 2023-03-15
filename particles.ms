@@ -25,7 +25,7 @@ Particle.isDead = function()
 	return not self.isAlive
 end function
 
-Particle.update = function(dsp, deltaTime)
+Particle.update = function(dsp, deltaTime, map)
 	self.totalTime += deltaTime
 	//text.row = 11
 	//text.column = 10
@@ -38,7 +38,8 @@ Particle.update = function(dsp, deltaTime)
 		self.y += self.dy
 		self.lastUpdateTime = self.totalTime
 
-		if self.isAlive then
+		// TODO: Can't decide if particles should be rendered if that section of the map is hidden.
+		if self.isAlive then //and map.isVisible(self.x, self.y) then
 			self.draw(dsp)
 		end if
 	end if
@@ -133,7 +134,7 @@ ParticleFountain.spawn = function()
 	self.particles.push(Particle.make(self.x, self.y, 1, 0, 300, 5000, color.white, color.black));
 end function
 
-ParticleFountain.draw = function(dsp, deltaTime)
+ParticleFountain.draw = function(dsp, deltaTime, map)
 	self.spawnTimer += deltaTime
 	if self.spawnRate > 0 and (self.spawnTimer - self.lastSpawnTime >= self.spawnRate) then
 		self.spawn()
@@ -143,7 +144,7 @@ ParticleFountain.draw = function(dsp, deltaTime)
 	n = 0
 	while n < self.particles.len
 		p = self.particles[n]
-		p.update(dsp, deltaTime)
+		p.update(dsp, deltaTime, map)
 		if p.isDead then
 			p.erase(dsp)
 			self.particles.remove(n)

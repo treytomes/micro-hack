@@ -25,6 +25,18 @@ Rectangle.bottom = function()
 	return self.y + self.height - 1
 end function
 
+Rectangle.centerX = function()
+	return floor(self.x + self.width / 2)
+end function
+
+Rectangle.centerY = function()
+	return floor(self.y + self.height / 2)
+end function
+
 Rectangle.contains = function(pnt)
 	return self.left <= pnt.x and pnt.x <= self.right and self.top <= pnt.y and pnt.y <= self.bottom
+end function
+
+make = function(x, y, width, height)
+	return Rectangle.make(x, y, width, height)
 end function

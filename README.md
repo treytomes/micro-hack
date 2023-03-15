@@ -16,6 +16,7 @@ The random walking algorithm works fine.  Attach it to a slime monster that will
 
 # TODO
 
+* Hide particles if they fall outside the field of view.
 * Implement a dungeon map generator.
 * Add a speed attribute and give each action a cost.
 * Need to make the kobolds just a bit smarter.

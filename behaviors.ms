@@ -61,10 +61,10 @@ Behavior.makeRandomWalk = function()
 	b.currentDirection = point.Point.make(0, 0)
 
 	b.chooseNewDirection = function(entity)
-		dx = floor(rnd() * 3) - 1
+		dx = math.random(-1, 1)
 		dy = 0
 		if dx == 0 then
-			dy = floor(rnd() * 3) - 1
+			dy = math.random(-1, 1)
 		end if
 		self.currentDirection.x = dx
 		self.currentDirection.y = dy
