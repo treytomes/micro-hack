@@ -27,6 +27,10 @@ Tile.makeWall = function()
 	return Tile.make("#", color.brown, color.black, true, true)
 end function
 
+Tile.makeDoor = function()
+	return Tile.make("+", color.black, color.brown, false, true)
+end function
+
 Tile.draw = function(tileDisplay, x, y)
 	tileDisplay.setCellColor x, y, self.foregroundColor
 	tileDisplay.setCellBackColor x, y, self.backgroundColor

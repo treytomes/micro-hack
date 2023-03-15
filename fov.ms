@@ -23,24 +23,26 @@ calculateLineOfSight = function(map, x0, y0, x1, y1)
 	end if
 	err = dx - dy
 
-	while x0 != x1 or y0 != y1
+	x = x0
+	y = y0
+	while x != x1 or y != y1
 		// Set the seen and visible flags on the current tile.
-		tile = map.tiles[y0][x0]
+		tile = map.tiles[y][x]
 		tile.hasBeenVisited = true
 		tile.isCurrentlyVisible = true
-		if tile.blocksVision then
+		if tile.blocksVision and not (x == x0 and y == y0) then
 			break
 		end if
 
 		// Calculate the next tile in the line-of-sight.
 		e2 = 2 * err
 		if e2 > -dy then
-			err = err - dy
-			x0 = x0 + sx
+			err -= dy
+			x += sx
 		end if
 		if e2 < dx then
-			err = err + dx
-			y0 = y0 + sy
+			err += dx
+			y += sy
 		end if
 	end while
 end function
