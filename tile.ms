@@ -1,9 +1,4 @@
 Tile = {}
-Tile.blocksMovement = false
-Tile.blocksVision = false
-Tile.char = " "
-Tile.backgroundColor = color.black
-Tile.foregroundColor = color.gray
 
 Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blocksVision)
 	t = new Tile
@@ -29,6 +24,10 @@ end function
 
 Tile.makeDoor = function()
 	return Tile.make("+", color.black, color.brown, false, true)
+end function
+
+Tile.makeHidden = function()
+	return Tile.make("#", color.black, color.gray, true, true)
 end function
 
 Tile.draw = function(tileDisplay, x, y)

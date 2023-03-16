@@ -29,3 +29,7 @@ end function
 Point.unitY = function()
 	return Point.make(0, 1)
 end function
+
+make = function(x, y)
+	return Point.make(x, y)
+end function

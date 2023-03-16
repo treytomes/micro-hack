@@ -18,11 +18,11 @@ import "fov"
 Display = {}
 Service = {}
 
-drawEntities = function(display, map)
+drawEntities = function(display, map, renderOffset)
 	display.clear()
 	for e in map.entities
 		if map.isVisible(e.position.x, e.position.y) then
-			e.draw(display)
+			e.draw(display, renderOffset)
 		end if
 	end for
 end function
@@ -67,12 +67,15 @@ generateDisplays = function()
 	Display.map.delimiter = ""
 end function
 
-updateParticles = function(deltaTime, map)
+updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
+		//Display.particles.backColor = color.clear
+		//Display.particles.clear()
+		
 		n = 0
 		while n < Service.fountains.len
 			f = Service.fountains[n]
-			f.draw(Display.particles, deltaTime, map)
+			f.draw(Display.particles, deltaTime, map, renderOffset)
 			if not f.isAlive then
 				Service.fountains.remove(n)
 			else
@@ -90,6 +93,15 @@ main = function()
 	map = mapgen.MapGenerator.buildRandomDungeon()
 
 	player = entity.Entity.makePlayer(map)
+
+	renderOffset = function()
+		TEXT_ROWS = 26
+		TEXT_COLUMNS = 68
+		offsetX = floor(TEXT_COLUMNS / 2) - player.position.x
+		offsetY = floor(TEXT_ROWS / 2) - player.position.y
+		return point.make(offsetX, offsetY)
+	end function
+
 	map.entities.push(player)
 	map.entities.push(entity.Entity.makeKobold(map))
 	map.entities.push(entity.Entity.makeKobold(map))
@@ -115,8 +127,9 @@ main = function()
 
 	generateDisplays()
 
-	map.draw(Display.map)
-	drawEntities(Display.entities, map)
+	map.clearScreen(Display.map)
+	map.draw(Display.map, player, renderOffset)
+	drawEntities(Display.entities, map, renderOffset)
 	drawHUD(Display.hud, player)
 
 	deltaTime = 0
@@ -128,7 +141,7 @@ main = function()
 		//text.column = 10
 		//print 1.0 / (deltaTime / 1000)
 
-		updateParticles(deltaTime, map)
+		updateParticles(deltaTime, map, renderOffset)
 
 		// The next step in the game occurs when the player presses a key.
 		if key.available then
@@ -158,9 +171,9 @@ main = function()
 			if player.currentHP <= 0 then
 				Service.messages.report("YOU ARE DEAD!")
 			end if
-	
-			map.draw(Display.map)
-			drawEntities(Display.entities, map)
+			
+			map.draw(Display.map, player, renderOffset)
+			drawEntities(Display.entities, map, renderOffset)
 			drawHUD(Display.hud, player)
 		end if
 

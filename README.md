@@ -13,10 +13,16 @@ Behaviors are a collection of semi-intelligent chunks that can be run together a
 
 * The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
 
+## Automatic Health Regen
+
+I'm not sure whether this is even a good feature to include.
+The basic idea is that resting restores health.
+I guess it might make more sense to wait more than 1 turn before resting begins to restore health, then have it restore a little bit at a time.
+This would have the side-effect that resting when monsters are nearby is dangerous.
+Longer rests increase odds of restoring health.  Maybe start by rolling a d20, then a d19, etc down to a d1?  Scoring a 1 on the dice means you get +1 HP? 
 
 # TODO
 
-* Add doors to rooms.
 * Need to make the kobolds just a bit smarter.
 * Add a speed attribute and give each action a cost.
 * Implement inventory and items.

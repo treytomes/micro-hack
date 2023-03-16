@@ -1,10 +1,13 @@
-import "point"
 import "math"
+import "point"
 import "tile"
 
+SCREEN_MAX_X = 67
+SCREEN_MAX_Y = 25
+
 Map = {}
-Map.height = 26
-Map.width = 68
+Map.height = 64 // 26
+Map.width = 64 // 68
 
 Map.make = function()
 	m = new Map
@@ -21,19 +24,32 @@ Map.make = function()
 	return m
 end function
 
+Map.getTile = function(x, y)
+	if 0 <= x and x < self.width and 0 <= y and y < self.height then
+		return self.tiles[y][x]
+	end if
+	return tile.Tile.makeWall()
+end function
+
 Map.blocksMovement = function(x, y)
-	return self.tiles[y][x].blocksMovement
+	if 0 <= x and x < self.width and 0 <= y and y < self.height then
+		return self.getTile(x, y).blocksMovement
+	end if
+	return true
 end function
 
 Map.blocksVision = function(x, y)
-	return self.tiles[y][x].blocksVision
+	if 0 <= x and x < self.width and 0 <= y and y < self.height then
+		return self.getTile(x, y).blocksVision
+	end if
+	return true
 end function
 
 Map.isVisible = function(x, y)
-	if x < 0 or x >= self.width or y < 0 or y >= self.height then
-		return false
+	if 0 <= x and x < self.width and 0 <= y and y < self.height then
+		return self.getTile(x, y).isCurrentlyVisible
 	end if
-	return self.tiles[y][x].isCurrentlyVisible
+	return false
 end function
 
 Map.getEntityAt = function(pnt)
@@ -68,26 +84,52 @@ Map.findSpawnPoint = function()
 	return point.Point.make(x, y)
 end function
 
-Map.drawTile = function(display, x, y)
+Map.clearScreen = function(display)
+	for y in range(0, SCREEN_MAX_Y)
+		for x in range(0, SCREEN_MAX_X)
+			display.setCellColor x, y, color.black
+			display.setCellBackColor x, y, color.gray
+			display.setCell x, y, "#"
+		end for
+	end for
+end function
+
+Map.drawTile = function(display, x, y, renderOffset)
+	rx = renderOffset.x + x
+	ry = renderOffset.y + y
+
+	if not math.isInRange(rx, 0, SCREEN_MAX_X) or not math.isInRange(ry, 0, SCREEN_MAX_Y) then
+		return
+	end if
+
+	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
+		display.setCellColor rx, ry, color.black
+		display.setCellBackColor rx, ry, color.gray
+		display.setCell rx, ry, "#"
+		return
+	end if
+
 	t = self.tiles[y][x]
 
 	if t.isCurrentlyVisible then
-		t.draw(display, x, y)
+		t.draw(display, rx, ry)
 	else if t.hasBeenVisited then
-		display.setCellColor x, y, "#444444"
-		display.setCellBackColor x, y, color.black
-		display.setCell x, y, t.char
+		display.setCellColor rx, ry, "#444444"
+		display.setCellBackColor rx, ry, color.black
+		display.setCell rx, ry, t.char
 	else
-		display.setCellColor x, y, color.black
-		display.setCellBackColor x, y, color.gray
-		display.setCell x, y, "#"
+		display.setCellColor rx, ry, color.black
+		display.setCellBackColor rx, ry, color.gray
+		display.setCell rx, ry, "#"
 	end if
 end function
 
-Map.draw = function(display)
-	for y in range(self.height)
-		for x in range(self.width)
-			self.drawTile(display, x, y)
+Map.draw = function(display, player, renderOffset)
+	halfHeight = self.height / 2
+	halfWidth = self.width / 2
+	for y in range(player.position.y - halfHeight, player.position.y + halfHeight)
+		for x in range(player.position.x - halfWidth, player.position.x + halfWidth)
+			self.drawTile(display, x, y, renderOffset)
 		end for
 	end for
 end function

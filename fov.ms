@@ -27,7 +27,7 @@ calculateLineOfSight = function(map, x0, y0, x1, y1)
 	y = y0
 	while x != x1 or y != y1
 		// Set the seen and visible flags on the current tile.
-		tile = map.tiles[y][x]
+		tile = map.getTile(x, y)
 		tile.hasBeenVisited = true
 		tile.isCurrentlyVisible = true
 		if tile.blocksVision and not (x == x0 and y == y0) then
@@ -48,27 +48,25 @@ calculateLineOfSight = function(map, x0, y0, x1, y1)
 end function
 
 // Reset visibility flags for all tiles in the map.
-makeAllHidden = function(map)
-	for y0 in range(0, map.height - 1)
-		for x0 in range(0, map.width - 1)
-			map.tiles[y0][x0].isCurrentlyVisible = false
+hideRegion = function(x, y, radius, map)
+	for y0 in range(y - radius - 1, y + radius + 1)
+		for x0 in range(x - radius - 1, x + radius + 1)
+			map.getTile(x0, y0).isCurrentlyVisible = false
 		end for
 	end for
 end function
 
 calculateFOV = function(x, y, radius, map)
 	squared_radius = radius^2 // Pre-calculate squared radius for efficiency.
-	makeAllHidden(map)
+	hideRegion(x, y, radius + 1, map)
 
 	// Set the "visible" flag on the player's tile.
-	map.tiles[y][x].isCurrentlyVisible = true
+	map.getTile(x, y).isCurrentlyVisible = true
 
 	// Iterate through all tiles within the field-of-view radius.
 	for y1 in range(y - radius, y + radius)
 		for x1 in range(x - radius, x + radius)
-			if math.isInRange(y1, 0, map.height - 1) and math.isInRange(x1, 0, map.width - 1) then // Make sure tile is within the map bounds.
-				calculateLineOfSight(map, x, y, x1, y1)
-			end if
+			calculateLineOfSight(map, x, y, x1, y1)
 		end for
 	end for
 end function

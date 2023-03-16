@@ -58,10 +58,10 @@ Entity.makeKobold = function(map)
 	return e
 end function
 
-Entity.draw = function(textDisplay)
+Entity.draw = function(textDisplay, renderOffset)
 	//self.tile.draw(self.position.x, self.position.y)
-	x = self.position.x
-	y = self.position.y
+	x = renderOffset.x + self.position.x
+	y = renderOffset.y + self.position.y
 
 	colorMod = self.currentHP / self.maxHP
 	foregroundColor = color.lerp(color.red, self.tile.foregroundColor, colorMod)

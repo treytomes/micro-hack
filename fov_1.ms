@@ -61,9 +61,9 @@ FieldOfVisionCalculator.refresh = function(x, y, distance, map)
 
 	for y in range(0, map.height - 1)
 		for x in range(0, map.width - 1)
-			map.tiles[y][x].isCurrentlyVisible = self._visibility[y][x]
+			map.getTile(x, y).isCurrentlyVisible = self._visibility[y][x]
 			if self._visibility[y][x] then
-				map.tiles[y][x].hasBeenVisited = true
+				map.getTile(x, y).hasBeenVisited = true
 			end if
 		end for
 	end for
