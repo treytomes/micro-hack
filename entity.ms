@@ -23,13 +23,13 @@ Entity.makePlayer = function(map)
 	e.class = classes.ClassDescriptions.fighter
 	e.weapon = weapons.WeaponDescriptions.shortsword
 
-	e.level = 1
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = e.class.rollForConstitution()
 	e.maxHP = e.class.rollForHP() + e.constitutionModifier
 	e.currentHP = e.maxHP
 	e.perception = 8
+	e.xp = 0
 
 	e.behaviors.push(behaviors.Behavior.makeUserInput())
 	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
@@ -47,7 +47,6 @@ Entity.makeKobold = function(map)
 	e.class = classes.ClassDescriptions.fighter
 	e.weapon = weapons.WeaponDescriptions.unarmed
 
-	e.level = 1
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = 7
@@ -55,7 +54,10 @@ Entity.makeKobold = function(map)
 	e.currentHP = e.maxHP
 	e.perception = 12
 
-	e.behaviors.push(behaviors.Behavior.makeRandomWalk())
+	// You get this much XP for killing the monster.
+	e.xp = 25
+
+	e.behaviors.push(behaviors.Behavior.makeSeekOutPlayer())
 	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
 	return e
 end function
@@ -123,4 +125,13 @@ end function
 
 Entity.rangeOfVision = function()
 	return self.perception
+end function
+
+Entity.level = function()
+	return 1 + floor(log((self.xp / 300) + 1, 2))
+end function
+
+// How much XP is needed to reach the next level?
+Entity.xpToNextLevel = function()
+	return 300 * (2 ^ self.level - 1)
 end function

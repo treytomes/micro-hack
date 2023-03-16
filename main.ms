@@ -14,6 +14,7 @@ import "classes"
 import "entity"
 import "particles"
 import "fov"
+import "features"
 
 Display = {}
 Service = {}
@@ -41,7 +42,8 @@ drawHUD = function(display, player)
 	display.color = color.white
 	display.backColor = color.black
 
-	statusBar = "HP: " + player.currentHP + " / " + player.maxHP
+	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel
+
 	statusBar = statusBar + " " * (67 - statusBar.len)
 	display.print(statusBar)
 	
@@ -93,6 +95,7 @@ main = function()
 	map = mapgen.MapGenerator.buildRandomDungeon()
 
 	player = entity.Entity.makePlayer(map)
+	map.player = player
 
 	renderOffset = function()
 		TEXT_ROWS = 26

@@ -23,7 +23,6 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 
 # TODO
 
-* Need to make the kobolds just a bit smarter.
 * Add a speed attribute and give each action a cost.
 * Implement inventory and items.
 * Need more UI.
@@ -32,6 +31,7 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 * Implement a cavern generator.
 * Implement a town generator.
 * Need NPCs.
+* XP and level is now being tracked.  What happens when a character levels up?
 
 ## Kobold camps
 

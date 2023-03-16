@@ -13,6 +13,7 @@ Map.make = function()
 	m = new Map
 	m.tiles = []
 	m.entities = []
+	m.player = null
 
 	for y in range(m.height)
 		row = []

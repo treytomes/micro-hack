@@ -26,6 +26,9 @@ Behavior.makeAttackOnCollision = function()
 			if target.currentHP <= 0 then
 				Service.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
 				Service.makeDamageParticles(target.position.x, target.position.y)
+				source.xp += target.xp
+				Service.messages.report(source.name + " earned " + target.xp + " XP.")
+				target.xp = 0
 			else
 				Service.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
 				Service.makeMessageParticles(target.position.x, target.position.y, weaponDamage, color.red)
@@ -43,22 +46,26 @@ Behavior.makeAttackOnCollision = function()
 		// Assume melee attacks.
 		// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
 		
-		// 1. Calculate initiative order.
+		if features.ALWAYS_COUNTER_ATTACK then
+			// 1. Calculate initiative order.
 
-		sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
-		targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
+			sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
+			targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
 
-		// 2. Highest initiative goes first.
-		firstEntity = sourceEntity
-		secondEntity = targetEntity
-		if targetInitiative > sourceInitiative then
-			firstEntity = targetEntity
-			secondEntity = sourceEntity
-		end if
+			// 2. Highest initiative goes first.
+			firstEntity = sourceEntity
+			secondEntity = targetEntity
+			if targetInitiative > sourceInitiative then
+				firstEntity = targetEntity
+				secondEntity = sourceEntity
+			end if
 
-		// 3. Attack roll.
-		if not self.attack(firstEntity, secondEntity) then
-			self.attack(secondEntity, firstEntity)
+			// 3. Attack roll.
+			if not self.attack(firstEntity, secondEntity) then
+				self.attack(secondEntity, firstEntity)
+			end if
+		else
+			self.attack(sourceEntity, targetEntity)
 		end if
 	end function
 
@@ -79,9 +86,12 @@ Behavior.makeRandomWalk = function()
 		self.currentDirection.y = dy
 	end function
 
-	b.act = function(entity, map)
-		action = actions.EntityAction.wait
-		if rnd() > 0.5 then
+	b.shouldChooseNewDirection = function()
+		return rnd() > 0.5
+	end function
+
+	b.wanderAround = function()
+		if self.shouldChooseNewDirection() then
 			self.chooseNewDirection()
 		end if
 
@@ -92,6 +102,38 @@ Behavior.makeRandomWalk = function()
 		end if
 	end function
 
+	b.act = function(entity, map)
+		return b.wanderAround()
+	end function
+
+	return b
+end function
+
+Behavior.makeSeekOutPlayer = function()
+	b = Behavior.makeRandomWalk()
+
+	b.act = function(entity, map)
+		deltaX = sign(map.player.position.x - entity.position.x)
+		deltaY = sign(map.player.position.y - entity.position.y)
+
+		if deltaX ^ 2 + deltaY ^ 2 <= entity.rangeOfVision ^ 2 then
+			// The entity can theoretically see the player.
+			// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
+
+			if deltaX != 0 then
+				if not map.blocksMovement(entity.position.x + deltaX, entity.position.y) then
+					return actions.EntityAction.walk(point.make(deltaX, 0))
+				end if
+			else if deltaY != 0 then
+				if not map.blocksMovement(entity.position.x, entity.position.y + deltaY) then
+					return actions.EntityAction.walk(point.make(0, deltaY))
+				end if
+			end if
+		end if
+
+		return self.wanderAround()
+	end function
+	
 	return b
 end function
 
