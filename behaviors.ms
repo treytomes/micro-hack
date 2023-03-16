@@ -8,52 +8,61 @@ Behavior.act = function()
 	return actions.EntityAction.wait
 end function
 
-Behavior.attack = function(source, target)
-	attackRoll = math.rollDice(1, 20)
-	attackBonus = source.baseAttackBonus + source.strengthModifier
-	if attackRoll + attackBonus >= target.armorClass then
-		// Its a hit!
-		weaponDamage = source.weaponDamage
-		target.currentHP -= weaponDamage
-
-		// Calculate entity death if necessary.
-		if target.currentHP <= 0 then
-			Service.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
-			Service.makeDamageParticles(target.position.x, target.position.y)
-		else
-			Service.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
-			Service.makeMessageParticles(target.position.x, target.position.y, weaponDamage, color.red)
-		end if
-		return true
-	else
-		// The attack misses.
-		Service.messages.report(source.name + " attacks " + target.name + ", but misses.")
-		return false
-	end if
+Behavior.onEntityCollision = function(sourceEntity, targetEntity)
 end function
 
-Behavior.onEntityCollision = function(sourceEntity, targetEntity)
-	// Assume every entity has the fighter class.
-	// Assume melee attacks.
-	// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
-	
-	// 1. Calculate initiative order.
+Behavior.makeAttackOnCollision = function()
+	b = new Behavior
 
-	sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
-	targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
+	b.attack = function(source, target)
+		attackRoll = math.rollDice(1, 20)
+		attackBonus = source.baseAttackBonus + source.strengthModifier
+		if attackRoll + attackBonus >= target.armorClass then
+			// Its a hit!
+			weaponDamage = source.weaponDamage
+			target.currentHP -= weaponDamage
 
-	// 2. Highest initiative goes first.
-	firstEntity = sourceEntity
-	secondEntity = targetEntity
-	if targetInitiative > sourceInitiative then
-		firstEntity = targetEntity
-		secondEntity = sourceEntity
-	end if
+			// Calculate entity death if necessary.
+			if target.currentHP <= 0 then
+				Service.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
+				Service.makeDamageParticles(target.position.x, target.position.y)
+			else
+				Service.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
+				Service.makeMessageParticles(target.position.x, target.position.y, weaponDamage, color.red)
+			end if
+			return true
+		else
+			// The attack misses.
+			Service.messages.report(source.name + " attacks " + target.name + ", but misses.")
+			return false
+		end if
+	end function
 
-	// 3. Attack roll.
-	if not self.attack(firstEntity, secondEntity) then
-		self.attack(secondEntity, firstEntity)
-	end if
+	b.onEntityCollision = function(sourceEntity, targetEntity)
+		// Assume every entity has the fighter class.
+		// Assume melee attacks.
+		// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
+		
+		// 1. Calculate initiative order.
+
+		sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
+		targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
+
+		// 2. Highest initiative goes first.
+		firstEntity = sourceEntity
+		secondEntity = targetEntity
+		if targetInitiative > sourceInitiative then
+			firstEntity = targetEntity
+			secondEntity = sourceEntity
+		end if
+
+		// 3. Attack roll.
+		if not self.attack(firstEntity, secondEntity) then
+			self.attack(secondEntity, firstEntity)
+		end if
+	end function
+
+	return b
 end function
 
 Behavior.makeRandomWalk = function()
@@ -113,6 +122,6 @@ Behavior.makeUserInput = function()
 			return actions.EntityAction.wait
 		end if
 	end function
-
+	
 	return b
 end function

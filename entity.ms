@@ -32,6 +32,7 @@ Entity.makePlayer = function(map)
 	e.perception = 8
 
 	e.behaviors.push(behaviors.Behavior.makeUserInput())
+	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
 	return e
 end function
 
@@ -55,6 +56,7 @@ Entity.makeKobold = function(map)
 	e.perception = 12
 
 	e.behaviors.push(behaviors.Behavior.makeRandomWalk())
+	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
 	return e
 end function
 
