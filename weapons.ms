@@ -4,7 +4,6 @@ import "items"
 Weapon = new items.Item
 Weapon.damageDice = math.Dice.make(1, 1, 0)
 Weapon.isConsumedOnUse = false
-Weapon.isEquipped = false
 
 Weapon.str = function()
 	return self.name + " (" + self.damageDice.str() + ")"
