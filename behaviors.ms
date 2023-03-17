@@ -117,7 +117,7 @@ end function
 
 Behavior.makeRandomWalk = function()
 	b = Behavior.makeHealWhileResting
-	b.currentDirection = point.Point.make(0, 0)
+	b.currentDirection = point.zero
 
 	b.chooseNewDirection = function(entity)
 		dx = math.random(-1, 1)
@@ -211,10 +211,15 @@ Behavior.makeUserInput = function()
 		for item in entity.inventory
 			Display.hud.row = y
 			Display.hud.column = windowBounds.left + 1
-			Display.hud.print n + ". " + item.name
+			Display.hud.print n + ". " + item.str()
 			y -= 1
 			n += 1
 		end for
+	end function
+
+	b.eraseInventory = function()
+		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
+		ui.clearRect(Display.hud, windowBounds, " ", color.clear, color.clear)
 	end function
 
 	b.useInventory = function(entity)
@@ -222,40 +227,38 @@ Behavior.makeUserInput = function()
 
 		k = key.get.code
 		inventoryIndex = k - 48
+
+		result = null
 		if inventoryIndex >= 0 and inventoryIndex < entity.inventory.len then
-			return actions.useInventoryItem(inventoryIndex)
-			//item = entity.inventory[inventoryIndex]
-			//item.use(entity)
-			//if item.isConsumedOnUse then
-			//	entity.inventory.remove(inventoryIndex)
-			//end if
+			result = actions.useInventoryItem(inventoryIndex)
 		end if
+
+		self.eraseInventory()
+		return result
 	end function
 
 	b.act = function(entity, map)
 		result = null
 
-		while true
-			delta = point.Point.make(0, 0)
+		while result == null
+			delta = point.zero
 			k = key.get.code
 			if k == keybindings.up then
-				delta.y = 1
+				result = actions.walk(point.unitY)
 			else if k == keybindings.down then
-				delta.y = -1
+				result = actions.walk(point.unitY.negate)
 			else if k == keybindings.left then
-				delta.x = -1
+				result = actions.walk(point.unitX.negate)
 			else if k == keybindings.right then
-				delta.x = 1
+				result = actions.walk(point.unitX)
 			else if k == keybindings.inventory then
-				return b.useInventory(entity)
+				result = b.useInventory(entity)
 			else if k == keybindings.rest then
-				return self.healWhileResting(entity, map)
-			end if
-
-			if delta.x != 0 or delta.y != 0 then
-				return actions.walk(delta)
+				result = self.healWhileResting(entity, map)
 			end if
 		end while
+
+		return result
 	end function
 	
 	return b

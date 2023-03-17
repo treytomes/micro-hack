@@ -33,7 +33,7 @@ walk = function(delta)
 	action.delta = delta
 	action.apply = function(entity, map)
 		entity.numRestTurns = 0
-		newPos = point.Point.make(entity.position.x + self.delta.x, entity.position.y + self.delta.y)
+		newPos = point.make(entity.position.x + self.delta.x, entity.position.y + self.delta.y)
 		if map.tiles[newPos.y][newPos.x].blocksMovement then
 			if entity.isPlayer then
 				sounds.Sounds.pop()

@@ -72,11 +72,10 @@ end function
 Map.findSpawnPoint = function()
 	while true
 		// I brought in the range a bit, as you will never spawn on the map edge.
-		x = math.random(1, self.width - 2)
-		y = math.random(1, self.height - 2)
-		if not self.blocksMovement(x, y) then
-			if not self.isEntityAt(point.Point.make(x, y)) then
-				return point.Point.make(x, y)
+		pnt = point.make(math.random(1, self.width - 2), math.random(1, self.height - 2))
+		if not self.blocksMovement(pnt.x, pnt.y) then
+			if not self.isEntityAt(pnt) then
+				return pnt
 			end if
 		end if
 	end while
@@ -86,12 +85,11 @@ end function
 Map.findHiddenSpawnPoint = function()
 	while true
 		// I brought in the range a bit, as you will never spawn on the map edge.
-		x = math.random(1, self.width - 2)
-		y = math.random(1, self.height - 2)
-		if not self.blocksVision(x, y) then
-			if not self.blocksMovement(x, y) then
-				if not self.isEntityAt(point.Point.make(x, y)) then
-					return point.Point.make(x, y)
+		pnt = point.make(math.random(1, self.width - 2), math.random(1, self.height - 2))
+		if not self.blocksVision(pnt.x, pnt.y) then
+			if not self.blocksMovement(pnt.x, pnt.y) then
+				if not self.isEntityAt(pnt) then
+					return pnt
 				end if
 			end if
 		end if
@@ -101,9 +99,9 @@ end function
 Map.clearScreen = function(display)
 	for y in range(0, SCREEN_MAX_Y)
 		for x in range(0, SCREEN_MAX_X)
-			display.setCellColor x, y, color.black
-			display.setCellBackColor x, y, color.gray
-			display.setCell x, y, "#"
+			display.setCellColor(x, y, color.black)
+			display.setCellBackColor(x, y, color.gray)
+			display.setCell(x, y, "#")
 		end for
 	end for
 end function
