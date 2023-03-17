@@ -17,6 +17,7 @@ import "fov"
 import "features"
 import "rect"
 import "ui"
+import "keybindings"
 
 Display = {}
 Service = {}

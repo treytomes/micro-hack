@@ -9,9 +9,21 @@ Actions are defined in "actions.ms".  Ultimately each action will have an Action
 Behaviors are a collection of semi-intelligent chunks that can be run together as a list.  Behaviors affect entity state and can generate actions.
 
 
+# Features
+
+## Health Regen
+
+When you begin resting ("r"), a rest timer begins to increment.  Every time you rest a d20 is rolled.  If the result of the d20 is less than the rest count, you will receive +1 restored HP.
+
+What this means in-game is that the odds of your health being restored increase the longer you rest, with it maxing out to definitely healing after 20 turns at rest.
+
 # Ideas
 
 * The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
+
+## Battle Heat
+
+Have a battle heat meter increase every time an attack is made.  Use the heat meter to help decide how much XP the player gets after the battle.  Longer battles (indicating strong / more enemies give me XP.
 
 ## Automatic Health Regen
 

@@ -226,12 +226,6 @@ Behavior.makeSeekPlayer = function()
 end function
 
 Behavior.makeUserInput = function()
-	Keys = { "left": 17,
-			 "right": 18,
-			 "up": 19,
-			 "down": 20,
-			 "inventory": 105 }
-
 	b = Behavior.makeHealWhileResting
 
 	b.displayInventory = function(entity)
@@ -264,21 +258,24 @@ Behavior.makeUserInput = function()
 	b.act = function(entity, map)
 		delta = point.Point.make(0, 0)
 		k = key.get.code
-		if k == Keys.up then
+		if k == keybindings.up then
 			delta.y = 1
-		else if k == Keys.down then
+		else if k == keybindings.down then
 			delta.y = -1
-		else if k == Keys.left then
+		else if k == keybindings.left then
 			delta.x = -1
-		else if k == Keys.right then
+		else if k == keybindings.right then
 			delta.x = 1
-		else if k == Keys.inventory then
+		else if k == keybindings.inventory then
 			b.displayInventory(entity)
+		else if k == keybindings.rest then
+			return self.healWhileResting(entity, map)
 		end if
 
 		if delta.x != 0 or delta.y != 0 then
 			return actions.EntityAction.walk(delta)
 		else
+			// TODO: I might disable resting as an automatic thing.
 			return self.healWhileResting(entity, map)
 		end if
 	end function
