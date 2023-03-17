@@ -10,6 +10,7 @@ Entity.make = function(pnt)
 	e.position = pnt
 	e.isPlayer = false
 	e.behaviors = []
+	e.inventory = []
 	return e
 end function
 
@@ -21,7 +22,12 @@ Entity.makePlayer = function(map)
 	e.race = races.RaceDescriptions.human
 	e.name = "player" //e.race.name
 	e.class = classes.ClassDescriptions.fighter
-	e.weapon = weapons.WeaponDescriptions.shortsword
+	
+	// Give the player some suff to start with.
+	e.weapon = features.PLAYER_INITIAL_WEAPON
+	for item in features.PLAYER_INITIAL_INVENTORY
+		e.inventory.push(item)
+	end for
 
 	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
@@ -38,14 +44,7 @@ Entity.makePlayer = function(map)
 end function
 
 Entity.makeKobold = function(map)
-	spawnPoint = null
-	// TODO: This should probably go into the map class.
-	while spawnPoint == null
-		spawnPoint = map.findSpawnPoint()
-		if map.isVisible(spawnPoint.x, spawnPoint.y) then
-			spawnPoint = null
-		end if
-	end while
+	spawnPoint = map.findHiddenSpawnPoint()
 
 	e = self.make(spawnPoint)
 	e.tile.foregroundColor = color.orange
@@ -54,7 +53,7 @@ Entity.makeKobold = function(map)
 	e.race = races.RaceDescriptions.kobold
 	e.name = e.race.name
 	e.class = classes.ClassDescriptions.fighter
-	e.weapon = weapons.WeaponDescriptions.unarmed
+	e.weapon = weapons.unarmed
 
 	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
@@ -105,12 +104,14 @@ Entity.onEntityCollision = function(bumpedEntity)
 end function
 
 Entity.modifyHP = function(amount)
+	oldHP = self.currentHP
 	self.currentHP += amount
 	if self.currentHP < 0 then
 		self.currentHP = 0
 	else if self.currentHP > self.maxHP then
 		self.currentHP = self.maxHP
 	end if
+	return self.currentHP - oldHP
 end function
 
 Entity.isAlive = function()
@@ -150,7 +151,7 @@ Entity.maxPushCapacity = function()
 end function
 
 Entity.weaponDamage = function()
-	return self.weapon.rollDice()
+	return self.weapon.calculateWeaponDamage()
 end function
 
 Entity.rangeOfVision = function()

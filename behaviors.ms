@@ -1,6 +1,7 @@
 import "actions"
 import "point"
 import "math"
+import "rect"
 
 Behavior = {}
 Behavior.willAttackSameRace = false
@@ -79,6 +80,7 @@ end function
 Behavior.makeAttackOnCollision = function()
 	b = new Behavior
 
+	// TODO: "attack" should be an action.
 	b.attack = function(source, target)
 		attackRoll = math.rollDice(1, 20)
 		attackBonus = source.baseAttackBonus + source.strengthModifier
@@ -225,11 +227,39 @@ end function
 
 Behavior.makeUserInput = function()
 	Keys = { "left": 17,
-			"right": 18,
-			"up": 19,
-			"down": 20 }
+			 "right": 18,
+			 "up": 19,
+			 "down": 20,
+			 "inventory": 105 }
 
 	b = Behavior.makeHealWhileResting
+
+	b.displayInventory = function(entity)
+		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
+		ui.drawWindow(Display.hud, windowBounds, "Inventory")
+
+		Display.hud.backColor = color.black
+		Display.hud.color = color.gray
+		n = 1
+		y = windowBounds.bottom - 1
+		for item in entity.inventory
+			Display.hud.row = y
+			Display.hud.column = windowBounds.left + 1
+			Display.hud.print n + ". " + item.name
+			y -= 1
+			n += 1
+		end for
+
+		k = key.get.code
+		itemIndex = k - 48
+		if itemIndex >= 0 and itemIndex < entity.inventory.len then
+			item = entity.inventory[itemIndex]
+			item.use(entity)
+			if item.isConsumedOnUse then
+				entity.inventory.remove(itemIndex)
+			end if
+		end if
+	end function
 
 	b.act = function(entity, map)
 		delta = point.Point.make(0, 0)
@@ -242,6 +272,8 @@ Behavior.makeUserInput = function()
 			delta.x = -1
 		else if k == Keys.right then
 			delta.x = 1
+		else if k == Keys.inventory then
+			b.displayInventory(entity)
 		end if
 
 		if delta.x != 0 or delta.y != 0 then

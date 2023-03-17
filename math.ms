@@ -1,10 +1,10 @@
 
-rollDice = function(numDice, numSides)
+rollDice = function(numDice, numSides, modifier = 0)
 	sum = 0
 	for n in range(numDice)
 		sum += floor(rnd() * numSides) + 1
 	end for
-	return sum
+	return sum + modifier
 end function
 
 max = function(a, b)

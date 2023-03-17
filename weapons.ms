@@ -1,23 +1,28 @@
 import "math"
 
-WeaponDescription = {}
-WeaponDescription.name = "n/a"
-WeaponDescription.numDice = 1
-WeaponDescription.numSides = 1
-WeaponDescription.rollDice = function()
-	return math.rollDice(self.numDice, self.numSides)
+Weapon = {}
+Weapon.name = "n/a"
+Weapon.numDice = 1
+Weapon.numSides = 1
+Weapon.modifier = 0
+
+Weapon.calculateWeaponDamage = function()
+	return math.rollDice(self.numDice, self.numSides, self.modifier)
 end function
 
-UnarmedWeaponDescription = new WeaponDescription
-UnarmedWeaponDescription.name = "unarmed"
-UnarmedWeaponDescription.numDie = 1
-UnarmedWeaponDescription.numSides = 1
+unarmed = new Weapon
+unarmed.name = "unarmed"
+unarmed.numDie = 1
+unarmed.numSides = 1
 
-ShortSwordWeaponDescription = new WeaponDescription
-ShortSwordWeaponDescription.name = "short sword"
-ShortSwordWeaponDescription.numDie = 1
-ShortSwordWeaponDescription.numSides = 6
+// TODO: piercing damage, weight, dual-wield
+shortSword = new Weapon
+shortSword.name = "short sword"
+shortSword.numDie = 1
+shortSword.numSides = 6
 
-WeaponDescriptions = {
-	"unarmed": new UnarmedWeaponDescription,
-	"shortsword": new ShortSwordWeaponDescription }
+// TODO: slashing damage
+longSword = new Weapon
+longSword.name = "long sword"
+longSword.numDie = 1
+longSword.numSides = 8

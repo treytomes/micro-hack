@@ -68,21 +68,34 @@ Map.isEntityAt = function(pnt)
 	return self.getEntityAt(pnt) != null
 end function
 
+// Find a walkable place in the map to place an entity.
 Map.findSpawnPoint = function()
-	found = false
-	x = 0
-	y = 0
-	while not found
+	while true
 		// I brought in the range a bit, as you will never spawn on the map edge.
 		x = math.random(1, self.width - 2)
 		y = math.random(1, self.height - 2)
 		if not self.blocksMovement(x, y) then
 			if not self.isEntityAt(point.Point.make(x, y)) then
-			 found = true
+				return point.Point.make(x, y)
 			end if
 		end if
 	end while
-	return point.Point.make(x, y)
+end function
+
+// Find a place to spawn an entity that is also outside of the player's range of vision.
+Map.findHiddenSpawnPoint = function()
+	while true
+		// I brought in the range a bit, as you will never spawn on the map edge.
+		x = math.random(1, self.width - 2)
+		y = math.random(1, self.height - 2)
+		if not self.blocksVision(x, y) then
+			if not self.blocksMovement(x, y) then
+				if not self.isEntityAt(point.Point.make(x, y)) then
+					return point.Point.make(x, y)
+				end if
+			end if
+		end if
+	end while
 end function
 
 Map.clearScreen = function(display)

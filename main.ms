@@ -15,6 +15,8 @@ import "entity"
 import "particles"
 import "fov"
 import "features"
+import "rect"
+import "ui"
 
 Display = {}
 Service = {}
@@ -43,8 +45,8 @@ drawHUD = function(display, player)
 	display.backColor = color.black
 
 	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel
-
 	statusBar = statusBar + " " * (67 - statusBar.len)
+	
 	display.print(statusBar)
 	
 	Service.messages.draw(display, player.position.y > (26 / 2))
