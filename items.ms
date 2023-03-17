@@ -2,16 +2,22 @@ Item = {}
 Item.name = "n/a"
 Item.isConsumedOnUse = true
 
+Item.str = function()
+	return self.name
+end function
+
 Item.use = function(entity)
 end function
 
 HealingPotionItem = new Item
-HealingPotionItem.numDice = 1
-HealingPotionItem.numSides = 1
-HealingPotionItem.modifier = 0
+HealingPotionItem.dice = math.Dice.make(1, 1, 0)
+
+HealingPotionItem.str = function()
+	return self.name + " (" + self.dice.str() + ")"
+end function
 
 HealingPotionItem.calculateHealingAmount = function()
-	return math.rollDice(self.numDice, self.numSides, self.modifier)
+	return self.dice.roll()
 end function
 
 HealingPotionItem.use = function(entity)
@@ -23,18 +29,12 @@ end function
 
 basicHealingPotion = new HealingPotionItem
 basicHealingPotion.name = "basic healing potion"
-basicHealingPotion.numDice = 2
-basicHealingPotion.numSides = 4
-basicHealingPotion.modifier = 2
+basicHealingPotion.dice = math.Dice.make(2, 4, 2)
 
 greaterHealingPotion = new HealingPotionItem
 greaterHealingPotion.name = "greater healing potion"
-greaterHealingPotion.numDice = 4
-greaterHealingPotion.numSides = 4
-greaterHealingPotion.modifier = 4
+greaterHealingPotion.dice = math.Dice.make(4, 4, 4)
 
 superiorHealingPotion = new HealingPotionItem
 superiorHealingPotion.name = "superior healing potion"
-superiorHealingPotion.numDice = 8
-superiorHealingPotion.numSides = 4
-superiorHealingPotion.modifier = 8
+superiorHealingPotion.dice = math.Dice.make(8, 4, 8)

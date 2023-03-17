@@ -25,6 +25,8 @@ What this means in-game is that the odds of your health being restored increase 
 
 Have a battle heat meter increase every time an attack is made.  Use the heat meter to help decide how much XP the player gets after the battle.  Longer battles (indicating strong / more enemies give me XP.
 
+Use the battle heat value to calculate the Challenge Rating (CR) of the encounter, e.g. XP = 50 + (Encounter CR × 25)
+
 ## Automatic Health Regen
 
 I'm not sure whether this is even a good feature to include.

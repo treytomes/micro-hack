@@ -1,10 +1,26 @@
+Dice = {}
+Dice.numDice = 1
+Dice.numSides = 6
+Dice.modifier = 0
 
-rollDice = function(numDice, numSides, modifier = 0)
+Dice.make = function(numDice, numSides, modifier = 0)
+	d = new Dice
+	d.numDice = numDice
+	d.numSides = numSides
+	d.modifier = modifier
+	return d
+end function
+
+Dice.roll = function()
 	sum = 0
-	for n in range(numDice)
-		sum += floor(rnd() * numSides) + 1
+	for n in range(self.numDice)
+		sum += floor(rnd() * self.numSides) + 1
 	end for
-	return sum + modifier
+	return sum + self.modifier
+end function
+
+Dice.str = function()
+	return self.numDice + "d" + self.numSides + "+" + self.modifier
 end function
 
 max = function(a, b)

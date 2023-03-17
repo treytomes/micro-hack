@@ -70,7 +70,7 @@ attack = function(targetEntity)
 	action = new EntityAction
 	action.targetEntity = targetEntity
 	action.apply = function(entity, map)
-		attackRoll = math.rollDice(1, 20)
+		attackRoll = math.Dice.make(1, 20).roll()
 		attackBonus = entity.baseAttackBonus + entity.strengthModifier
 		if attackRoll + attackBonus >= self.targetEntity.armorClass then
 			// Its a hit!

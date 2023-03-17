@@ -62,7 +62,7 @@ Behavior.makeHealWhileResting = function()
 
 	b.healWhileResting = function(entity, map)
 		if entity.currentHP < entity.maxHP then
-			if math.rollDice(1, 20) < (entity.numRestTurns + entity.constitutionModifier) then
+			if math.Dice.make(1, 20).roll() < (entity.numRestTurns + entity.constitutionModifier) then
 				Service.makeMessageParticles(entity.position.x, entity.position.y, 1, color.green)
 				entity.modifyHP(1)
 			end if
@@ -92,8 +92,8 @@ Behavior.makeAttackOnCollision = function()
 		
 		if features.ALWAYS_COUNTER_ATTACK then
 			// 1. Calculate initiative order.
-			sourceInitiative = math.rollDice(1, 20) + sourceEntity.dexterityModifier
-			targetInitiative = math.rollDice(1, 20) + targetEntity.dexterityModifier
+			sourceInitiative = math.Dice.make(1, 20, sourceEntity.dexterityModifier).roll()
+			targetInitiative = math.Dice.make(1, 20, targetEntity.dexterityModifier).roll()
 
 			// 2. Highest initiative goes first.
 			firstEntity = sourceEntity
@@ -254,9 +254,6 @@ Behavior.makeUserInput = function()
 
 			if delta.x != 0 or delta.y != 0 then
 				return actions.walk(delta)
-			else
-				// TODO: I might disable resting as an automatic thing.
-				return self.healWhileResting(entity, map)
 			end if
 		end while
 	end function

@@ -1,30 +1,31 @@
 
 ClassDescription = {}
 ClassDescription.name = "classless"
-ClassDescription.hpDie = [1, 10]
-ClassDescription.dexterityDie = [1, 20]
-ClassDescription.strengthDie = [1, 20]
-ClassDescription.constitutionDie = [3, 6]
+ClassDescription.hpDice = math.Dice.make(1, 10)
+ClassDescription.dexterityDice = math.Dice.make(1, 20)
+ClassDescription.strengthDice = math.Dice.make(1, 20)
+ClassDescription.constitutionDie = math.Dice.make(3, 6)
 
 ClassDescription.rollForStrength = function()
-	return math.rollDice(self.strengthDie[0], self.strengthDie[1])
+	return self.strengthDice.roll()
 end function
 
 ClassDescription.rollForDexterity = function()
-	return math.rollDice(self.dexterityDie[0], self.dexterityDie[1])
+	return self.dexterityDice.roll()
 end function
 
 ClassDescription.rollForHP = function()
-	return math.rollDice(self.hpDie[0], self.hpDie[1])
+	return self.hpDice.roll()
 end function
 
 ClassDescription.rollForConstitution = function()
-	return math.rollDice(self.constitutionDie[0], self.constitutionDie[1])
+	return self.constitutionDie.roll()
 end function
 
 FighterClassDescription = new ClassDescription
 FighterClassDescription.name = "fighter"
-FighterClassDescription.hpDie = [1, 10]
+FighterClassDescription.hpDice = math.Dice.make(1, 10)
 
 ClassDescriptions = {
-	"fighter": new FighterClassDescription }
+	"fighter": new FighterClassDescription,
+}
