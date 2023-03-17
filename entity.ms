@@ -88,12 +88,12 @@ end function
 
 Entity.act = function(map)
 	for b in self.behaviors
-		action = b.act(self, map)
-		if action != actions.EntityAction.wait then
-			return action
+		a = b.act(self, map)
+		if a != actions.wait then
+			return a
 		end if
 	end for
-	return actions.EntityAction.wait
+	return actions.wait()
 end function
 
 // Complete process a collision between 2 entities.

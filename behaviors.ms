@@ -15,9 +15,9 @@ Behavior.moveTowards = function(entity, map, position)
 		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 
 		if deltaX != 0 and not map.blocksMovement(entity.position.x + deltaX, entity.position.y) then
-			return actions.EntityAction.walk(point.make(deltaX, 0))
+			return actions.walk(point.make(deltaX, 0))
 		else if deltaY != 0 and not map.blocksMovement(entity.position.x, entity.position.y + deltaY) then
-			return actions.EntityAction.walk(point.make(0, deltaY))
+			return actions.walk(point.make(0, deltaY))
 		end if
 	end if
 
@@ -51,7 +51,7 @@ Behavior.isAlly = function(source, target)
 end function
 
 Behavior.act = function()
-	return actions.EntityAction.wait()
+	return actions.wait()
 end function
 
 Behavior.onEntityCollision = function(sourceEntity, targetEntity)
@@ -67,7 +67,7 @@ Behavior.makeHealWhileResting = function()
 				entity.modifyHP(1)
 			end if
 		end if
-		return actions.EntityAction.wait()
+		return actions.wait()
 	end function
 
 	b.act = function(entity, map)
@@ -79,34 +79,6 @@ end function
 
 Behavior.makeAttackOnCollision = function()
 	b = new Behavior
-
-	// TODO: "attack" should be an action.
-	b.attack = function(source, target)
-		attackRoll = math.rollDice(1, 20)
-		attackBonus = source.baseAttackBonus + source.strengthModifier
-		if attackRoll + attackBonus >= target.armorClass then
-			// Its a hit!
-			weaponDamage = source.weaponDamage
-			target.modifyHP(-weaponDamage)
-
-			// Calculate entity death if necessary.
-			if target.isDead then
-				Service.messages.report(source.name + " attacks " + target.name + ", and it is dead.")
-				Service.makeDamageParticles(target.position.x, target.position.y)
-				source.xp += target.xp
-				Service.messages.report(source.name + " earned " + target.xp + " XP.")
-				target.xp = 0
-			else
-				Service.messages.report(source.name + " attacks " + target.name + " : " + weaponDamage + ".")
-				Service.makeMessageParticles(target.position.x, target.position.y, weaponDamage, color.red)
-			end if
-			return true
-		else
-			// The attack misses.
-			Service.messages.report(source.name + " attacks " + target.name + ", but misses.")
-			return false
-		end if
-	end function
 
 	b.onEntityCollision = function(sourceEntity, targetEntity)
 		// Assume every entity has the fighter class.
@@ -133,10 +105,10 @@ Behavior.makeAttackOnCollision = function()
 
 			// 3. Attack roll.
 			if not self.attack(firstEntity, secondEntity) then
-				self.attack(secondEntity, firstEntity)
+				actions.attack(secondEntity).apply(firstEntity)
 			end if
 		else
-			self.attack(sourceEntity, targetEntity)
+			actions.attack(targetEntity).apply(sourceEntity)
 		end if
 	end function
 
@@ -167,7 +139,7 @@ Behavior.makeRandomWalk = function()
 		end if
 
 		if self.currentDirection.x != 0 or self.currentDirection.y != 0 then
-			return actions.EntityAction.walk(self.currentDirection) 
+			return actions.walk(self.currentDirection) 
 		else
 			return self.healWhileResting(entity, map)
 		end if
@@ -228,7 +200,7 @@ end function
 Behavior.makeUserInput = function()
 	b = Behavior.makeHealWhileResting
 
-	b.displayInventory = function(entity)
+	b.drawInventory = function(entity)
 		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
 		ui.drawWindow(Display.hud, windowBounds, "Inventory")
 
@@ -243,41 +215,50 @@ Behavior.makeUserInput = function()
 			y -= 1
 			n += 1
 		end for
+	end function
+
+	b.useInventory = function(entity)
+		self.drawInventory(entity)
 
 		k = key.get.code
-		itemIndex = k - 48
-		if itemIndex >= 0 and itemIndex < entity.inventory.len then
-			item = entity.inventory[itemIndex]
-			item.use(entity)
-			if item.isConsumedOnUse then
-				entity.inventory.remove(itemIndex)
-			end if
+		inventoryIndex = k - 48
+		if inventoryIndex >= 0 and inventoryIndex < entity.inventory.len then
+			return actions.useInventoryItem(inventoryIndex)
+			//item = entity.inventory[inventoryIndex]
+			//item.use(entity)
+			//if item.isConsumedOnUse then
+			//	entity.inventory.remove(inventoryIndex)
+			//end if
 		end if
 	end function
 
 	b.act = function(entity, map)
-		delta = point.Point.make(0, 0)
-		k = key.get.code
-		if k == keybindings.up then
-			delta.y = 1
-		else if k == keybindings.down then
-			delta.y = -1
-		else if k == keybindings.left then
-			delta.x = -1
-		else if k == keybindings.right then
-			delta.x = 1
-		else if k == keybindings.inventory then
-			b.displayInventory(entity)
-		else if k == keybindings.rest then
-			return self.healWhileResting(entity, map)
-		end if
+		result = null
 
-		if delta.x != 0 or delta.y != 0 then
-			return actions.EntityAction.walk(delta)
-		else
-			// TODO: I might disable resting as an automatic thing.
-			return self.healWhileResting(entity, map)
-		end if
+		while true
+			delta = point.Point.make(0, 0)
+			k = key.get.code
+			if k == keybindings.up then
+				delta.y = 1
+			else if k == keybindings.down then
+				delta.y = -1
+			else if k == keybindings.left then
+				delta.x = -1
+			else if k == keybindings.right then
+				delta.x = 1
+			else if k == keybindings.inventory then
+				return b.useInventory(entity)
+			else if k == keybindings.rest then
+				return self.healWhileResting(entity, map)
+			end if
+
+			if delta.x != 0 or delta.y != 0 then
+				return actions.walk(delta)
+			else
+				// TODO: I might disable resting as an automatic thing.
+				return self.healWhileResting(entity, map)
+			end if
+		end while
 	end function
 	
 	return b
