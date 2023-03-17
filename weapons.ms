@@ -1,27 +1,34 @@
 import "math"
+import "items"
 
-Weapon = {}
-Weapon.name = "n/a"
-Weapon.dice = math.Dice.make(1, 1, 0)
+Weapon = new items.Item
+Weapon.damageDice = math.Dice.make(1, 1, 0)
+Weapon.isConsumedOnUse = false
+Weapon.isEquipped = false
 
 Weapon.str = function()
-	return self.name + " (" + self.dice.str() + ")"
+	return self.name + " (" + self.damageDice.str() + ")"
 end function
 
 Weapon.calculateWeaponDamage = function()
-	return self.dice.roll()
+	return self.damageDice.roll()
 end function
 
 unarmed = new Weapon
 unarmed.name = "unarmed"
-unarmed.dice = math.Dice.make(1, 1)
+unarmed.damageDice = math.Dice.make(1, 1)
 
 // TODO: piercing damage, weight, dual-wield
+dagger = new Weapon
+dagger.name = "dagger"
+dagger.damageDice = math.Dice.make(1, 4)
+
+// TODO: piercing damage
 shortSword = new Weapon
 shortSword.name = "short sword"
-shortSword.dice = math.Dice.make(1, 6)
+shortSword.damageDice = math.Dice.make(1, 6)
 
 // TODO: slashing damage
 longSword = new Weapon
 longSword.name = "long sword"
-longSword.dice = math.Dice.make(1, 8)
+longSword.damageDice = math.Dice.make(1, 8)

@@ -46,3 +46,15 @@ random = function(minValue, maxValue)
 	baseValue = floor(rnd() * delta) + minValue
 	return baseValue
 end function
+
+selectItemByChance = function(odds)
+	value = rnd()
+	for row in odds
+		item = row[0]
+		value -= row[1]
+		if value < 0 then
+			return row[0]
+		end if
+	end for
+	return odds[odds.len - 1][0]
+end function

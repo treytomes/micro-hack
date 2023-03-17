@@ -24,10 +24,11 @@ Entity.makePlayer = function(map)
 	e.class = classes.ClassDescriptions.fighter
 	
 	// Give the player some suff to start with.
-	e.weapon = features.PLAYER_INITIAL_WEAPON
 	for item in features.PLAYER_INITIAL_INVENTORY
 		e.inventory.push(item)
 	end for
+	e.weapon = features.PLAYER_INITIAL_WEAPON
+	e.inventory.push(e.weapon)
 
 	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
@@ -53,7 +54,17 @@ Entity.makeKobold = function(map)
 	e.race = races.RaceDescriptions.kobold
 	e.name = e.race.name
 	e.class = classes.ClassDescriptions.fighter
-	e.weapon = weapons.unarmed
+
+	e.weapon = math.selectItemByChance([
+		[ weapons.dagger, 0.25 ],
+		[ weapons.shortSword, 0.25 ],
+		[ null, 0.5 ],
+	])
+	if e.weapon == null then
+		e.weapon = weapons.unarmed
+	else
+		e.inventory.push(e.weapon)
+	end if
 
 	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()

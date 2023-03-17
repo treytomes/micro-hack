@@ -208,10 +208,18 @@ Behavior.makeUserInput = function()
 		Display.hud.color = color.gray
 		n = 1
 		y = windowBounds.bottom - 1
-		for item in entity.inventory
+
+		for n in range(0, entity.inventory.len - 1)
+			item = entity.inventory[n]
+			isEquipped = entity.weapon == item
+
 			Display.hud.row = y
 			Display.hud.column = windowBounds.left + 1
-			Display.hud.print n + ". " + item.str()
+			Display.hud.print((n + 1) + ". " + item.str())
+			if isEquipped then
+				Display.hud.print(" [E]")
+			end if
+
 			y -= 1
 			n += 1
 		end for
