@@ -23,6 +23,7 @@ Entity.makePlayer = function(map)
 	e.class = classes.ClassDescriptions.fighter
 	e.weapon = weapons.WeaponDescriptions.shortsword
 
+	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = e.class.rollForConstitution()
@@ -37,7 +38,15 @@ Entity.makePlayer = function(map)
 end function
 
 Entity.makeKobold = function(map)
-	spawnPoint = map.findSpawnPoint()
+	spawnPoint = null
+	// TODO: This should probably go into the map class.
+	while spawnPoint == null
+		spawnPoint = map.findSpawnPoint()
+		if map.isVisible(spawnPoint.x, spawnPoint.y) then
+			spawnPoint = null
+		end if
+	end while
+
 	e = self.make(spawnPoint)
 	e.tile.foregroundColor = color.orange
 	e.tile.char = "k";
@@ -47,17 +56,21 @@ Entity.makeKobold = function(map)
 	e.class = classes.ClassDescriptions.fighter
 	e.weapon = weapons.WeaponDescriptions.unarmed
 
+	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = 7
 	e.maxHP = e.class.rollForHP() + e.constitutionModifier
 	e.currentHP = e.maxHP
-	e.perception = 12
+
+	// Reduced from 12 to 6.  They were just too hard with that much perception; along with the packing behavior.
+	e.perception = 6 //12
 
 	// You get this much XP for killing the monster.
 	e.xp = 25
 
-	e.behaviors.push(behaviors.Behavior.makeSeekOutPlayer())
+	e.behaviors.push(behaviors.Behavior.makeSeekPlayer())
+	//e.behaviors.push(behaviors.Behavior.makeRandomWalk())
 	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
 	return e
 end function
@@ -89,6 +102,23 @@ Entity.onEntityCollision = function(bumpedEntity)
 	for b in self.behaviors
 		b.onEntityCollision(self, bumpedEntity)
 	end for
+end function
+
+Entity.modifyHP = function(amount)
+	self.currentHP += amount
+	if self.currentHP < 0 then
+		self.currentHP = 0
+	else if self.currentHP > self.maxHP then
+		self.currentHP = self.maxHP
+	end if
+end function
+
+Entity.isAlive = function()
+	return self.currentHP > 0
+end function
+
+Entity.isDead = function()
+	return self.currentHP <= 0
 end function
 
 Entity.constitutionModifier = function()

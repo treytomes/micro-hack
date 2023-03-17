@@ -50,6 +50,7 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 Every entity, includes the player, has a race, class, and weapon.
 Each entity also has the following attributes:
 * level
+* xp
 * dexterity
 * strength
 * constitution

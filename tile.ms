@@ -8,8 +8,8 @@ Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blo
 	t.blocksMovement = blocksMovement
 	t.blocksVision = blocksVision
 
-	t.isCurrentlyVisible = false
-	t.hasBeenVisited = false
+	t.isCurrentlyVisible = not features.ENABLE_FOV
+	t.hasBeenVisited = not features.ENABLE_FOV
 	
 	return t
 end function

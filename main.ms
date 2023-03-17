@@ -106,16 +106,15 @@ main = function()
 	end function
 
 	map.entities.push(player)
-	map.entities.push(entity.Entity.makeKobold(map))
-	map.entities.push(entity.Entity.makeKobold(map))
-	map.entities.push(entity.Entity.makeKobold(map))
-	map.entities.push(entity.Entity.makeKobold(map))
-	map.entities.push(entity.Entity.makeKobold(map))
 
-	Service.messages = hud.MessageLog.make()
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
-
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
+	for n in range(12)
+		e = entity.Entity.makeKobold(map)
+		map.entities.push(e)
+	end for
+	
+	Service.messages = hud.MessageLog.make()
 	
 	Service.fountains = []
 	Service.makeDamageParticles = function(x, y)
@@ -151,27 +150,19 @@ main = function()
 			n = 0
 			while n < map.entities.len
 				e = map.entities[n]
-				if e != null then
-					if e.currentHP > 0 then
-						action = e.act(map)
-						action.apply(e, map)
-					else
-						map.entities[n] = null
-					end if
+				if e.isAlive then
+					action = e.act(map)
+					action.apply(e, map)
 				end if
-				n += 1
-			end while
 
-			n = 0
-			while n < map.entities.len
-				if map.entities[n] == null or map.entities[n].currentHP <= 0 then
+				if e.isDead then
 					map.entities.remove(n)
 				else
 					n += 1
 				end if
 			end while
 
-			if player.currentHP <= 0 then
+			if player.isDead then
 				Service.messages.report("YOU ARE DEAD!")
 			end if
 			
