@@ -111,6 +111,12 @@ Entity.makeItem = function(map, item, spawnPoint=null)
 	return e
 end function
 
+Entity.canSee = function(pnt)
+	deltaX = pnt.x - self.position.x
+	deltaY = pnt.y - self.position.y
+	return deltaX ^ 2 + deltaY ^ 2 <= self.rangeOfVision ^ 2
+end function
+
 Entity.draw = function(textDisplay, renderOffset)
 	//self.tile.draw(self.position.x, self.position.y)
 	x = renderOffset.x + self.position.x

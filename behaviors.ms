@@ -183,9 +183,11 @@ Behavior.makeSeekPlayer = function()
 		// The entity can theoretically see the player.
 		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 
-		action = self.moveTowards(entity, map, map.player.position)
-		if action != null then
-			return action
+		if entity.canSee(map.player.position) then
+			action = self.moveTowards(entity, map, map.player.position)
+			if action != null then
+				return action
+			end if
 		end if
 		return self.seekAllies(entity, map)
 	end function
