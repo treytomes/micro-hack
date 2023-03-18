@@ -1,31 +1,48 @@
+// Library imports.
 import "tc"
+
+// Base import.
+import "features"
+import "math"
 import "sounds"
 import "point"
+import "rect"
+
+// "Graphics"
+import "ui"
+import "particles"
+
 import "actions"
 import "tile"
+import "items"
 import "map"
 import "mapgen"
 import "behaviors"
-import "math"
 import "hud"
 import "weapons"
 import "races"
 import "classes"
 import "entity"
-import "particles"
 import "fov"
-import "features"
-import "rect"
-import "ui"
 import "keybindings"
+import "settings"
 
 Display = {}
 Service = {}
 
 drawEntities = function(display, map, renderOffset)
 	display.clear()
+	
+	// First draw entities that you can step on.
 	for e in map.entities
-		if map.isVisible(e.position.x, e.position.y) then
+		if map.isVisible(e.position.x, e.position.y) and not e.tile.blocksMovement then
+			e.draw(display, renderOffset)
+		end if
+	end for
+	
+	// Then draw everything else.
+	for e in map.entities
+		if map.isVisible(e.position.x, e.position.y) and e.tile.blocksMovement then
 			e.draw(display, renderOffset)
 		end if
 	end for

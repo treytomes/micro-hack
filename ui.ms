@@ -2,13 +2,6 @@ DEFAULT_TEXT = " "
 DEFAULT_FOREGROUND_COLOR = color.gray
 DEFAULT_BACKGROUND_COLOR = color.black
 
-coalesce = function(value, defaultValue)
-	if value == null then
-		return defaultValue
-	end if
-	return value
-end function
-
 drawCell = function(display, x, y, fg, bg, text)
 	display.setCell(x, y, text)
 	display.setCellColor(x, y, fg)
@@ -16,9 +9,9 @@ drawCell = function(display, x, y, fg, bg, text)
 end function
 
 clearRect = function(display, bounds, text = null, foregroundColor = null, backgroundColor = null)
-	text = coalesce(text, DEFAULT_TEXT)
-	foregroundColor = coalesce(foregroundColor, DEFAULT_FOREGROUND_COLOR)
-	backgroundColor = coalesce(backgroundColor, DEFAULT_BACKGROUND_COLOR)
+	text = math.coalesce(text, DEFAULT_TEXT)
+	foregroundColor = math.coalesce(foregroundColor, DEFAULT_FOREGROUND_COLOR)
+	backgroundColor = math.coalesce(backgroundColor, DEFAULT_BACKGROUND_COLOR)
 	for y in range(bounds.top, bounds.bottom)
 		for x in range(bounds.left, bounds.right)
 			drawCell(display, x, y, foregroundColor, backgroundColor, text)

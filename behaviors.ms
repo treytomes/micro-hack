@@ -1,8 +1,3 @@
-import "actions"
-import "point"
-import "math"
-import "rect"
-
 Behavior = {}
 Behavior.willAttackSameRace = false
 
@@ -50,11 +45,12 @@ Behavior.isAlly = function(source, target)
 	return source.race == target.race and not self.willAttackSameRace
 end function
 
-Behavior.act = function()
+Behavior.act = function(entity, map)
 	return actions.wait()
 end function
 
 Behavior.onEntityCollision = function(sourceEntity, targetEntity)
+	// Don't panic; this one is intentionally empty.
 end function
 
 Behavior.makeHealWhileResting = function()
@@ -200,14 +196,19 @@ end function
 Behavior.makeUserInput = function()
 	b = Behavior.makeHealWhileResting
 
-	b.drawInventory = function(entity)
+	b.drawInventory = function(entity, title, description)
 		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
 		ui.drawWindow(Display.hud, windowBounds, "Inventory")
 
 		Display.hud.backColor = color.black
+		Display.hud.color = color.white
+		Display.hud.row = windowBounds.bottom - 1
+		Display.hud.column = windowBounds.left + 1
+		Display.hud.print(description)
+
 		Display.hud.color = color.gray
 		n = 1
-		y = windowBounds.bottom - 1
+		y = windowBounds.bottom - 2
 
 		for n in range(0, entity.inventory.len - 1)
 			item = entity.inventory[n]
@@ -215,7 +216,7 @@ Behavior.makeUserInput = function()
 
 			Display.hud.row = y
 			Display.hud.column = windowBounds.left + 1
-			Display.hud.print((n + 1) + ". " + item.str())
+			Display.hud.print(n + ". " + item.str())
 			if isEquipped then
 				Display.hud.print(" [E]")
 			end if
@@ -230,8 +231,23 @@ Behavior.makeUserInput = function()
 		ui.clearRect(Display.hud, windowBounds, " ", color.clear, color.clear)
 	end function
 
+	b.dropInventory = function(entity)
+		self.drawInventory(entity, "Inventory", "Select a number to drop that item.")
+
+		k = key.get.code
+		inventoryIndex = k - 48
+
+		result = null
+		if inventoryIndex >= 0 and inventoryIndex < entity.inventory.len then
+			result = actions.dropInventoryItem(inventoryIndex)
+		end if
+
+		self.eraseInventory()
+		return result
+	end function
+
 	b.useInventory = function(entity)
-		self.drawInventory(entity)
+		self.drawInventory(entity, "Inventory", "Select a number to use that item.")
 
 		k = key.get.code
 		inventoryIndex = k - 48
@@ -260,7 +276,9 @@ Behavior.makeUserInput = function()
 			else if k == keybindings.right then
 				result = actions.walk(point.unitX)
 			else if k == keybindings.inventory then
-				result = b.useInventory(entity)
+				result = self.useInventory(entity)
+			else if k == keybindings.drop then
+				result = self.dropInventory(entity)
 			else if k == keybindings.rest then
 				result = self.healWhileResting(entity, map)
 			end if

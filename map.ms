@@ -1,7 +1,3 @@
-import "math"
-import "point"
-import "tile"
-
 SCREEN_MAX_X = 67
 SCREEN_MAX_Y = 25
 
@@ -18,7 +14,7 @@ Map.make = function()
 	for y in range(m.height)
 		row = []
 		for x in range(m.width)
-			row.push tile.Tile.makeWall
+			row.push tile.makeWall
 		end for
 		m.tiles.push row
 	end for
@@ -29,7 +25,7 @@ Map.getTile = function(x, y)
 	if 0 <= x and x < self.width and 0 <= y and y < self.height then
 		return self.tiles[y][x]
 	end if
-	return tile.Tile.makeWall()
+	return tile.makeWall()
 end function
 
 Map.blocksMovement = function(x, y)
@@ -86,7 +82,7 @@ Map.findHiddenSpawnPoint = function()
 	while true
 		// I brought in the range a bit, as you will never spawn on the map edge.
 		pnt = point.make(math.random(1, self.width - 2), math.random(1, self.height - 2))
-		if not self.blocksVision(pnt.x, pnt.y) then
+		if not self.isVisible(pnt.x, pnt.y) then
 			if not self.blocksMovement(pnt.x, pnt.y) then
 				if not self.isEntityAt(pnt) then
 					return pnt

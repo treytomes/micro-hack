@@ -1,7 +1,3 @@
-import "point"
-import "sounds"
-import "fov"
-
 EntityAction = {}
 
 wait = function()
@@ -40,7 +36,7 @@ walk = function(delta)
 			end if
 		else
 			bumpedEntity = map.getEntityAt(newPos)
-			if bumpedEntity == null then
+			if bumpedEntity == null or (not bumpedEntity.canBeAttacked and not bumpedEntity.tile.blocksMovement) then
 				entity.position = entity.position.add(self.delta)
 				if entity.isPlayer then
 					Service.fov.refresh(entity.position.x, entity.position.y, entity.rangeOfVision, map)
@@ -62,6 +58,25 @@ useInventoryItem = function(inventoryIndex)
 		if item.isConsumedOnUse then
 			entity.inventory.remove(inventoryIndex)
 		end if
+		
+		Service.messages.report(entity.name + " used " + item.name + ".")
+	end function
+	return action
+end function
+
+dropInventoryItem = function(inventoryIndex)
+	action = new EntityAction
+	action.inventoryIndex = inventoryIndex
+	action.apply = function(entity, map)
+		item = entity.inventory[self.inventoryIndex]
+		
+		itemEntity = entity.makeItem(map, item, entity.position)
+		map.entities.push(itemEntity)
+
+		entity.removeFromSlots(item)
+		entity.inventory.remove(self.inventoryIndex)
+
+		Service.messages.report(entity.name + " dropped " + item.name + ".")
 	end function
 	return action
 end function

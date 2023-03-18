@@ -58,3 +58,10 @@ selectItemByChance = function(odds)
 	end for
 	return odds[odds.len - 1][0]
 end function
+
+coalesce = function(value, defaultValue)
+	if value == null then
+		return defaultValue
+	end if
+	return value
+end function

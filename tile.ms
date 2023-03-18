@@ -1,6 +1,6 @@
 Tile = {}
 
-Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blocksVision)
+Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement=false, blocksVision=false)
 	t = new Tile
 	t.char = char
 	t.foregroundColor = foregroundColor
@@ -14,24 +14,28 @@ Tile.make = function(char, foregroundColor, backgroundColor, blocksMovement, blo
 	return t
 end function
 
-Tile.makeFloor = function()
-	return Tile.make(".", "#663311", color.black, false, false)
-end function
-
-Tile.makeWall = function()
-	return Tile.make("#", color.brown, color.black, true, true)
-end function
-
-Tile.makeDoor = function()
-	return Tile.make("+", color.black, color.brown, false, true)
-end function
-
-Tile.makeHidden = function()
-	return Tile.make("#", color.black, color.gray, true, true)
-end function
-
 Tile.draw = function(tileDisplay, x, y)
 	tileDisplay.setCellColor x, y, self.foregroundColor
 	tileDisplay.setCellBackColor x, y, self.backgroundColor
 	tileDisplay.setCell x, y, self.char
+end function
+
+make = function(char, foregroundColor, backgroundColor, blocksMovement=false, blocksVision=false)
+	return Tile.make(char, foregroundColor, backgroundColor, blocksMovement, blocksVision)
+end function
+
+makeFloor = function()
+	return Tile.make(".", "#663311", color.black, false, false)
+end function
+
+makeWall = function()
+	return Tile.make("#", color.brown, color.black, true, true)
+end function
+
+makeDoor = function()
+	return Tile.make("+", color.black, color.brown, false, true)
+end function
+
+makeHidden = function()
+	return Tile.make("#", color.black, color.gray, true, true)
 end function

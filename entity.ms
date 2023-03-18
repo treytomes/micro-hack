@@ -1,16 +1,28 @@
-import "actions"
-import "point"
-import "tile"
-
 Entity = {}
 
 Entity.make = function(pnt)
 	e = new Entity
-	e.tile = tile.Tile.make("@", color.white, color.black, false, false)
+	e.tile = tile.make("@", color.white, color.black, true, false)
 	e.position = pnt
 	e.isPlayer = false
 	e.behaviors = []
 	e.inventory = []
+	e.canBeAttacked = true
+	e.numRestTurns = 0
+
+	e.race = null
+	e.name = null
+	e.class = null
+	e.weapon = null
+
+	e.dexterity = 0
+	e.strength = 0
+	e.constitution = 0
+	e.maxHP = 1
+	e.currentHP = 1
+	e.perception = 0
+	e.xp = 0
+
 	return e
 end function
 
@@ -19,18 +31,21 @@ Entity.makePlayer = function(map)
 	e = self.make(spawnPoint)
 	e.isPlayer = true
 
-	e.race = races.RaceDescriptions.human
+	e.race = races.human
 	e.name = "player" //e.race.name
 	e.class = classes.ClassDescriptions.fighter
 	
-	// Give the player some suff to start with.
-	for item in features.PLAYER_INITIAL_INVENTORY
-		e.inventory.push(item)
-	end for
-	e.weapon = features.PLAYER_INITIAL_WEAPON
-	e.inventory.push(e.weapon)
+	// Give the player some stuff to start with.
+	if features.GIVE_INITIAL_INVENTORY then
+		for item in settings.PLAYER_INITIAL_INVENTORY
+			e.inventory.push(item)
+		end for
+		e.weapon = settings.PLAYER_INITIAL_WEAPON
+		e.inventory.push(e.weapon)
+	else
+		e.weapon = weapons.unarmed
+	end if
 
-	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = e.class.rollForConstitution()
@@ -51,7 +66,7 @@ Entity.makeKobold = function(map)
 	e.tile.foregroundColor = color.orange
 	e.tile.char = "k";
 
-	e.race = races.RaceDescriptions.kobold
+	e.race = races.kobold
 	e.name = e.race.name
 	e.class = classes.ClassDescriptions.fighter
 
@@ -66,7 +81,6 @@ Entity.makeKobold = function(map)
 		e.inventory.push(e.weapon)
 	end if
 
-	e.numRestTurns = 0
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = 7
@@ -82,6 +96,18 @@ Entity.makeKobold = function(map)
 	e.behaviors.push(behaviors.Behavior.makeSeekPlayer())
 	//e.behaviors.push(behaviors.Behavior.makeRandomWalk())
 	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
+	return e
+end function
+
+Entity.makeItem = function(map, item, spawnPoint=null)
+	spawnPoint = math.coalesce(spawnPoint, map.findSpawnPoint())
+	e = self.make(spawnPoint)
+	
+	e.tile = item.tile
+	e.name = item.name
+	e.item = item
+	e.canBeAttacked = false
+
 	return e
 end function
 
@@ -176,4 +202,12 @@ end function
 // How much XP is needed to reach the next level?
 Entity.xpToNextLevel = function()
 	return 300 * (2 ^ self.level - 1)
+end function
+
+// If the item is equipped in any way, un-equip it.
+Entity.removeFromSlots = function(item)
+	if self.weapon == item then
+		self.weapon = weapons.unarmed
+		return
+	end if
 end function

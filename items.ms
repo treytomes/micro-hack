@@ -1,6 +1,7 @@
 Item = {}
 Item.name = "n/a"
 Item.isConsumedOnUse = true
+Item.tile = tile.make("?", color.gray, color.black)
 
 Item.str = function()
 	return self.name
@@ -10,6 +11,7 @@ Item.use = function(entity)
 end function
 
 HealingPotionItem = new Item
+HealingPotionItem.tile = tile.make("!", color.red, color.black)
 HealingPotionItem.dice = math.Dice.make(1, 1, 0)
 
 HealingPotionItem.str = function()
