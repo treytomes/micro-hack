@@ -49,6 +49,20 @@ Map.isVisible = function(x, y)
 	return false
 end function
 
+// Get a list of all entities at a point.
+Map.getEntitiesAt = function(pnt)
+	lst = []
+	for e in self.entities
+		if e != null then
+			if e.position == pnt then
+				lst.push(e)
+			end if
+		end if
+	end for
+	return lst
+end function
+
+// Get the first entity found at a point.
 Map.getEntityAt = function(pnt)
 	for e in self.entities
 		if e != null then
@@ -62,6 +76,15 @@ end function
 
 Map.isEntityAt = function(pnt)
 	return self.getEntityAt(pnt) != null
+end function
+
+Map.removeEntity = function(entity)
+	for n in range(0, self.entities.len - 1)
+		if self.entities[n] == entity then
+			self.entities.remove(n)
+			return
+		end if
+	end for
 end function
 
 // Find a walkable place in the map to place an entity.

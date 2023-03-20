@@ -27,22 +27,28 @@ end function
 walk = function(delta)
 	action = new EntityAction
 	action.delta = delta
+
 	action.apply = function(entity, map)
 		entity.numRestTurns = 0
+		//newPos = entity.position + self.delta
 		newPos = point.make(entity.position.x + self.delta.x, entity.position.y + self.delta.y)
 		if map.tiles[newPos.y][newPos.x].blocksMovement then
 			if entity.isPlayer then
 				sounds.Sounds.pop()
 			end if
 		else
-			bumpedEntity = map.getEntityAt(newPos)
+			bumpedEntity = map.getEntityAt(newPos) 
 			if bumpedEntity == null or (not bumpedEntity.canBeAttacked and not bumpedEntity.tile.blocksMovement) then
 				entity.position = entity.position.add(self.delta)
 				if entity.isPlayer then
 					Service.fov.refresh(entity.position.x, entity.position.y, entity.rangeOfVision, map)
+
+					if entity.isPlayer and bumpedEntity != null and bumpedEntity.hasIndex("item") then
+						Service.messages.report("You see a " + bumpedEntity.name + " there.")
+					end if
 				end if
 			else
-				entity.onEntityCollision(bumpedEntity)
+				entity.onEntityCollision(bumpedEntity, map)
 			end if
 		end if
 	end function
@@ -58,7 +64,7 @@ useInventoryItem = function(inventoryIndex)
 		if item.isConsumedOnUse then
 			entity.inventory.remove(inventoryIndex)
 		end if
-		
+
 		Service.messages.report(entity.name + " used " + item.name + ".")
 	end function
 	return action
@@ -81,6 +87,30 @@ dropInventoryItem = function(inventoryIndex)
 	return action
 end function
 
+pickUpItem = function(delta)
+	action = new EntityAction
+	action.delta = delta
+
+	action.pickUpItem = function(entity, map, itemEntity)
+		map.removeEntity(itemEntity)
+		entity.inventory.push(itemEntity.item)
+		Service.messages.report(entity.name + " picked up a " + itemEntity.name + ".")
+	end function
+
+	action.apply = function(entity, map)
+		entities = map.getEntitiesAt(entity.position.add(self.delta))
+		for e in entities
+			if e == entity then
+				continue
+			else if e.hasIndex("item") then
+				self.pickUpItem(entity, map, e)
+				return
+			end if
+		end for
+	end function
+	return action
+end function
+
 attack = function(targetEntity)
 	action = new EntityAction
 	action.targetEntity = targetEntity
@@ -99,6 +129,7 @@ attack = function(targetEntity)
 				entity.xp += self.targetEntity.xp
 				Service.messages.report(entity.name + " earned " + self.targetEntity.xp + " XP.")
 				self.targetEntity.xp = 0
+				self.targetEntity.onDeath(entity, map)
 			else
 				Service.messages.report(entity.name + " attacks " + self.targetEntity.name + " : " + weaponDamage + ".")
 				Service.makeMessageParticles(self.targetEntity.position.x, self.targetEntity.position.y, weaponDamage, color.red)

@@ -10,6 +10,10 @@ Weapon.calculateWeaponDamage = function()
 	return self.damageDice.roll()
 end function
 
+Weapon.use = function(entity)
+	entity.weapon = self
+end function
+
 unarmed = new Weapon
 unarmed.name = "unarmed"
 unarmed.damageDice = math.Dice.make(1, 1)

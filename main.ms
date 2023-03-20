@@ -28,6 +28,33 @@ import "keybindings"
 import "settings"
 
 Display = {}
+
+Display.initialize = function()
+	display(0).mode = displayMode.text
+	Display.hud = display(0)
+	Display.hud.delimiter = ""
+
+	display(1).mode = displayMode.text
+	Display.particles = display(1)
+	Display.particles.delimiter = ""
+
+	display(2).mode = displayMode.text
+	Display.entities = display(2)
+	Display.entities.delimiter = ""
+
+	display(3).mode = displayMode.text
+	Display.map = display(3)
+	Display.map.delimiter = ""
+end function
+
+Display.clear = function()
+	for n in range(0, 3)
+		display(n).color = color.white
+		display(n).backColor = color.clear
+		display.clear()
+	end for
+end function
+
 Service = {}
 
 drawEntities = function(display, map, renderOffset)
@@ -71,24 +98,6 @@ drawHUD = function(display, player)
 	Service.messages.update()
 end function
 
-generateDisplays = function()
-	display(0).mode = displayMode.text
-	Display.hud = display(0)
-	Display.hud.delimiter = ""
-
-	display(1).mode = displayMode.text
-	Display.particles = display(1)
-	Display.particles.delimiter = ""
-
-	display(2).mode = displayMode.text
-	Display.entities = display(2)
-	Display.entities.delimiter = ""
-
-	display(3).mode = displayMode.text
-	Display.map = display(3)
-	Display.map.delimiter = ""
-end function
-
 updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
 		//Display.particles.backColor = color.clear
@@ -125,7 +134,6 @@ main = function()
 		return point.make(offsetX, offsetY)
 	end function
 
-	map.entities.push(player)
 
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
@@ -133,6 +141,9 @@ main = function()
 		e = entity.Entity.makeKobold(map)
 		map.entities.push(e)
 	end for
+
+	// For rendering purposes, it makes sense for the player to be last.
+	map.entities.push(player)
 	
 	Service.messages = hud.MessageLog.make()
 	
@@ -147,7 +158,7 @@ main = function()
 
 	text.clear()
 
-	generateDisplays()
+	Display.initialize()
 
 	map.clearScreen(Display.map)
 	map.draw(Display.map, player, renderOffset)
@@ -174,7 +185,18 @@ main = function()
 					action = e.act(map)
 					action.apply(e, map)
 				end if
+				if e.isDead then
+					map.entities.remove(n)
+				else
+					n += 1
+				end if
+				//n += 1
+			end while
 
+			// Check for dead entities after everyone has had a chance to act.
+			n = 0
+			while n < map.entities.len
+				e = map.entities[n]
 				if e.isDead then
 					map.entities.remove(n)
 				else

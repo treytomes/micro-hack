@@ -49,7 +49,7 @@ Behavior.act = function(entity, map)
 	return actions.wait()
 end function
 
-Behavior.onEntityCollision = function(sourceEntity, targetEntity)
+Behavior.onEntityCollision = function(sourceEntity, targetEntity, map)
 	// Don't panic; this one is intentionally empty.
 end function
 
@@ -76,7 +76,7 @@ end function
 Behavior.makeAttackOnCollision = function()
 	b = new Behavior
 
-	b.onEntityCollision = function(sourceEntity, targetEntity)
+	b.onEntityCollision = function(sourceEntity, targetEntity, map)
 		// Assume every entity has the fighter class.
 		// Assume melee attacks.
 		// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
@@ -100,11 +100,11 @@ Behavior.makeAttackOnCollision = function()
 			end if
 
 			// 3. Attack roll.
-			if not self.attack(firstEntity, secondEntity) then
-				actions.attack(secondEntity).apply(firstEntity)
+			if not actions.attack(secondEntity).apply(firstEntity, map) then
+				actions.attack(firstEntity).apply(secondEntity, map)
 			end if
 		else
-			actions.attack(targetEntity).apply(sourceEntity)
+			actions.attack(targetEntity).apply(sourceEntity, map)
 		end if
 	end function
 
@@ -281,6 +281,8 @@ Behavior.makeUserInput = function()
 				result = self.useInventory(entity)
 			else if k == keybindings.drop then
 				result = self.dropInventory(entity)
+			else if k == keybindings.get then
+				result = actions.pickUpItem(point.zero)
 			else if k == keybindings.rest then
 				result = self.healWhileResting(entity, map)
 			end if

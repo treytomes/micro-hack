@@ -139,10 +139,17 @@ Entity.act = function(map)
 	return actions.wait()
 end function
 
+Entity.onDeath = function(killedByEntity, map)
+	// Drop some loot.
+	while self.inventory.len > 0
+		actions.dropInventoryItem(0).apply(self, map)
+	end while
+end function
+
 // Complete process a collision between 2 entities.
-Entity.onEntityCollision = function(bumpedEntity)
+Entity.onEntityCollision = function(bumpedEntity, map)
 	for b in self.behaviors
-		b.onEntityCollision(self, bumpedEntity)
+		b.onEntityCollision(self, bumpedEntity, map)
 	end for
 end function
 

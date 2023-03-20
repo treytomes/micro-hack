@@ -37,14 +37,18 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 
 # TODO
 
+* Kobolds should drop gold.
+* Gold should be a base attribute.
+* Implement item value.
+* Implement armor.
 * Add a speed attribute and give each action a cost.
-* Implement inventory and items.
 * Need more UI.
-* Need to tweak the HP recovery mechanic.  It's too easy to heal yourself.
+	* Disable UI flipping.  It's not needed anymore.  Make it a feature flag.
 * Implement a BSP map generator.
 * Implement a cavern generator.
 * Implement a town generator.
 * Need NPCs.
+	* Create a simple merchant NPC in the starting room.
 * XP and level is now being tracked.  What happens when a character levels up?
 
 ## Kobold camps
