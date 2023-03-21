@@ -29,7 +29,7 @@ Entity.make = function(pnt)
 end function
 
 Entity.makePlayer = function(map)
-	spawnPoint = map.findSpawnPoint()
+	spawnPoint = map.stairsUp
 	e = self.make(spawnPoint)
 	e.isPlayer = true
 
@@ -55,7 +55,7 @@ Entity.makePlayer = function(map)
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
 	e.constitution = e.class.rollForConstitution()
-	e.maxHP = e.class.rollForHP() + e.constitutionModifier
+	e.maxHP = e.race.hpDice.roll() + e.class.hpDice.roll() + e.constitutionModifier
 	e.currentHP = e.maxHP
 	e.perception = 8
 	e.xp = 0
@@ -65,6 +65,7 @@ Entity.makePlayer = function(map)
 	return e
 end function
 
+// TODO: Kobolds tend to attack in packs.  Move them to level 2.  Make rats appear on level 1.
 Entity.makeKobold = function(map)
 	spawnPoint = map.findHiddenSpawnPoint()
 
@@ -77,38 +78,43 @@ Entity.makeKobold = function(map)
 	e.class = classes.ClassDescriptions.fighter
 
 	e.weapon = math.selectItemByChance([
-		[ weapons.dagger, 0.3 ],
-		[ weapons.shortSword, 0.3 ],
-		[ null, 0.4 ],
+		[ weapons.dagger, 0.2 ],
+		[ null, 0.8 ],
 	])
+	// TODO: Armed kobolds are too tough for a level 1 player.
+	//e.weapon = math.selectItemByChance([
+	//	[ weapons.dagger, 0.3 ],
+	//	[ weapons.shortSword, 0.3 ],
+	//	[ null, 0.4 ],
+	//])
 	if e.weapon == null then
 		e.weapon = weapons.unarmed
 	else
 		e.inventory.push(e.weapon)
 	end if
 
-	e.shield = math.selectItemByChance([
-		[ null, 0.3 ],
-		[ shields.buckler, 0.2 ],
-		[ shields.smallWoodenShield, 0.25 ],
-		[ shields.scaleShield, 0.15 ],
-		[ shields.spikedShield, 0.05 ],
-		[ shields.hideShield, 0.05 ],
-	])
-	if e.weapon == null then
-		e.weapon = weapons.unarmed
-	else
-		e.inventory.push(e.weapon)
+	e.shield = null
+	// TODO: Shielded kobolds are too much for a level 1 player.
+	//e.shield = math.selectItemByChance([
+	//	[ null, 0.3 ],
+	//	[ shields.buckler, 0.2 ],
+	//	[ shields.smallWoodenShield, 0.25 ],
+	//	[ shields.scaleShield, 0.15 ],
+	//	[ shields.spikedShield, 0.05 ],
+	//	[ shields.hideShield, 0.05 ],
+	//])
+	if e.shield != null then
+		e.inventory.push(e.shield)
 	end if
 
 	e.dexterity = e.class.rollForDexterity()
 	e.strength = e.class.rollForStrength()
-	e.constitution = 7
-	e.maxHP = e.class.rollForHP() + e.constitutionModifier
+	e.constitution = e.class.rollForConstitution()
+	e.maxHP = e.race.hpDice.roll() + e.class.hpDice.roll() + e.constitutionModifier
 	e.currentHP = e.maxHP
 
 	// Reduced from 12 to 6.  They were just too hard with that much perception; along with the packing behavior.
-	e.perception = 12
+	e.perception = 6 // 12
 
 	// You get this much XP for killing the monster.
 	e.xp = 25

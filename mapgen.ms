@@ -77,6 +77,44 @@ MapGenerator.buildArena = function()
 	return map
 end function
 
+MapGenerator.randomPointInRoom = function(room)
+	return point.make(math.random(room.left, room.right), math.random(room.top, room.bottom))
+end function
+
+MapGenerator.spawnItem = function(map, room, item)
+	while true
+		pnt = self.randomPointInRoom(room)
+		if map.getEntityAt(pnt) == null then
+			itemEntity = entity.Entity.makeItem(map, item, pnt)
+			map.entities.push(itemEntity)
+			return
+		end if
+	end while
+end function
+
+MapGenerator.decorateStairsUpRoom = function(map, room)
+	map.stairsUp = point.make(room.centerX, room.centerY)
+	map.tiles[room.centerY][room.centerX] = tile.makeStairsUp()
+end function
+
+MapGenerator.decorateStairsDownRoom = function(map, room)
+	map.stairsDown = point.make(room.centerX, room.centerY)
+	map.tiles[room.centerY][room.centerX] = tile.makeStairsDown()
+end function
+
+MapGenerator.decorateLootRoom = function(map, room)
+	self.spawnItem(map, room, weapons.longSword)
+	self.spawnItem(map, room, shields.towerShield)
+	for n in range(5)
+		item = math.selectItemByChance([
+			[ items.superiorHealingPotion, 0.2 ],
+			[ items.greaterHealingPotion, 0.3 ],
+			[ items.basicHealingPotion, 0.5 ],
+		])
+		self.spawnItem(map, room, item)
+	end for
+end function
+
 MapGenerator.buildRandomDungeon = function()
 	map = map.Map.make()
 
@@ -98,6 +136,21 @@ MapGenerator.buildRandomDungeon = function()
 			self.drawHallway(map, rooms[n - 1], rooms[n])
 		end if
 	end for
+
+	stairsUpRoomIndex = math.random(0, rooms.len - 1)
+	self.decorateStairsUpRoom(map, rooms[stairsUpRoomIndex])
+
+	stairsDownRoomIndex = math.random(0, rooms.len - 1)
+	while stairsDownRoomIndex == stairsUpRoomIndex
+		stairsDownRoomIndex = math.random(0, rooms.len - 1)
+	end while
+	self.decorateStairsDownRoom(map, rooms[stairsDownRoomIndex])
+
+	lootRoomIndex = math.random(0, rooms.len - 1)
+	while lootRoomIndex == stairsUpRoomIndex or lootRoomIndex == stairsDownRoomIndex
+		lootRoomIndex = math.random(0, rooms.len - 1)
+	end while
+	self.decorateLootRoom(map, rooms[lootRoomIndex])
 
 	for room in rooms
 		self.drawDoors(map, room)

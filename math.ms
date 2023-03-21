@@ -12,7 +12,7 @@ Dice.make = function(numDice, numSides, modifier = 0)
 end function
 
 Dice.roll = function()
-	if numDice == 0 then
+	if self.numDice == 0 then
 		return 0
 	end if
 

@@ -15,17 +15,17 @@ import "particles"
 import "actions"
 import "tile"
 import "map"
-import "mapgen"
 import "behaviors"
 import "hud"
 
 import "items"
-import "shields"
 import "weapons"
+import "shields"
 import "races"
 import "classes"
 
 import "entity"
+import "mapgen"
 import "fov"
 import "keybindings"
 import "settings"
@@ -83,11 +83,14 @@ drawHUD = function(display, player)
 	display.backColor = color.clear
 	display.clear()
 	display.row = 26
-	if player.position.y <= (26 / 2) then
-		display.row = 0
-	else
-		display.row = 26
-	end if
+	
+	display.row = 26
+	//if player.position.y <= (26 / 2) then
+	//	display.row = 0
+	//else
+	//	display.row = 26
+	//end if
+
 	display.column = 0
 	display.color = color.white
 	display.backColor = color.black
@@ -97,7 +100,7 @@ drawHUD = function(display, player)
 	
 	display.print(statusBar)
 	
-	Service.messages.draw(display, player.position.y > (26 / 2))
+	Service.messages.draw(display, true) //, player.position.y > (26 / 2))
 	Service.messages.update()
 end function
 
@@ -137,10 +140,9 @@ main = function()
 		return point.make(offsetX, offsetY)
 	end function
 
-
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
-	for n in range(12)
+	for n in range(11)
 		e = entity.Entity.makeKobold(map)
 		map.entities.push(e)
 	end for
