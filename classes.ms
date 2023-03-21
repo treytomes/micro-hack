@@ -26,6 +26,7 @@ FighterClassDescription = new ClassDescription
 FighterClassDescription.name = "fighter"
 FighterClassDescription.hpDice = math.Dice.make(1, 10)
 
+// TODO: Change this to match other factory lists.
 ClassDescriptions = {
 	"fighter": new FighterClassDescription,
 }
