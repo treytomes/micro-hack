@@ -28,6 +28,14 @@ makeFloor = function()
 	return Tile.make(".", "#663311", color.black, false, false)
 end function
 
+makeStairsUp = function()
+	return Tile.make("<", "#663311", color.black, false, false)
+end function
+
+makeStairsDown = function()
+	return Tile.make(">", "#663311", color.black, false, false)
+end function
+
 makeWall = function()
 	return Tile.make("#", color.brown, color.black, true, true)
 end function
