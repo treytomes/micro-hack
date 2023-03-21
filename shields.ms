@@ -1,12 +1,15 @@
 Shield = new weapons.Weapon
 Shield.armorClass = 0
 Shield.damageDice = math.Dice.make(0, 0)
+Shield.tile = tile.make(")", color.aqua, color.black)
+
+// TODO: Every item needs a weight and gold value.
 
 Shield.str = function()
 	if self.damageDice.numDice == 0 then
-		return self.name + " (+" + self.armorClass ")"
+		return self.name + " (+" + self.armorClass + ")"
 	else
-		return self.name + " (+" + self.armorClass ", " + self.damageDice.str() + ")"
+		return self.name + " (+" + self.armorClass + ", " + self.damageDice.str() + ")"
 	end if
 end function
 
@@ -19,7 +22,7 @@ buckler = new Shield
 buckler.name = "buckler"
 buckler.armorClass = 1
 buckler.weight = 2
-bucketr.goldValue = 5
+buckler.goldValue = 5
 
 // Shield: The most common type of shield, this is strapped to the forearm and provides a +2 bonus to AC. It requires proficiency to use and may impose disadvantage on certain ability checks, such as those involving dexterity or strength.
 shield = new Shield
