@@ -214,7 +214,7 @@ Behavior.makeUserInput = function()
 
 		for n in range(0, entity.inventory.len - 1)
 			item = entity.inventory[n]
-			isEquipped = entity.weapon == item
+			isEquipped = (entity.weapon == item) or (entity.shield == item)
 
 			Display.hud.row = y
 			Display.hud.column = windowBounds.left + 1
