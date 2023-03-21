@@ -1,4 +1,5 @@
 PLAYER_INITIAL_WEAPON = weapons.shortSword
+PLAYER_INITIAL_SHIELD = shields.buckler
 
 PLAYER_INITIAL_INVENTORY = [
 	items.basicHealingPotion,

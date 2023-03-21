@@ -5,6 +5,9 @@ Map = {}
 Map.height = 64 // 26
 Map.width = 64 // 68
 
+Map.stairsUp = point.zero
+Map.stairsDown = point.zero
+
 Map.make = function()
 	m = new Map
 	m.tiles = []

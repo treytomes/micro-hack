@@ -14,6 +14,8 @@ Entity.make = function(pnt)
 	e.name = null
 	e.class = null
 	e.weapon = null
+	e.armor = null
+	e.shield = null
 
 	e.dexterity = 0
 	e.strength = 0
@@ -40,8 +42,12 @@ Entity.makePlayer = function(map)
 		for item in settings.PLAYER_INITIAL_INVENTORY
 			e.inventory.push(item)
 		end for
+		
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
 		e.inventory.push(e.weapon)
+
+		e.shield = settings.PLAYER_INITIAL_SHIELD
+		e.inventory.push(e.shield)
 	else
 		e.weapon = weapons.unarmed
 	end if
@@ -64,16 +70,30 @@ Entity.makeKobold = function(map)
 
 	e = self.make(spawnPoint)
 	e.tile.foregroundColor = color.orange
-	e.tile.char = "k";
+	e.tile.char = "k"
 
 	e.race = races.kobold
 	e.name = e.race.name
 	e.class = classes.ClassDescriptions.fighter
 
 	e.weapon = math.selectItemByChance([
-		[ weapons.dagger, 0.25 ],
-		[ weapons.shortSword, 0.25 ],
-		[ null, 0.5 ],
+		[ weapons.dagger, 0.3 ],
+		[ weapons.shortSword, 0.3 ],
+		[ null, 0.4 ],
+	])
+	if e.weapon == null then
+		e.weapon = weapons.unarmed
+	else
+		e.inventory.push(e.weapon)
+	end if
+
+	e.shield = math.selectItemByChance([
+		[ null, 0.3 ],
+		[ shields.buckler, 0.2 ],
+		[ shields.smallWoodenShield, 0.25 ],
+		[ shields.scaleShield, 0.15 ],
+		[ shields.spikedShield, 0.05 ],
+		[ shields.hideShield, 0.05 ],
 	])
 	if e.weapon == null then
 		e.weapon = weapons.unarmed
@@ -88,7 +108,7 @@ Entity.makeKobold = function(map)
 	e.currentHP = e.maxHP
 
 	// Reduced from 12 to 6.  They were just too hard with that much perception; along with the packing behavior.
-	e.perception = 6 //12
+	e.perception = 12
 
 	// You get this much XP for killing the monster.
 	e.xp = 25
@@ -185,7 +205,11 @@ Entity.strengthModifier = function()
 end function
 
 Entity.armorClass = function()
-	return self.race.baseArmorClass + self.dexterityModifier
+	ac = self.race.baseArmorClass + self.dexterityModifier
+	if self.shield != null then
+		ac += self.shield.armorClass
+	end if
+	return ac
 end function
 
 Entity.baseAttackBonus = function()
@@ -201,7 +225,11 @@ Entity.maxPushCapacity = function()
 end function
 
 Entity.weaponDamage = function()
-	return self.weapon.calculateWeaponDamage()
+	dmg = self.weapon.calculateWeaponDamage()
+	if self.shield != null then
+		dmg += self.shield.calculateWeaponDamage()
+	end if
+	return dmg
 end function
 
 Entity.rangeOfVision = function()

@@ -12,6 +12,10 @@ Dice.make = function(numDice, numSides, modifier = 0)
 end function
 
 Dice.roll = function()
+	if numDice == 0 then
+		return 0
+	end if
+
 	sum = 0
 	for n in range(self.numDice)
 		sum += floor(rnd() * self.numSides) + 1

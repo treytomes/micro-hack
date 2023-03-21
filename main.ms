@@ -14,14 +14,17 @@ import "particles"
 
 import "actions"
 import "tile"
-import "items"
 import "map"
 import "mapgen"
 import "behaviors"
 import "hud"
+
+import "items"
+import "shields"
 import "weapons"
 import "races"
 import "classes"
+
 import "entity"
 import "fov"
 import "keybindings"
