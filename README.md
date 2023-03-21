@@ -37,13 +37,13 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 
 # TODO
 
+* Rats should appear on level 1.  Kobolds on level 2.
 * Kobolds should drop gold.
 * Gold should be a base attribute.
 * Implement item value.
 * Implement armor.
 * Add a speed attribute and give each action a cost.
 * Need more UI.
-	* Disable UI flipping.  It's not needed anymore.  Make it a feature flag.
 * Implement a BSP map generator.
 * Implement a cavern generator.
 * Implement a town generator.
