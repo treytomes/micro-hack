@@ -42,8 +42,11 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 * Gold should be a base attribute.
 * Implement item value.
 * Implement armor.
+* Every item needs a weight and gold value.
 * Add a speed attribute and give each action a cost.
 * Need more UI.
+    * Turn the inventory select UI into a select list.
+	* Need a better indicator that something is equipped.
 * Implement a BSP map generator.
 * Implement a cavern generator.
 * Implement a town generator.
