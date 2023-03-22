@@ -76,12 +76,9 @@ dropInventoryItem = function(inventoryIndex)
 	action.apply = function(entity, map)
 		item = entity.inventory[self.inventoryIndex]
 		
-		// TODO: "weapons.unarmed" shouldn't be a thing.
-		if item != weapons.unarmed then
-			itemEntity = entity.makeItem(map, item, entity.position)
-			map.entities.push(itemEntity)
-			Service.messages.report(entity.name + " dropped " + item.name + ".")
-		end if
+		itemEntity = entities.makeItem(map, item, entity.position)
+		map.entities.push(itemEntity)
+		Service.messages.report(entity.name + " dropped " + item.name + ".")
 
 		entity.removeFromSlots(item)
 		entity.inventory.remove(self.inventoryIndex)

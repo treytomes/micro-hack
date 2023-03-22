@@ -25,6 +25,7 @@ import "races"
 import "classes"
 
 import "entity"
+import "entities"
 import "mapgen"
 import "fov"
 import "keybindings"
@@ -129,7 +130,7 @@ main = function()
 	//map = mapgen.MapGenerator.buildArena()
 	map = mapgen.MapGenerator.buildRandomDungeon()
 
-	player = entity.Entity.makePlayer(map)
+	player = entities.makePlayer(map)
 	map.player = player
 
 	renderOffset = function()
@@ -143,7 +144,7 @@ main = function()
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
 	for n in range(11)
-		e = entity.Entity.makeKobold(map)
+		e = entities.makeKobold(map)
 		map.entities.push(e)
 	end for
 

@@ -85,7 +85,7 @@ MapGenerator.spawnItem = function(map, room, item)
 	while true
 		pnt = self.randomPointInRoom(room)
 		if map.getEntityAt(pnt) == null then
-			itemEntity = entity.Entity.makeItem(map, item, pnt)
+			itemEntity = entities.makeItem(map, item, pnt)
 			map.entities.push(itemEntity)
 			return
 		end if
