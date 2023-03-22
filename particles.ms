@@ -39,7 +39,6 @@ Particle.update = function(dsp, deltaTime, map, renderOffset)
 		self.y += self.dy
 		self.lastUpdateTime = self.totalTime
 
-		// TODO: Can't decide if particles should be rendered if that section of the map is hidden.
 		if self.isAlive then //and map.isVisible(self.x, self.y) then
 			self.draw(dsp, renderOffset)
 		end if
