@@ -1,5 +1,10 @@
+env.importPaths.push("./factories")
+env.importPaths.push("./config")
+
 // Library imports.
 import "tc"
+
+// "features" must be imported first.  "settings" must be imported last.
 
 // Base import.
 import "features"
@@ -20,16 +25,23 @@ import "hud"
 
 import "class"
 import "entity"
+import "item"
+import "healingPotionItem" // depends on item
+import "race"
+import "weapon" // depends on item
+import "shield" // depends on weapon
 
-import "items"
-import "weapons"
-import "shields"
-import "races"
+// Factories
 import "classes"
-
 import "entities"
+import "items"
+import "races"
+import "shields"
+import "weapons"
+
 import "mapgen"
 import "fov"
+
 import "keybindings"
 import "settings"
 

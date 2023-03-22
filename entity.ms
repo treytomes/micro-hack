@@ -126,6 +126,7 @@ Entity.weaponDamage = function()
 	return dmg
 end function
 
+// This formula may need to be tweaked later, when perception has more uses attached.
 Entity.rangeOfVision = function()
 	return self.perception
 end function

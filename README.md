@@ -8,6 +8,7 @@ If you wait a turn (by not moving) you will recover some HP.
 Actions are defined in "actions.ms".  Ultimately each action will have an Action Point cost associated with it that will be affected by the entity's speed.
 Behaviors are a collection of semi-intelligent chunks that can be run together as a list.  Behaviors affect entity state and can generate actions.
 
+Review the files in the "factories" folder to see what items, weapons, shields, armor, etc. are defined.
 
 # Features
 
@@ -38,11 +39,13 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 # TODO
 
 * Rats should appear on level 1.  Kobolds on level 2.
+* Gold should be an entity attribute.
 * Kobolds should drop gold.
-* Gold should be a base attribute.
-* Implement item value.
 * Implement armor.
-* Every item needs a weight and gold value.
+* Add attributes to every item:
+    * weight
+	* gold value
+	* description
 * Add a speed attribute and give each action a cost.
 * Need more UI.
     * Turn the inventory select UI into a select list.
