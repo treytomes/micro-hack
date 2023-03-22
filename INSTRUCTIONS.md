@@ -16,3 +16,9 @@ You must navigate through treacherous caverns filled with deadly traps and infec
 * drop = d
 * get = g
 
+# Strategies
+
+* Take time to rest `r` every chance you get.  Rest long enough and you'll start getting some of that HP back.
+* Wait for the enemy to come to you.  There's no special game mechanics in place (yet!) to reward rushing in head-first.
+* Try to stand just at the range of a single enemy's vision, wait for them to start charging you, then retreat to a safe distance so you can fight them one at a time.
+    * Might not work.  Some enemies will follow eachother into battle.
