@@ -18,13 +18,15 @@ import "map"
 import "behaviors"
 import "hud"
 
+import "class"
+import "entity"
+
 import "items"
 import "weapons"
 import "shields"
 import "races"
 import "classes"
 
-import "entity"
 import "entities"
 import "mapgen"
 import "fov"

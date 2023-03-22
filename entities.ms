@@ -7,7 +7,7 @@ makePlayer = function(map)
 
 	e.race = races.human
 	e.name = "player" //e.race.name
-	e.class = classes.ClassDescriptions.fighter
+	e.class = classes.fighter
 	
 	// Give the player some stuff to start with.
 	if features.GIVE_INITIAL_INVENTORY then
@@ -46,7 +46,7 @@ makeKobold = function(map)
 
 	e.race = races.kobold
 	e.name = e.race.name
-	e.class = classes.ClassDescriptions.fighter
+	e.class = classes.fighter
 
 	e.weapon = math.selectItemByChance([
 		[ weapons.dagger, 0.2 ],
