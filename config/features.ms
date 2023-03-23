@@ -12,3 +12,6 @@ ENABLE_FOV = true
 REST_HP_ROLL = false
 
 GIVE_INITIAL_INVENTORY = true
+
+// Whether to use the #D#+# notation, or min-max notation.
+USE_DICE_NOTATION = false

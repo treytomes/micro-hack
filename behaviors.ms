@@ -196,17 +196,29 @@ Behavior.makeSeekPlayer = function()
 end function
 
 Behavior.makeUserInput = function()
-	b = Behavior.makeHealWhileResting
+	b = Behavior.makeHealWhileResting()
+
+	b.describeItem = function(windowBounds, item)
+		lineCount = ui.drawText(Display.hud, item.description, windowBounds)
+
+		windowBounds.height -= lineCount
+		ui.drawText(Display.hud, "GP:" + item.goldValue, windowBounds)
+		windowBounds.height -= 1
+		ui.drawText(Display.hud, "Weight:" + item.weight, windowBounds)
+	end function
 
 	b.drawInventory = function(entity, title, description)
 		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
 		ui.drawWindow(Display.hud, windowBounds, "Inventory")
-
+		ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 2, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, "|")
+		
 		Display.hud.backColor = color.black
 		Display.hud.color = color.white
 		Display.hud.row = windowBounds.bottom - 1
 		Display.hud.column = windowBounds.left + 1
 		Display.hud.print(description)
+
+		self.describeItem(rect.make(windowBounds.centerX + 1, windowBounds.top + 1, windowBounds.width / 2 - 2, windowBounds.height - 3), entity.inventory[0])
 
 		Display.hud.color = color.gray
 		n = 1

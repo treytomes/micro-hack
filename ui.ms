@@ -40,6 +40,39 @@ drawCenteredText = function(display, x1, x2, y, fg, bg, text)
 	display.print(text)
 end function
 
+// Returns the number of lines printed.
+drawText = function(display, text, bounds, fg, bg)
+	display.backColor = math.coalesce(bg, DEFAULT_BACKGROUND_COLOR)
+	display.color = math.coalesce(fg, DEFAULT_FOREGROUND_COLOR)
+
+	lineCount = 0
+	while text
+		display.row = bounds.bottom - lineCount
+		display.column = bounds.x
+		if text.len <= bounds.width then
+			display.print(text)
+			return lineCount + 1
+		end if
+		foundCut = false
+		for i in range(bounds.width, 0)
+			if text[i] == " " then
+				display.print(text[:i])
+				text = text[i + 1:]
+				foundCut = true
+				break
+			end if
+		end for
+		if not foundCut then
+			// Couldn't find a space to cut on so, out of desperation, just cut at width.
+			display.print(text[:bounds.width])
+			text = text[bounds.width:]
+		end if
+		lineCount += 1
+		if lineCount == bounds.height then break
+	end while
+	return lineCount
+end function
+
 WINDOW_BORDER_FOREGROUND = color.blue
 WINDOW_BORDER_BACKGROUND = color.black
 WINDOW_TITLE_FOREGROUND = color.yellow

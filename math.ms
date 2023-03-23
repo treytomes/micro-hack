@@ -24,7 +24,19 @@ Dice.roll = function()
 end function
 
 Dice.str = function()
-	return self.numDice + "d" + self.numSides + "+" + self.modifier
+	if features.USE_DICE_NOTATION then
+		return self.numDice + "d" + self.numSides + "+" + self.modifier
+	else
+		return self.min  + "-" + self.max
+	end if
+end function
+
+Dice.min = function()
+	return self.numDice + self.modifier
+end function
+
+Dice.max = function()
+	return self.numDice * self.numSides + self.modifier
 end function
 
 max = function(a, b)
