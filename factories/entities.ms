@@ -3,6 +3,7 @@
 makePlayer = function(map)
 	e = new entity.Entity
 	e.init(map.stairsUp)
+	e.tile.char = char(57872)
 	e.isPlayer = true
 
 	e.race = races.human
