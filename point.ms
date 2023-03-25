@@ -18,6 +18,18 @@ Point.add = function(pnt)
 	return self.make(self.x + pnt.x, self.y + pnt.y)
 end function
 
+Point.subtract = function(pnt)
+	return self.make(self.x - pnt.x, self.y - pnt.y)
+end function
+
+Point.sign = function(pnt)
+	return self.make(sign(self.x), sign(self.y))
+end function
+
+Point.scale = function(v)
+	return self.make(v * self.x, v * self.y)
+end function
+
 zero = function()
 	return Point.make(0, 0)
 end function
