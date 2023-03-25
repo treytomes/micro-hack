@@ -56,6 +56,8 @@ Longer rests increase odds of restoring health.  Maybe start by rolling a d20, t
 * Need NPCs.
 	* Create a simple merchant NPC in the starting room.
 * XP and level is now being tracked.  What happens when a character levels up?
+* Use key.axis in place of explicit arrows.
+* HUD Status Bar needs more space.
 
 ## Kobold camps
 

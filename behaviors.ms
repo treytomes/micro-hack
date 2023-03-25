@@ -252,20 +252,26 @@ Behavior.makeUserInput = function()
 		n = 1
 		y = windowBounds.bottom - 2
 
-		for n in range(0, entity.inventory.len - 1)
-			item = entity.inventory[n]
-			isEquipped = (entity.weapon == item) or (entity.shield == item)
-
+		if entity.inventory.len == 0 then
 			Display.hud.row = y
 			Display.hud.column = windowBounds.left + 1
-			Display.hud.print(n + ". " + item.str())
-			if isEquipped then
-				Display.hud.print(" [E]")
-			end if
+			Display.hud.print("You've got nothing.")
+		else
+			for n in range(0, entity.inventory.len - 1)
+				item = entity.inventory[n]
+				isEquipped = (entity.weapon == item) or (entity.shield == item)
 
-			y -= 1
-			n += 1
-		end for
+				Display.hud.row = y
+				Display.hud.column = windowBounds.left + 1
+				Display.hud.print(n + ". " + item.str())
+				if isEquipped then
+					Display.hud.print(" [E]")
+				end if
+
+				y -= 1
+				n += 1
+			end for
+		end if
 	end function
 
 	b.eraseInventory = function()

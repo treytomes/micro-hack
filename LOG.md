@@ -89,3 +89,13 @@ Best strategy for the latest version:
 
 * There's a timing issue if you try to open your inventory when an enemy is about to attack and you're almost dead.  You might find that you die while opening the UI.
 * When you pick up an item in the loot room, you will sometimes pick up a distant item before the one under your feet.
+
+# Next
+
+## Updates
+
+* Use the micro-man tile to represent the player.
+* So much code refactoring.  Factory methods make a lot more sense now.
+* Every item has a gold value, weight, and description.
+* Kobolds won't always politely wait in line to beat you up.  If they get impatient they'll just go around.
+ 
