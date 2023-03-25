@@ -345,7 +345,7 @@ Behavior.makeUserInput = function()
 
 	b.drawInventory = function(entity, title, description)
 		windowBounds = self.windowBounds
-		ui.drawWindow(Display.hud, windowBounds, "Inventory")
+		ui.drawWindow(Display.hud, windowBounds, title)
 		ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 1, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, "|")
 		
 		Display.hud.color = ui.WINDOW_BORDER_FOREGROUND
@@ -368,21 +368,6 @@ Behavior.makeUserInput = function()
 		ui.clearRect(Display.hud, self.windowBounds, " ", color.clear, color.clear)
 	end function
 
-	b.dropInventory = function(entity)
-		self.drawInventory(entity, "Inventory", "Select a number to drop that item.")
-
-		k = key.get.code
-		inventoryIndex = k - 48
-
-		result = null
-		if inventoryIndex >= 0 and inventoryIndex < entity.inventory.len then
-			result = actions.dropInventoryItem(inventoryIndex)
-		end if
-
-		self.eraseInventory()
-		return result
-	end function
-
 	b.selectInUI = function(entity, inventoryIndex)
 		self.describeItem(entity, entity.inventory[self.selectedInventoryIndex])
 		self.drawInventoryLine(entity, self.selectedInventoryIndex, true)
@@ -402,10 +387,57 @@ Behavior.makeUserInput = function()
 		end if
 	end function
 
+	// TODO: Merge useInventory and dropInventory loops.
+	// TODO: Make the select list a reusable component.
+
+	b.dropInventory = function(entity)
+		self.firstDisplayIndex = 0
+		self.selectedInventoryIndex = 0
+		self.drawInventory(entity, "Drop Inventory Item", "")
+
+		result = null
+		while true
+			delta = 0
+			k = key.get.code
+			if k == keybindings.up then
+				delta = -1
+			else if k == keybindings.down then
+				delta = 1
+			else if k == keybindings.exit then
+				break
+			else if k == keybindings.select then
+				result = actions.dropInventoryItem(self.selectedInventoryIndex)
+				break
+			end if
+
+			if delta != 0 then
+				newIndex = math.clamp(self.selectedInventoryIndex + delta, 0, entity.inventory.len - 1)
+
+				if newIndex < self.firstDisplayIndex then
+					self.scrollUp(entity)
+				else if newIndex > self.lastDisplayIndex then
+					self.selectedInventoryIndex = newIndex
+					self.scrollDown(entity)
+				else
+					if math.isInRange(newIndex, 0, entity.inventory.len - 1) then
+						self.drawInventoryLine(entity, self.selectedInventoryIndex, false)
+						self.selectedInventoryIndex = newIndex
+						self.drawInventoryLine(entity, self.selectedInventoryIndex, true)
+						self.selectInUI(entity, self.selectedInventoryIndex)
+					end if
+				end if
+
+			end if
+		end while
+
+		self.eraseInventory()
+		return result
+	end function
+
 	b.useInventory = function(entity)
 		self.firstDisplayIndex = 0
 		self.selectedInventoryIndex = 0
-		self.drawInventory(entity, "Inventory", "")
+		self.drawInventory(entity, "Use Inventory Item", "")
 
 		result = null
 		while true
