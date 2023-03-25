@@ -1,66 +1,13 @@
-# 20230310
 
-* A simple level is generated with floors and walls.
-* The player can walk around.
-* If you run into a wall you'll be stopped and a sound will play.
-* The 2 entity types (player, kobold) are both treated equally by the game loop.
-* Entities have behaviors, behaviors generate actions.  Ultimately every action will have a cost.
-* The kobolds will wander the map.  You can't really interact with them yet.
+# 20230325
 
-# 20230312
+## Updates
 
-* Implemented a battle system.
-* Implemented a HUD with a message log and status bar.
-* HUD will flip based on which side of the screen the player is on.
-
-# 20230314
-
-* Implemented field-of-view.
-* Map tracks tiles that are visible, or that have been seen already.
-* Entity now has perception and rangeOfVision attributes.
-* Cleaned up the timing issue when entities die.
-* Particles have slightly better performance.
-
-# 20230315
-
-* Better FOV calculation.
-* Replaced the arena with a random dungeon generator.
-    * Rooms are placed around the map at random.
-    * Each room can be a different size.
-    * Each room is connect to the previous room by a hallway.
-* Walls and floors are brown now.
-
-# 20230316
-
-* Rooms have doors.
-* The map will scroll, always keeping the player in the center of the screen.
-* Now the level size is 64x64.
-
-# 20230317
-
-* XP and level is now being tracked.  Leveling up won't gain you anything yet.
-* Kobolds will hunt you down.
-* If the kobolds can't hunt you down, they'll spend their time gathering together in packs.
-* The kobolds will wander randomly as a last result if they get bored.
-* They demo map now has a lot more kobolds to beat up.  In fact, there are exactly enough kobolds for you to reach level 2 if you manage to kill them all.  Good luck.
-* Disabled automatic counter-attacks.  It's hiding behind a feature flag now.
-* Healing is now harder.  A rest counter increments every time you rest.  Roll a d20; if the result is less than the # rest turns + your constitution modifier you get +1 HP.
-* Simple inventory system.  Press `i` to open the inventory window.  Select a number to consume that item.  Press any other key to close the window.
-* The initial player items are listed out in `features.ms`.
-
-# 20230320
-
-* Monsters will respect their range of vision while seeking the player.
-* Kobolds will now receive a random weapon.
-* You can drop anything from your inventory onto the map with the "d" key.
-* You can pick up any item you see on the map with the "g" key.
-* Kobolds will drop their stuff when they die.
-* Access your inventory with "i", then use 0-9 to use an item.
-* Use a weapon to equip it.
-* Review keybindings.ms if you forget what keys you can use.
-
-## Known Bugs
-* You can't select any items after the 0-9.
+* Use the micro-man tile to represent the player.
+* So much code refactoring.  Factory methods make a lot more sense now.
+* Every item has a gold value, weight, and description.
+* Kobolds won't always politely wait in line to beat you up.  If they get impatient they'll just go around.
+* The inventory UI is a lot more useful now.  Use the arrow keys and `enter` (`keybindings.select`) to navigate.
 
 # 20230321
 
@@ -90,12 +37,66 @@ Best strategy for the latest version:
 * There's a timing issue if you try to open your inventory when an enemy is about to attack and you're almost dead.  You might find that you die while opening the UI.
 * When you pick up an item in the loot room, you will sometimes pick up a distant item before the one under your feet.
 
-# 20230325
+# 20230320
 
-## Updates
+* Monsters will respect their range of vision while seeking the player.
+* Kobolds will now receive a random weapon.
+* You can drop anything from your inventory onto the map with the "d" key.
+* You can pick up any item you see on the map with the "g" key.
+* Kobolds will drop their stuff when they die.
+* Access your inventory with "i", then use 0-9 to use an item.
+* Use a weapon to equip it.
+* Review keybindings.ms if you forget what keys you can use.
 
-* Use the micro-man tile to represent the player.
-* So much code refactoring.  Factory methods make a lot more sense now.
-* Every item has a gold value, weight, and description.
-* Kobolds won't always politely wait in line to beat you up.  If they get impatient they'll just go around.
-* The inventory UI is a lot more useful now.  Use the arrow keys and `enter` (`keybindings.select`) to navigate.
+## Known Bugs
+* You can't select any items after the 0-9.
+
+# 20230317
+
+* XP and level is now being tracked.  Leveling up won't gain you anything yet.
+* Kobolds will hunt you down.
+* If the kobolds can't hunt you down, they'll spend their time gathering together in packs.
+* The kobolds will wander randomly as a last result if they get bored.
+* They demo map now has a lot more kobolds to beat up.  In fact, there are exactly enough kobolds for you to reach level 2 if you manage to kill them all.  Good luck.
+* Disabled automatic counter-attacks.  It's hiding behind a feature flag now.
+* Healing is now harder.  A rest counter increments every time you rest.  Roll a d20; if the result is less than the # rest turns + your constitution modifier you get +1 HP.
+* Simple inventory system.  Press `i` to open the inventory window.  Select a number to consume that item.  Press any other key to close the window.
+* The initial player items are listed out in `features.ms`.
+
+# 20230316
+
+* Rooms have doors.
+* The map will scroll, always keeping the player in the center of the screen.
+* Now the level size is 64x64.
+
+# 20230315
+
+* Better FOV calculation.
+* Replaced the arena with a random dungeon generator.
+    * Rooms are placed around the map at random.
+    * Each room can be a different size.
+    * Each room is connect to the previous room by a hallway.
+* Walls and floors are brown now.
+
+# 20230314
+
+* Implemented field-of-view.
+* Map tracks tiles that are visible, or that have been seen already.
+* Entity now has perception and rangeOfVision attributes.
+* Cleaned up the timing issue when entities die.
+* Particles have slightly better performance.
+
+# 20230312
+
+* Implemented a battle system.
+* Implemented a HUD with a message log and status bar.
+* HUD will flip based on which side of the screen the player is on.
+
+# 20230310
+
+* A simple level is generated with floors and walls.
+* The player can walk around.
+* If you run into a wall you'll be stopped and a sound will play.
+* The 2 entity types (player, kobold) are both treated equally by the game loop.
+* Entities have behaviors, behaviors generate actions.  Ultimately every action will have a cost.
+* The kobolds will wander the map.  You can't really interact with them yet.
