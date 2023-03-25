@@ -22,15 +22,17 @@ Behavior.moveTowards = function(entity, map, position)
 	// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 
 	if delta.x != 0 and not map.blocksMovement(entity.position.x + delta.x, entity.position.y) then
-		newPos = point.unitX.scale(delta.x)
+		deltaX = point.unitX.scale(delta.x)
+		newPos = entity.position.add(deltaX)
 		if not self.isEntityAtPosition(entity, map, newPos) then
-			return actions.walk(newPos)
+			return actions.walk(deltaX)
 		end if
 	end if
 	if delta.y != 0 and not map.blocksMovement(entity.position.x, entity.position.y + delta.y) then
-		newPos = point.unitY.scale(delta.y)
+		deltaY = point.unitY.scale(delta.y)
+		newPos = entity.position.add(deltaY)
 		if not self.isEntityAtPosition(entity, map, newPos) then
-			return actions.walk(newPos)
+			return actions.walk(deltaY)
 		end if
 	end if
 
