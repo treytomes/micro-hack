@@ -1,18 +1,36 @@
 Behavior = {}
 Behavior.willAttackSameRace = false
 
+Behavior.isEntityAtPosition = function(entity, map, position)
+	hitEntity = map.getEntityAt(position) 
+	if hitEntity != null then
+		if self.isAlly(entity, hitEntity) then
+			return true
+		else
+			// They aren't friends, so keep walking like they're not even there.
+			return false
+		end if
+	else
+		return false
+	end if
+end function
+
 Behavior.moveTowards = function(entity, map, position)
-	deltaX = sign(position.x - entity.position.x)
-	deltaY = sign(position.y - entity.position.y)
+	delta = position.subtract(entity.position).sign()
 
-	if deltaX ^ 2 + deltaY ^ 2 <= entity.rangeOfVision ^ 2 then
-		// The entity can theoretically see the player.
-		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
+	// The entity can theoretically see the player.
+	// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 
-		if deltaX != 0 and not map.blocksMovement(entity.position.x + deltaX, entity.position.y) then
-			return actions.walk(point.make(deltaX, 0))
-		else if deltaY != 0 and not map.blocksMovement(entity.position.x, entity.position.y + deltaY) then
-			return actions.walk(point.make(0, deltaY))
+	if delta.x != 0 and not map.blocksMovement(entity.position.x + delta.x, entity.position.y) then
+		newPos = point.unitX.scale(delta.x)
+		if not self.isEntityAtPosition(entity, map, newPos) then
+			return actions.walk(newPos)
+		end if
+	end if
+	if delta.y != 0 and not map.blocksMovement(entity.position.x, entity.position.y + delta.y) then
+		newPos = point.unitY.scale(delta.y)
+		if not self.isEntityAtPosition(entity, map, newPos) then
+			return actions.walk(newPos)
 		end if
 	end if
 
@@ -31,9 +49,8 @@ Behavior.findNearbyEntities = function(entity, map)
 			continue
 		end if
 
-		deltaX = entity.position.x - e.position.x
-		deltaY = entity.position.y - e.position.y
-		dist = deltaX ^ 2 + deltaY ^ 2
+		delta = entity.position.subtract(e.position)
+		dist = delta.x ^ 2 + delta.y ^ 2
 		if dist <= radius then
 			found.push(e)
 		end if
@@ -121,6 +138,15 @@ Behavior.makeRandomWalk = function()
 		if dx == 0 then
 			dy = math.random(-1, 1)
 		end if
+
+		axis = math.random(0, 1)
+		if axis == 1 then
+			// Randomly choose which axis gets priority on changing.
+			a = dx
+			dx = dy
+			dy = a
+		end if
+
 		self.currentDirection.x = dx
 		self.currentDirection.y = dy
 	end function
@@ -134,7 +160,7 @@ Behavior.makeRandomWalk = function()
 			self.chooseNewDirection()
 		end if
 
-		if self.currentDirection.x != 0 or self.currentDirection.y != 0 then
+		if self.currentDirection != point.zero then
 			return actions.walk(self.currentDirection) 
 		else
 			return self.healWhileResting(entity, map)

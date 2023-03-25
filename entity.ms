@@ -26,6 +26,7 @@ Entity.init = function(pnt)
 end function
 
 Entity.canSee = function(pnt)
+	// TODO: I could use the fov calculateLineOfSight function to check for blockers.
 	deltaX = pnt.x - self.position.x
 	deltaY = pnt.y - self.position.y
 	return deltaX ^ 2 + deltaY ^ 2 <= self.rangeOfVision ^ 2
