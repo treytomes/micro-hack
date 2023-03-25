@@ -3,7 +3,11 @@ HealingPotionItem.tile = tile.make("!", color.red, color.black)
 HealingPotionItem.dice = math.Dice.make(1, 1, 0)
 
 HealingPotionItem.str = function()
-	return self.name + " (" + self.dice.str() + ")"
+	return self.name
+end function
+
+HealingPotionItem.effectStr = function()
+	return "Inc HP:" + self.dice.str()
 end function
 
 HealingPotionItem.calculateHealingAmount = function()

@@ -98,4 +98,4 @@ Best strategy for the latest version:
 * So much code refactoring.  Factory methods make a lot more sense now.
 * Every item has a gold value, weight, and description.
 * Kobolds won't always politely wait in line to beat you up.  If they get impatient they'll just go around.
- 
+* The inventory UI is a lot more useful now.  Use the arrow keys and `enter` (`keybindings.select`) to navigate.

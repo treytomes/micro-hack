@@ -1,7 +1,9 @@
+exit = 27
 left = 17
 right = 18
 up = 19
 down = 20
+select = 10
 inventory = "i".code
 rest = "r".code
 drop = "d".code

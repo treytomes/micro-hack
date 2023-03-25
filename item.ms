@@ -14,5 +14,9 @@ Item.str = function()
 	return self.name
 end function
 
+Item.effectStr = function()
+	return ""
+end function
+
 Item.use = function(entity)
 end function

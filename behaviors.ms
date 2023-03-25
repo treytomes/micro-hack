@@ -225,20 +225,133 @@ end function
 
 Behavior.makeUserInput = function()
 	b = Behavior.makeHealWhileResting()
+	b.firstDisplayIndex = 0
+	b.selectedInventoryIndex = 0
 
-	b.describeItem = function(windowBounds, item)
+	b.windowBounds = function()
+		return rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
+	end function
+
+	b.maxDisplayLines = function()
+		return self.windowBounds.height - 2 - 2
+	end function
+
+	b.lastDisplayIndex = function()
+		return self.firstDisplayIndex + self.maxDisplayLines - 1
+	end function
+
+	b.isAtTop = function()
+		return self.firstDisplayIndex == 0
+	end function
+
+	b.isAtBottom = function(entity)
+		return self.lastDisplayIndex >= entity.inventory.len - 1
+	end function
+
+	b.descriptionBounds = function()
+		windowBounds = self.windowBounds
+		return rect.make(windowBounds.centerX + 1, windowBounds.top + 1, windowBounds.width / 2 - 2, windowBounds.height - 2)
+	end function
+
+	b.describeItem = function(entity, item)
+		windowBounds = self.descriptionBounds
+		ui.clearRect(Display.hud, windowBounds, " ", color.clear, color.black)
+
 		lineCount = ui.drawText(Display.hud, item.description, windowBounds)
 
-		windowBounds.height -= lineCount
-		ui.drawText(Display.hud, "GP:" + item.goldValue, windowBounds)
+		windowBounds.height -= lineCount + 1
+		ui.drawText(Display.hud, "GP:" + item.goldValue, windowBounds, color.orange)
 		windowBounds.height -= 1
-		ui.drawText(Display.hud, "Weight:" + item.weight, windowBounds)
+		ui.drawText(Display.hud, "Weight:" + item.weight, windowBounds, color.orange)
+		windowBounds.height -= 1
+		ui.drawText(Display.hud, item.effectStr(), windowBounds, color.orange)
+
+		windowBounds.height -= 1
+		if self.isEquipped(entity, item) then
+			ui.drawText(Display.hud, "Equipped.", windowBounds, color.green)
+		else
+			ui.drawText(Display.hud, "Not equipped.", windowBounds, color.yellow)
+		end if
+	end function
+
+	b.isEquipped = function(entity, item)
+		return (entity.weapon == item) or (entity.shield == item) or (entity.armor == item)
+	end function
+
+	b.drawInventoryLine = function(entity, inventoryIndex, isSelected)
+		windowBounds = self.windowBounds
+		item = entity.inventory[inventoryIndex]
+
+		if isSelected then
+			Display.hud.backColor = color.gray
+			Display.hud.color = color.black
+		else
+			Display.hud.backColor = color.black
+			Display.hud.color = color.gray
+		end if
+
+		Display.hud.row = windowBounds.bottom - 2 - inventoryIndex + self.firstDisplayIndex
+		Display.hud.column = windowBounds.left + 1
+		Display.hud.print(item.str())
+		if self.isEquipped(entity, item) then
+			Display.hud.print(" [E]")
+		end if
+	end function
+
+	b.drawInventoryItems = function(entity)
+		windowBounds = self.windowBounds
+		ui.clearRect(Display.hud, rect.make(windowBounds.x + 1, windowBounds.y + 1, windowBounds.width / 2 - 1, windowBounds.height - 2), " ", color.clear, color.black)
+
+		Display.hud.color = color.gray
+		n = 1
+		y = windowBounds.bottom - 1
+
+		if not self.isAtTop then
+			Display.hud.color = color.silver
+		else
+			Display.hud.color = "#444444"
+		end if
+		Display.hud.row = y
+		Display.hud.column = windowBounds.left + 1
+		Display.hud.backColor = color.black
+		Display.hud.print("^" * (windowBounds.width / 2 - 1))
+		y -= 1
+
+		if entity.inventory.len == 0 then
+			Display.hud.row = y
+			Display.hud.column = windowBounds.left + 1
+			Display.hud.print("You've got nothing.")
+		else
+			for n in range(self.firstDisplayIndex, self.lastDisplayIndex)
+				if math.isInRange(n, 0, entity.inventory.len - 1) then
+					self.drawInventoryLine(entity, n, self.selectedInventoryIndex == n)
+				end if
+				y -= 1
+				n += 1
+			end for
+		end if
+
+		if not self.isAtBottom(entity) then
+			Display.hud.color = color.silver
+		else
+			// TODO: color.silver.dark
+			Display.hud.color = "#444444"
+		end if
+		Display.hud.row = windowBounds.top + 1
+		Display.hud.column = windowBounds.left + 1
+		Display.hud.backColor = color.black
+		Display.hud.print("v" * (windowBounds.width / 2 - 1))
 	end function
 
 	b.drawInventory = function(entity, title, description)
-		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
+		windowBounds = self.windowBounds
 		ui.drawWindow(Display.hud, windowBounds, "Inventory")
-		ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 2, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, "|")
+		ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 1, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, "|")
+		
+		Display.hud.color = ui.WINDOW_BORDER_FOREGROUND
+		Display.hud.row = windowBounds.top
+		Display.hud.column = windowBounds.centerX
+		Display.hud.print("+")
 		
 		Display.hud.backColor = color.black
 		Display.hud.color = color.white
@@ -246,37 +359,13 @@ Behavior.makeUserInput = function()
 		Display.hud.column = windowBounds.left + 1
 		Display.hud.print(description)
 
-		self.describeItem(rect.make(windowBounds.centerX + 1, windowBounds.top + 1, windowBounds.width / 2 - 2, windowBounds.height - 3), entity.inventory[0])
+		self.drawInventoryItems(entity)
 
-		Display.hud.color = color.gray
-		n = 1
-		y = windowBounds.bottom - 2
-
-		if entity.inventory.len == 0 then
-			Display.hud.row = y
-			Display.hud.column = windowBounds.left + 1
-			Display.hud.print("You've got nothing.")
-		else
-			for n in range(0, entity.inventory.len - 1)
-				item = entity.inventory[n]
-				isEquipped = (entity.weapon == item) or (entity.shield == item)
-
-				Display.hud.row = y
-				Display.hud.column = windowBounds.left + 1
-				Display.hud.print(n + ". " + item.str())
-				if isEquipped then
-					Display.hud.print(" [E]")
-				end if
-
-				y -= 1
-				n += 1
-			end for
-		end if
+		self.describeItem(entity, entity.inventory[self.selectedInventoryIndex])
 	end function
 
 	b.eraseInventory = function()
-		windowBounds = rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2)
-		ui.clearRect(Display.hud, windowBounds, " ", color.clear, color.clear)
+		ui.clearRect(Display.hud, self.windowBounds, " ", color.clear, color.clear)
 	end function
 
 	b.dropInventory = function(entity)
@@ -294,16 +383,64 @@ Behavior.makeUserInput = function()
 		return result
 	end function
 
-	b.useInventory = function(entity)
-		self.drawInventory(entity, "Inventory", "Select a number to use that item.")
+	b.selectInUI = function(entity, inventoryIndex)
+		self.describeItem(entity, entity.inventory[self.selectedInventoryIndex])
+		self.drawInventoryLine(entity, self.selectedInventoryIndex, true)
+	end function
 
-		k = key.get.code
-		inventoryIndex = k - 48
+	b.scrollUp = function(entity)
+		if not self.isAtTop then
+			self.firstDisplayIndex -= 1
+			self.drawInventoryItems(entity)
+		end if
+	end function
+
+	b.scrollDown = function(entity)
+		if not self.isAtBottom(entity) then
+			self.firstDisplayIndex += 1
+			self.drawInventoryItems(entity)
+		end if
+	end function
+
+	b.useInventory = function(entity)
+		self.firstDisplayIndex = 0
+		self.selectedInventoryIndex = 0
+		self.drawInventory(entity, "Inventory", "")
 
 		result = null
-		if inventoryIndex >= 0 and inventoryIndex < entity.inventory.len then
-			result = actions.useInventoryItem(inventoryIndex)
-		end if
+		while true
+			delta = 0
+			k = key.get.code
+			if k == keybindings.up then
+				delta = -1
+			else if k == keybindings.down then
+				delta = 1
+			else if k == keybindings.exit then
+				break
+			else if k == keybindings.select then
+				result = actions.useInventoryItem(self.selectedInventoryIndex)
+				break
+			end if
+
+			if delta != 0 then
+				newIndex = math.clamp(self.selectedInventoryIndex + delta, 0, entity.inventory.len - 1)
+
+				if newIndex < self.firstDisplayIndex then
+					self.scrollUp(entity)
+				else if newIndex > self.lastDisplayIndex then
+					self.selectedInventoryIndex = newIndex
+					self.scrollDown(entity)
+				else
+					if math.isInRange(newIndex, 0, entity.inventory.len - 1) then
+						self.drawInventoryLine(entity, self.selectedInventoryIndex, false)
+						self.selectedInventoryIndex = newIndex
+						self.drawInventoryLine(entity, self.selectedInventoryIndex, true)
+						self.selectInUI(entity, self.selectedInventoryIndex)
+					end if
+				end if
+
+			end if
+		end while
 
 		self.eraseInventory()
 		return result

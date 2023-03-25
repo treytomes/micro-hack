@@ -11,6 +11,10 @@ Dice.make = function(numDice, numSides, modifier = 0)
 	return d
 end function
 
+Dice.zero = function()
+	return Dice.make(0, 0)
+end function
+
 Dice.roll = function()
 	if self.numDice == 0 then
 		return 0
@@ -55,6 +59,12 @@ end function
 
 isInRange = function(n, min, max)
 	return min <= n and n <= max
+end function
+
+clamp = function(n, min, max)
+	if n < min then return min
+	if n > max then return max
+	return n
 end function
 
 random = function(minValue, maxValue)
