@@ -8,6 +8,7 @@
 * Another big refactoring to accomodate the CI/CD pipeline.
 * Game is published to [itch.io](https://treytomes.itch.io/micro-hack)!
 * Allow multiple keys per keybindings.
+* Inventory UI will show the tile icons.
 
 # 20230325
 
