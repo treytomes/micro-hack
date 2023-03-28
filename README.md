@@ -18,16 +18,6 @@ When you begin resting ("r"), a rest timer begins to increment.  Every time you 
 
 What this means in-game is that the odds of your health being restored increase the longer you rest, with it maxing out to definitely healing after 20 turns at rest.
 
-# Ideas
-
-* The random walking algorithm works fine.  Attach it to a slime monster that will wander around and split from time to time.  Splitting cuts the health in half.  Slime will slowly heal itself.
-
-## Battle Heat
-
-Have a battle heat meter increase every time an attack is made.  Use the heat meter to help decide how much XP the player gets after the battle.  Longer battles (indicating strong / more enemies give me XP.
-
-Use the battle heat value to calculate the Challenge Rating (CR) of the encounter, e.g. XP = 50 + (Encounter CR × 25)
-
 ## Automatic Health Regen
 
 I'm not sure whether this is even a good feature to include.
@@ -35,41 +25,6 @@ The basic idea is that resting restores health.
 I guess it might make more sense to wait more than 1 turn before resting begins to restore health, then have it restore a little bit at a time.
 This would have the side-effect that resting when monsters are nearby is dangerous.
 Longer rests increase odds of restoring health.  Maybe start by rolling a d20, then a d19, etc down to a d1?  Scoring a 1 on the dice means you get +1 HP? 
-
-# TODO
-
-* Rats should appear on level 1.  Kobolds on level 2.
-* Gold should be an entity attribute.
-* Kobolds should drop gold.
-* Implement armor.
-* Add attributes to every item:
-    * weight
-	* gold value
-	* description
-* Add a speed attribute and give each action a cost.
-* Need more UI.
-    * Turn the inventory select UI into a select list.
-	* Need a better indicator that something is equipped.
-* Implement a BSP map generator.
-* Implement a cavern generator.
-* Implement a town generator.
-* Need NPCs.
-	* Create a simple merchant NPC in the starting room.
-* XP and level is now being tracked.  What happens when a character levels up?
-* Use key.axis in place of explicit arrows.
-* HUD Status Bar needs more space.
-
-## Kobold camps
-
-* Designate one room in a dungeon as a kobold camp.
-* Decorate the room with "campy"-things.
-* Kobolds will randomly spawn in their camp room, as long as the room isn't too crowded.
-* The campfire tile should burn anything that steps into it.
-
-
-# Need to decide
-* Should I hide particles if they fall outside the field of view?
-
 
 # Entities
 
@@ -90,7 +45,6 @@ Each entity also has the following attributes:
 * maxCarryingCapacity
 * maxPushCapacity
 * weaponDamage
-
 
 # Basic Attack Algorithm
 
