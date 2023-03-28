@@ -3,7 +3,8 @@
 
 ## Updates
 
-
+* Using ensureImport, which should eventually clean up the import mass in main.ms.
+    * Removed the reference to `tc`.  It wasn't needed, and was apparently mucking up my scope.
 
 # 20230325
 

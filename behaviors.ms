@@ -1,5 +1,5 @@
 makeHealWhileResting = function()
-	b = new Behavior
+	b = behavior.make()
 
 	b.healWhileResting = function(entity, map)
 		if entity.currentHP < entity.maxHP then
@@ -19,7 +19,7 @@ makeHealWhileResting = function()
 end function
 
 makeAttackOnCollision = function()
-	b = new Behavior
+	b = behavior.make()
 
 	b.onEntityCollision = function(sourceEntity, targetEntity, map)
 		// Assume every entity has the fighter class.

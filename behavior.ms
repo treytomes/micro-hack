@@ -71,3 +71,8 @@ end function
 Behavior.onEntityCollision = function(sourceEntity, targetEntity, map)
 	// Don't panic; this one is intentionally empty.
 end function
+
+make = function()
+	b = new Behavior
+	return b
+end function
