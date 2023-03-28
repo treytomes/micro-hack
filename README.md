@@ -2,12 +2,6 @@
 
 Traditional roguelike written for the Mini Micro.
 
-Use the arrow keys to walk around.  Ram an enemy to begin an attack.  The enemy will have a chance to counter attack.
-If you wait a turn (by not moving) you will recover some HP.
-
-Actions are defined in "actions.ms".  Ultimately each action will have an Action Point cost associated with it that will be affected by the entity's speed.
-Behaviors are a collection of semi-intelligent chunks that can be run together as a list.  Behaviors affect entity state and can generate actions.
-
 Review the files in the "factories" folder to see what items, weapons, shields, armor, etc. are defined.
 
 # Features
