@@ -325,13 +325,13 @@ makeUserInput = function()
 		while true
 			delta = 0
 			k = key.get.code
-			if k == keybindings.up then
+			if keybindings.up.contains(k) then
 				delta = -1
-			else if k == keybindings.down then
+			else if keybindings.down.contains(k) then
 				delta = 1
-			else if k == keybindings.exit then
+			else if keybindings.exit.contains(k) then
 				break
-			else if k == keybindings.select then
+			else if keybindings.select.contains(k) then
 				result = actions.dropInventoryItem(self.selectedInventoryIndex)
 				break
 			end if
@@ -369,13 +369,13 @@ makeUserInput = function()
 		while true
 			delta = 0
 			k = key.get.code
-			if k == keybindings.up then
+			if keybindings.up.contains(k) then
 				delta = -1
-			else if k == keybindings.down then
+			else if keybindings.down.contains(k) then
 				delta = 1
-			else if k == keybindings.exit then
+			else if keybindings.exit.contains(k) then
 				break
-			else if k == keybindings.select then
+			else if keybindings.select.contains(k) then
 				result = actions.useInventoryItem(self.selectedInventoryIndex)
 				break
 			end if
@@ -410,21 +410,21 @@ makeUserInput = function()
 		while result == null
 			delta = point.zero
 			k = key.get.code
-			if k == keybindings.up then
+			if keybindings.up.contains(k) then
 				result = actions.walk(point.unitY)
-			else if k == keybindings.down then
+			else if keybindings.down.contains(k) then
 				result = actions.walk(point.unitY.negate)
-			else if k == keybindings.left then
+			else if keybindings.left.contains(k) then
 				result = actions.walk(point.unitX.negate)
-			else if k == keybindings.right then
+			else if keybindings.right.contains(k) then
 				result = actions.walk(point.unitX)
-			else if k == keybindings.inventory then
+			else if keybindings.inventory.contains(k) then
 				result = self.useInventory(entity)
-			else if k == keybindings.drop then
+			else if keybindings.drop.contains(k) then
 				result = self.dropInventory(entity)
-			else if k == keybindings.get then
+			else if keybindings.get.contains(k) then
 				result = actions.pickUpItem(point.zero)
-			else if k == keybindings.rest then
+			else if keybindings.rest.contains(k) then
 				result = self.healWhileResting(entity, map)
 			end if
 		end while

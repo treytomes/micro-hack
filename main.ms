@@ -1,4 +1,5 @@
 env.importPaths = [
+	"/sys/lib",
 	"./src",
 	"./src/behaviors",
 	"./src/config",
@@ -7,6 +8,7 @@ env.importPaths = [
 
 // Library imports.
 import "coreUtil"
+import "listUtil"
 
 // "features" must be imported first.  "settings" must be imported last.
 
