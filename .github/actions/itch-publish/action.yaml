@@ -45,7 +45,7 @@ runs:
 
     - name: Publish template to itch.io
       # Don't really publish if doing test-runs from within actions repository
-      if: ${{ github.repository != 'treytomes/micro-hack' }}
+      #if: ${{ github.repository != 'treytomes/micro-hack' }}
       uses: KikimoraGames/itch-publish@v0.0.3
       with:
         butlerApiKey: ${{ inputs.itchio_api_key }}

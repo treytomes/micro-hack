@@ -48,7 +48,7 @@ runs:
 
     - name: Upload template via FTP
       # Don't really publish if doing test-runs from within actions repository
-      if: ${{ github.repository != 'treytomes/micro-hack' }}
+      #if: ${{ github.repository != 'treytomes/micro-hack' }}
       uses: SamKirkland/FTP-Deploy-Action@4.3.2
       with:
         server: ${{ inputs.ftp_host }}
