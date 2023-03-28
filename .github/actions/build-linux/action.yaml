@@ -1,0 +1,86 @@
+name: build-linux
+description: "Package a Linux version"
+
+inputs:
+  custom_executable_name:
+    description: "Optionally rename MiniMicro.x86_64 to this name"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Restore user-minidisk artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: user-minidisk
+
+    - name: Restore boot-opts artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: boot-opts
+        path: ./
+
+    - name: Resolve template hash-code
+      run: |
+        #HEAD=$(curl --silent --head https://miniscript.org/files/minimicro-linux.tar.gz)
+        HEAD=$(curl --silent --head https://miniscript.org/MiniMicro/preview/minimicro-linux.tar.gz)
+        ETAG=$(echo "$HEAD" | grep "ETag")
+        ETAG=${ETAG//[$'\t\r\n']}
+        TEMPLATE_HASH=$(echo $ETAG | awk '{gsub(/"/, "", $2); print $2}')
+        echo "Using TEMPLATE_HASH: \"${TEMPLATE_HASH}\""
+        echo "TEMPLATE_HASH=$TEMPLATE_HASH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Cache template file
+      uses: actions/cache@v3
+      id: cache-linux-template
+      env:
+          cache-name: cache-linux-template
+      with:
+        path: minimicro-linux.tar.gz
+        key: linux-${{ env.TEMPLATE_HASH }}
+
+    - name: Download Linux template
+      if: ${{ steps.cache-linux-template.outputs.cache-hit != 'true' }}
+      #run: wget --no-verbose -O minimicro-linux.tar.gz https://miniscript.org/files/minimicro-linux.tar.gz
+      run: wget --no-verbose -O minimicro-linux.tar.gz https://miniscript.org/MiniMicro/preview/minimicro-linux.tar.gz
+      shell: bash
+
+    - name: Unpack Linux template
+      run: |
+        mkdir -p ./minimicro-linux
+        tar -xvf minimicro-linux.tar.gz -C ./minimicro-linux
+      shell: bash
+
+    - name: Copy user.minidisk
+      run: cp user.minidisk ./minimicro-linux
+      shell: bash
+
+    - name: Copy bootOpts.grfon
+      run: |
+        # Only copy if non-empty
+        if [ -s bootOpts.grfon ]; then
+          cp bootOpts.grfon ./minimicro-linux/MiniMicro_Data/StreamingAssets 
+          echo "Copied: bootOpts.grfon"
+        else
+          echo "Did not copy: bootOpts.grfon"
+        fi
+      shell: bash
+
+    - name: Rename executable
+      if: "${{ inputs.custom_executable_name != '' }}"
+      run: |
+        # Rename executable
+        mv ./minimicro-linux/MiniMicro.x86_64 "./minimicro-linux/${{ inputs.custom_executable_name }}.x86_64" 
+        # Rename data folder
+        mv ./minimicro-linux/MiniMicro_Data "./minimicro-linux/${{ inputs.custom_executable_name }}_Data"
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-build
+        path: ./minimicro-linux

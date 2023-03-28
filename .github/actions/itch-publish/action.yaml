@@ -1,0 +1,55 @@
+name: itch-publish
+description: "Publish a generated artifact to itch.io"
+
+inputs:
+  artifact_name: 
+    description: 'Generated artifact to restore / download'
+    required: true
+  artifact_data_folder: 
+    description: "Folder with the artifact's data"
+    required: true
+  itchio_api_key: 
+    description: 'Itch.io API key for publishing'
+    required: true
+  itchio_username: 
+    description: 'Itch.io user-name'
+    required: true
+  itchio_game_id: 
+    description: 'Itch.io game-id'
+    required: true
+  itchio_build_channel: 
+    description: 'Itch.io channel-name to publish'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Restore artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: ${{ inputs.artifact_data_folder }}
+
+    - name: Echo debug info
+      if: ${{ github.repository == 'treytomes/micro-hack' }}
+      run: |
+        echo "Repository: ${{ github.repository }}"
+        echo '${{ toJSON(github) }}'
+      shell: bash
+
+    - name: List files
+      if: ${{ github.repository == 'treytomes/micro-hack' }}
+      run: ls -lr ${{ inputs.artifact_data_folder }}
+      shell: bash
+
+    - name: Publish template to itch.io
+      # Don't really publish if doing test-runs from within actions repository
+      if: ${{ github.repository != 'treytomes/micro-hack' }}
+      uses: KikimoraGames/itch-publish@v0.0.3
+      with:
+        butlerApiKey: ${{ inputs.itchio_api_key }}
+        gameData: ${{ inputs.artifact_data_folder }}
+        itchUsername: ${{ inputs.itchio_username }}
+        itchGameId: ${{ inputs.itchio_game_id }}
+        buildChannel: ${{ inputs.itchio_build_channel }}

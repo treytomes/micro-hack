@@ -1,0 +1,33 @@
+name: build-minidisk
+description: "Builds user.minidisk asset"
+
+inputs:
+  main_file:
+    description: "Main file to load and run"
+    required: true
+  additional_entries:
+    description: "Files or folders to be additionaly included in the minidisk"
+    required: false
+
+runs:
+  using: "composite"
+
+  steps:
+
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Generate startup.ms
+      run: |
+        echo "load \"${{ inputs.main_file }}\"" > ./startup.ms
+        echo "run" >> ./startup.ms
+      shell: bash
+
+    - name: Zip user.minidisk
+      run: zip -r user.minidisk ./startup.ms ${{ inputs.main_file }} ${{ inputs.additional_entries }}
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: user-minidisk
+        path: ./user.minidisk

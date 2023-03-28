@@ -1,0 +1,68 @@
+name: Build all platforms
+
+on:
+  workflow_call:
+    inputs:
+      minidisk_main_file:
+        required: true
+        type: string
+      minidisk_additional_entries:
+        required: false
+        type: string
+      boot_opts_path:
+        required: false
+        type: string
+      custom_executable_name:
+        description: "Name to use for executable - optional"
+        required: false
+        type: string
+
+# Note how because this is a reusable workflow and runs in the
+# context of the caller, the composite actions (local to this
+# workflow) have to be referenced absolutely.
+
+jobs:
+
+  prepare-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-minidisk@main
+        with:
+          main_file: ${{ inputs.minidisk_main_file }}
+          additional_entries: ${{ inputs.minidisk_additional_entries }}
+      - uses: treytomes/micro-hack/.github/actions/upload-boot-opts@main
+        with:
+          boot_opts_path: ${{ inputs.boot_opts_path }}
+
+  # === BUILD JOBS ===
+
+  build-webgl:
+      needs: prepare-assets
+      runs-on: ubuntu-latest    
+      steps:
+        - uses: treytomes/micro-hack/.github/actions/build-webgl@main
+
+  build-windows:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-windows@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+
+  build-mac:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-mac@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+
+  build-linux:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-linux@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+

@@ -11,7 +11,7 @@ on:
 jobs:
 
   publish:
-    uses: sebnozzi/minimicro-actions/.github/workflows/itch-deploy.yaml@main
+    uses: treytomes/micro-hack/.github/workflows/itch-deploy.yaml@main
     with:
       minidisk_main_file: main.ms
       minidisk_additional_entries: >-

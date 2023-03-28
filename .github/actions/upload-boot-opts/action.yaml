@@ -1,0 +1,42 @@
+name: upload-boot-opts
+description: "Uploads bootOpts.grfon asset - if specified"
+
+inputs:
+  boot_opts_path:
+    description: "Path to bootOpts.grfon file"
+    required: false
+
+runs:
+  using: "composite"
+
+  steps:
+
+    - name: Output boot-opts parameter
+      run: |
+        echo "boot_opts_path: \"${{ inputs.boot_opts_path }}\""
+      shell: bash
+
+    # If defined, upload that file
+
+    - name: Upload boot-opts file
+      if: "${{ inputs.boot_opts_path != '' }}"
+      uses: actions/upload-artifact@v3
+      with:
+        name: boot-opts
+        path: ${{ inputs.boot_opts_path }}
+
+    # Else, generate and empty file 
+    # and upload that
+
+    - name: Generate empty boot-opts file
+      if: "${{ inputs.boot_opts_path == '' }}"
+      run: |
+        touch bootOpts.grfon
+      shell: bash
+
+    - name: Upload empty boot-opts file
+      if: "${{ inputs.boot_opts_path == '' }}"
+      uses: actions/upload-artifact@v3
+      with:
+        name: boot-opts
+        path: bootOpts.grfon

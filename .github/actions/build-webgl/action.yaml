@@ -1,0 +1,70 @@
+name: build-webgl
+description: "Package a WebGL version"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Restore user-minidisk artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: user-minidisk
+
+    - name: Restore boot-opts artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: boot-opts
+        path: ./
+
+    - name: Resolve template hash-code
+      run: |
+        #HEAD=$(curl --silent --head https://miniscript.org/files/minimicro-webgl.zip)
+        HEAD=$(curl --silent --head https://miniscript.org/MiniMicro/preview/minimicro-webgl.zip)
+        ETAG=$(echo "$HEAD" | grep "ETag")
+        ETAG=${ETAG//[$'\t\r\n']}
+        TEMPLATE_HASH=$(echo $ETAG | awk '{gsub(/"/, "", $2); print $2}')
+        echo "Using TEMPLATE_HASH: \"${TEMPLATE_HASH}\""
+        echo "TEMPLATE_HASH=$TEMPLATE_HASH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Cache template file
+      uses: actions/cache@v3
+      id: cache-webgl-template
+      env:
+          cache-name: cache-webgl-template
+      with:
+        path: minimicro-webgl.zip
+        key: webgl-${{ env.TEMPLATE_HASH }}
+
+    - name: Download MiniMicro WebGL template
+      if: ${{ steps.cache-webgl-template.outputs.cache-hit != 'true' }}
+      #run: wget --no-verbose -O minimicro-webgl.zip https://miniscript.org/files/minimicro-webgl.zip
+      run: wget --no-verbose -O minimicro-webgl.zip https://miniscript.org/MiniMicro/preview/minimicro-webgl.zip
+      shell: bash
+
+    - name: Unzip WebGL template
+      run: unzip minimicro-webgl.zip -d minimicro-web
+      shell: bash
+    
+    - name: Copy user.minidisk
+      run: cp user.minidisk ./minimicro-web/MiniMicro/StreamingAssets/
+      shell: bash
+
+    - name: Copy bootOpts.grfon
+      run: |
+        # Only copy if non-empty
+        if [ -s bootOpts.grfon ]; then
+          cp bootOpts.grfon ./minimicro-web/MiniMicro/StreamingAssets/
+          echo "Copied: bootOpts.grfon"
+        else
+          echo "Did not copy: bootOpts.grfon"
+        fi
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: webgl-build
+        path: ./minimicro-web

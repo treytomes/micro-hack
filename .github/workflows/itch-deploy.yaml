@@ -1,0 +1,134 @@
+name: Build and publish to itch.io
+
+on:
+  workflow_call:
+    inputs:
+      minidisk_main_file:
+        required: true
+        type: string
+      minidisk_additional_entries:
+        required: false
+        type: string
+      boot_opts_path:
+        required: false
+        type: string
+      custom_executable_name:
+        description: "Name to use for executable - optional"
+        required: false
+        type: string
+      itch_io_username:
+        required: true
+        type: string
+      itch_io_game_id:
+        required: true
+        type: string
+      itchio_web_channel:
+        type: string
+        required: false
+        default: browser
+    secrets:
+      itch_io_api_key:
+        required: true
+
+# Note how because this is a reusable workflow and runs in the
+# context of the caller, the composite actions (local to this
+# workflow) have to be referenced absolutely.
+
+jobs:
+
+  prepare-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-minidisk@main
+        with:
+          main_file: ${{ inputs.minidisk_main_file }}
+          additional_entries: ${{ inputs.minidisk_additional_entries }}
+      - uses: treytomes/micro-hack/.github/actions/upload-boot-opts@main
+        with:
+          boot_opts_path: ${{ inputs.boot_opts_path }}
+
+  # === BUILD JOBS ===
+
+  build-webgl:
+      needs: prepare-assets
+      runs-on: ubuntu-latest    
+      steps:
+        - uses: treytomes/micro-hack/.github/actions/build-webgl@main
+
+  build-windows:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-windows@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+
+  build-mac:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-mac@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+
+  build-linux:
+    needs: prepare-assets
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-linux@main
+        with:
+          custom_executable_name: ${{ inputs.custom_executable_name }}
+
+  # === PUBLISH JOBS ===
+
+  publish-webgl:
+    needs: build-webgl
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/itch-publish@main
+        with:
+          artifact_name: webgl-build
+          artifact_data_folder: ./minimicro-web
+          itchio_api_key: ${{ secrets.itch_io_api_key }}
+          itchio_username: ${{ inputs.itch_io_username }}
+          itchio_game_id: ${{ inputs.itch_io_game_id }}
+          itchio_build_channel: ${{ inputs.itchio_web_channel }}
+
+  publish-windows:
+    needs: build-windows
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/itch-publish@main
+        with:
+          artifact_name: windows-build
+          artifact_data_folder: ./minimicro-win
+          itchio_api_key: ${{ secrets.itch_io_api_key }}
+          itchio_username: ${{ inputs.itch_io_username }}
+          itchio_game_id: ${{ inputs.itch_io_game_id }}
+          itchio_build_channel: windows
+
+  publish-mac:
+    needs: build-mac
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/itch-publish@main
+        with:
+          artifact_name: mac-build
+          artifact_data_folder: ./minimicro-mac
+          itchio_api_key: ${{ secrets.itch_io_api_key }}
+          itchio_username: ${{ inputs.itch_io_username }}
+          itchio_game_id: ${{ inputs.itch_io_game_id }}
+          itchio_build_channel: mac
+
+  publish-linux:
+    needs: build-linux
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/itch-publish@main
+        with:
+          artifact_name: linux-build
+          artifact_data_folder: ./minimicro-linux
+          itchio_api_key: ${{ secrets.itch_io_api_key }}
+          itchio_username: ${{ inputs.itch_io_username }}
+          itchio_game_id: ${{ inputs.itch_io_game_id }}
+          itchio_build_channel: linux

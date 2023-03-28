@@ -1,0 +1,84 @@
+name: publish-windows
+description: "Package a Windows version"
+
+inputs:
+  custom_executable_name:
+    description: "Optionally rename MiniMicro.exe to this name"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Restore user-minidisk artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: user-minidisk
+
+    - name: Restore boot-opts artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: boot-opts
+        path: ./
+
+    - name: Resolve template hash-code
+      run: |
+        #HEAD=$(curl --silent --head https://miniscript.org/files/minimicro-win.zip)
+        HEAD=$(curl --silent --head https://miniscript.org/MiniMicro/preview/minimicro-win.zip)
+        ETAG=$(echo "$HEAD" | grep "ETag")
+        ETAG=${ETAG//[$'\t\r\n']}
+        TEMPLATE_HASH=$(echo $ETAG | awk '{gsub(/"/, "", $2); print $2}')
+        echo "Using TEMPLATE_HASH: \"${TEMPLATE_HASH}\""
+        echo "TEMPLATE_HASH=$TEMPLATE_HASH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Cache template file
+      uses: actions/cache@v3
+      id: cache-win-template
+      env:
+          cache-name: cache-win-template
+      with:
+        path: minimicro-win.zip
+        key: windows-${{ env.TEMPLATE_HASH }}
+
+    - name: Download Windows template
+      if: ${{ steps.cache-win-template.outputs.cache-hit != 'true' }}
+      #run: wget --no-verbose -O minimicro-win.zip https://miniscript.org/files/minimicro-win.zip
+      run: wget --no-verbose -O minimicro-win.zip https://miniscript.org/MiniMicro/preview/minimicro-win.zip
+      shell: bash
+
+    - name: Unzip Windows template
+      run: unzip minimicro-win.zip -d minimicro-win
+      shell: bash
+
+    - name: Copy user.minidisk
+      run: cp user.minidisk ./minimicro-win/MiniMicro
+      shell: bash
+
+    - name: Copy bootOpts.grfon
+      run: |
+        # Only copy if non-empty
+        if [ -s bootOpts.grfon ]; then
+          cp bootOpts.grfon ./minimicro-win/MiniMicro/Mini\ Micro_Data/StreamingAssets/
+          echo "Copied: bootOpts.grfon"
+        else
+          echo "Did not copy: bootOpts.grfon"
+        fi
+      shell: bash
+
+    - name: Rename executable
+      if: "${{ inputs.custom_executable_name != '' }}"
+      run: |
+        # Rename executable
+        mv ./minimicro-win/MiniMicro/Mini\ Micro.exe "./minimicro-win/MiniMicro/${{ inputs.custom_executable_name }}.exe" 
+        # Rename data folder
+        mv ./minimicro-win/MiniMicro/Mini\ Micro_Data "./minimicro-win/MiniMicro/${{ inputs.custom_executable_name }}_Data"
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: ./minimicro-win/MiniMicro

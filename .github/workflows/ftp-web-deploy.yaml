@@ -1,0 +1,69 @@
+name: Build and publish web-version via FTP
+
+on:
+  workflow_call:
+    inputs:
+      minidisk_main_file:
+        required: true
+        type: string
+      minidisk_additional_entries:
+        required: false
+        type: string
+      boot_opts_path:
+        required: false
+        type: string
+      ftp_host:
+        type: string
+        required: true
+      ftp_target_path:
+        required: true
+        type: string
+      page_title:
+        description: "Title to give the HTML page"
+        type: string
+        required: false
+    secrets:
+      ftp_username:
+        required: true
+      ftp_password:
+        required: true
+
+
+# Note how because this is a reusable workflow and runs in the
+# context of the caller, the composite actions (local to this
+# workflow) have to be referenced absolutely.
+
+jobs:
+
+  prepare-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/build-minidisk@main
+        with:
+          main_file: ${{ inputs.minidisk_main_file }}
+          additional_entries: ${{ inputs.minidisk_additional_entries }}
+      - uses: treytomes/micro-hack/.github/actions/upload-boot-opts@main
+        with:
+          boot_opts_path: ${{ inputs.boot_opts_path }}
+
+  # === BUILD JOBS ===
+
+  build-webgl:
+      needs: prepare-assets
+      runs-on: ubuntu-latest    
+      steps:
+        - uses: treytomes/micro-hack/.github/actions/build-webgl@main
+
+  # === PUBLISH JOBS ===
+
+  publish-webgl:
+    needs: build-webgl
+    runs-on: ubuntu-latest    
+    steps:
+      - uses: treytomes/micro-hack/.github/actions/ftp-webgl-publish@main
+        with:
+          page_title: ${{ inputs.page_title }}
+          ftp_host: ${{ inputs.ftp_host }}
+          ftp_username: ${{ secrets.ftp_username }}
+          ftp_password: ${{ secrets.ftp_password }}
+          ftp_target_path: ${{ inputs.ftp_target_path }}

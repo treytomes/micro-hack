@@ -1,0 +1,82 @@
+name: build-mac
+description: "Package a Mac version"
+
+inputs:
+  custom_executable_name:
+    description: "Optionally rename MiniMicro.app to this name"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Checkout project
+      uses: actions/checkout@v3
+
+    - name: Restore user-minidisk artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: user-minidisk
+
+    - name: Restore boot-opts artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: boot-opts
+        path: ./
+
+    - name: Resolve template hash-code
+      run: |
+        #HEAD=$(curl --silent --head https://miniscript.org/files/minimicro-mac.zip)
+        HEAD=$(curl --silent --head https://miniscript.org/MiniMicro/preview/minimicro-mac.zip)
+        ETAG=$(echo "$HEAD" | grep "ETag")
+        ETAG=${ETAG//[$'\t\r\n']}
+        TEMPLATE_HASH=$(echo $ETAG | awk '{gsub(/"/, "", $2); print $2}')
+        echo "Using TEMPLATE_HASH: \"${TEMPLATE_HASH}\""
+        echo "TEMPLATE_HASH=$TEMPLATE_HASH" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Cache template file
+      uses: actions/cache@v3
+      id: cache-mac-template
+      env:
+          cache-name: cache-mac-template
+      with:
+        path: minimicro-mac.zip
+        key: mac-${{ env.TEMPLATE_HASH }}
+
+    - name: Download Mac template
+      if: ${{ steps.cache-mac-template.outputs.cache-hit != 'true' }}
+      #run: wget --no-verbose -O minimicro-mac.zip https://miniscript.org/files/minimicro-mac.zip
+      run: wget --no-verbose -O minimicro-mac.zip https://miniscript.org/MiniMicro/preview/minimicro-mac.zip
+      shell: bash
+         
+    - name: Unzip Mac template
+      run: unzip minimicro-mac.zip -d minimicro-mac
+      shell: bash
+    
+    - name: Copy user.minidisk
+      run: cp user.minidisk ./minimicro-mac
+      shell: bash
+
+    - name: Copy bootOpts.grfon
+      run: |
+        # Only copy if non-empty
+        if [ -s bootOpts.grfon ]; then
+          cp bootOpts.grfon ./minimicro-mac/MiniMicro.app/Contents/Resources/Data/StreamingAssets 
+          echo "Copied: bootOpts.grfon"
+        else
+          echo "Did not copy: bootOpts.grfon"
+        fi
+      shell: bash
+
+    - name: Rename app bundle
+      if: "${{ inputs.custom_executable_name != '' }}"
+      run: |
+        # Rename app bundle
+        mv ./minimicro-mac/MiniMicro.app "./minimicro-mac/${{ inputs.custom_executable_name }}.app" 
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: mac-build
+        path: ./minimicro-mac

@@ -1,0 +1,58 @@
+name: ftp-webgl-publish
+description: "Uploads a WebGL artifact via FTP"
+
+inputs:
+  page_title:
+    description: "Title to give the HTML page"
+    required: false
+  ftp_host:
+    description: "FTP host / URL"
+    required: true
+  ftp_username:
+    description: "FTP account username"
+    required: true
+  ftp_password:
+    description: "FTP account password"
+    required: true
+  ftp_target_path:
+    description: "FTP target path to upload to"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Restore artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: webgl-build
+
+    - name: Echo debug info
+      if: ${{ github.repository == 'treytomes/micro-hack' }}
+      run: |
+        echo "Repository: ${{ github.repository }}"
+        echo '${{ toJSON(github) }}'
+      shell: bash
+
+    - name: List files
+      run: |
+        ls -lR ./
+      shell: bash
+
+    - name: Change HTML page title
+      if: ${{ inputs.page_title != '' }}
+      run: |
+        PAGE_TITLE="${{ inputs.page_title }}"
+        sed -i -e "s~<title>[^<]*~<title>$PAGE_TITLE</title>~g" ./MiniMicro/index.html
+      shell: bash
+
+    - name: Upload template via FTP
+      # Don't really publish if doing test-runs from within actions repository
+      if: ${{ github.repository != 'treytomes/micro-hack' }}
+      uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      with:
+        server: ${{ inputs.ftp_host }}
+        username: ${{ inputs.ftp_username }}
+        password: ${{ inputs.ftp_password }}
+        local-dir: ./MiniMicro/
+        server-dir: ${{ inputs.ftp_target_path }}
