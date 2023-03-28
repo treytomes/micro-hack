@@ -216,8 +216,12 @@ makeUserInput = function()
 			Display.hud.color = color.gray
 		end if
 
-		Display.hud.row = windowBounds.bottom - 2 - inventoryIndex + self.firstDisplayIndex
-		Display.hud.column = windowBounds.left + 1
+		x = windowBounds.left + 1
+		y = windowBounds.bottom - 2 - inventoryIndex + self.firstDisplayIndex
+		item.tile.draw(Display.hud, x, y)
+
+		Display.hud.row = y
+		Display.hud.column = x + 2
 		Display.hud.print(item.str())
 		if self.isEquipped(entity, item) then
 			Display.hud.print(" [E]")
