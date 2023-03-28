@@ -159,7 +159,7 @@ main = function()
 
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
-	for n in range(11)
+	for n in range(11) // Generate 12 kobolds.
 		e = entities.makeKobold(map)
 		map.entities.push(e)
 	end for

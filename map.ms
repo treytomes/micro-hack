@@ -82,6 +82,9 @@ Map.isEntityAt = function(pnt)
 end function
 
 Map.removeEntity = function(entity)
+	if self.entities.len == 0 then
+		return
+	end if
 	for n in range(0, self.entities.len - 1)
 		if self.entities[n] == entity then
 			self.entities.remove(n)
