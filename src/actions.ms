@@ -1,3 +1,5 @@
+ensureImport "sounds"
+
 EntityAction = {}
 
 wait = function()
@@ -34,7 +36,7 @@ walk = function(delta)
 		newPos = point.make(entity.position.x + self.delta.x, entity.position.y + self.delta.y)
 		if map.tiles[newPos.y][newPos.x].blocksMovement then
 			if entity.isPlayer then
-				sounds.Sounds.pop()
+				sounds.pop()
 			end if
 		else
 			bumpedEntity = map.getEntityAt(newPos) 

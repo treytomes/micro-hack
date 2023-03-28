@@ -15,7 +15,7 @@ jobs:
     with:
       minidisk_main_file: main.ms
       minidisk_additional_entries: >-
-        *
+        src
       boot_opts_path: bootOpts.grfon
       custom_executable_name: micro-hack.exe
       itch_io_username: treytomes

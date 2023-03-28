@@ -1,6 +1,9 @@
-env.importPaths.push("./behaviors")
-env.importPaths.push("./config")
-env.importPaths.push("./factories")
+env.importPaths = [
+	"./src",
+	"./src/behaviors",
+	"./src/config",
+	"./src/factories",
+]
 
 // Library imports.
 import "coreUtil"
@@ -140,8 +143,6 @@ updateParticles = function(deltaTime, map, renderOffset)
 end function
 
 main = function()
-	sounds.Sounds.initialize()
-
 	isRunning = true
 	//map = mapgen.MapGenerator.buildArena()
 	map = mapgen.MapGenerator.buildRandomDungeon()
