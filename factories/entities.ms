@@ -33,8 +33,8 @@ makePlayer = function(map)
 	e.perception = 8
 	e.xp = 0
 
-	e.behaviors.push(behaviors.Behavior.makeUserInput())
-	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
+	e.behaviors.push(behaviors.makeUserInput())
+	e.behaviors.push(behaviors.makeAttackOnCollision())
 	return e
 end function
 
@@ -89,9 +89,9 @@ makeKobold = function(map)
 	// You get this much XP for killing the monster.
 	e.xp = 25
 
-	e.behaviors.push(behaviors.Behavior.makeSeekPlayer())
-	//e.behaviors.push(behaviors.Behavior.makeRandomWalk())
-	e.behaviors.push(behaviors.Behavior.makeAttackOnCollision())
+	e.behaviors.push(behaviors.makeSeekPlayer())
+	//e.behaviors.push(behaviors.makeWander())
+	e.behaviors.push(behaviors.makeAttackOnCollision())
 	return e
 end function
 

@@ -1,78 +1,4 @@
-Behavior = {}
-Behavior.willAttackSameRace = false
-
-Behavior.isEntityAtPosition = function(entity, map, position)
-	hitEntity = map.getEntityAt(position) 
-	if hitEntity != null then
-		if self.isAlly(entity, hitEntity) then
-			return true
-		else
-			// They aren't friends, so keep walking like they're not even there.
-			return false
-		end if
-	else
-		return false
-	end if
-end function
-
-Behavior.moveTowards = function(entity, map, position)
-	delta = position.subtract(entity.position).sign()
-
-	// The entity can theoretically see the player.
-	// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
-
-	if delta.x != 0 and not map.blocksMovement(entity.position.x + delta.x, entity.position.y) then
-		deltaX = point.unitX.scale(delta.x)
-		newPos = entity.position.add(deltaX)
-		if not self.isEntityAtPosition(entity, map, newPos) then
-			return actions.walk(deltaX)
-		end if
-	end if
-	if delta.y != 0 and not map.blocksMovement(entity.position.x, entity.position.y + delta.y) then
-		deltaY = point.unitY.scale(delta.y)
-		newPos = entity.position.add(deltaY)
-		if not self.isEntityAtPosition(entity, map, newPos) then
-			return actions.walk(deltaY)
-		end if
-	end if
-
-	return null
-end function
-
-Behavior.findNearbyEntities = function(entity, map)
-	found = []
-	radius = entity.rangeOfVision ^ 2
-
-	for e in map.entities
-		if e == entity then
-			continue
-		end if
-		if e == null then
-			continue
-		end if
-
-		delta = entity.position.subtract(e.position)
-		dist = delta.x ^ 2 + delta.y ^ 2
-		if dist <= radius then
-			found.push(e)
-		end if
-	end for
-	return found
-end function
-
-Behavior.isAlly = function(source, target)
-	return source.race == target.race and not self.willAttackSameRace
-end function
-
-Behavior.act = function(entity, map)
-	return actions.wait()
-end function
-
-Behavior.onEntityCollision = function(sourceEntity, targetEntity, map)
-	// Don't panic; this one is intentionally empty.
-end function
-
-Behavior.makeHealWhileResting = function()
+makeHealWhileResting = function()
 	b = new Behavior
 
 	b.healWhileResting = function(entity, map)
@@ -92,7 +18,7 @@ Behavior.makeHealWhileResting = function()
 	return b
 end function
 
-Behavior.makeAttackOnCollision = function()
+makeAttackOnCollision = function()
 	b = new Behavior
 
 	b.onEntityCollision = function(sourceEntity, targetEntity, map)
@@ -130,8 +56,8 @@ Behavior.makeAttackOnCollision = function()
 	return b
 end function
 
-Behavior.makeRandomWalk = function()
-	b = Behavior.makeHealWhileResting
+makeWander = function()
+	b = makeHealWhileResting()
 	b.currentDirection = point.zero
 
 	b.chooseNewDirection = function(entity)
@@ -176,8 +102,8 @@ Behavior.makeRandomWalk = function()
 	return b
 end function
 
-Behavior.makeSeekAllies = function()
-	b = Behavior.makeRandomWalk()
+makeSeekAllies = function()
+	b = makeWander()
 
 	b.seekAllies = function(entity, map)
 		allies = self.findNearbyEntities(entity, map)
@@ -204,8 +130,8 @@ Behavior.makeSeekAllies = function()
 	return b
 end function
 
-Behavior.makeSeekPlayer = function()
-	b = Behavior.makeSeekAllies()
+makeSeekPlayer = function()
+	b = makeSeekAllies()
 
 	b.act = function(entity, map)
 		// The entity can theoretically see the player.
@@ -223,8 +149,8 @@ Behavior.makeSeekPlayer = function()
 	return b
 end function
 
-Behavior.makeUserInput = function()
-	b = Behavior.makeHealWhileResting()
+makeUserInput = function()
+	b = makeHealWhileResting()
 	b.firstDisplayIndex = 0
 	b.selectedInventoryIndex = 0
 

@@ -1,50 +1,51 @@
-env.importPaths.push("./factories")
+env.importPaths.push("./behaviors")
 env.importPaths.push("./config")
+env.importPaths.push("./factories")
 
 // Library imports.
-import "tc"
-//import "textUtil"
+import "coreUtil"
 
 // "features" must be imported first.  "settings" must be imported last.
 
 // Base import.
-import "features"
-import "math"
-import "sounds"
-import "point"
-import "rect"
+ensureImport "features"
+ensureImport "math"
+ensureImport "sounds"
+ensureImport "point"
+ensureImport "rect"
 
 // "Graphics"
-import "ui"
-import "particles"
+ensureImport "ui"
+ensureImport "particles"
 
-import "actions"
-import "tile"
-import "map"
-import "behaviors"
-import "hud"
+ensureImport "actions"
+ensureImport "tile"
+ensureImport "map"
+ensureImport "behaviors"
+ensureImport "hud"
 
-import "class"
-import "entity"
-import "item"
-import "healingPotionItem" // depends on item
-import "race"
-import "weapon" // depends on item
-import "shield" // depends on weapon
+ensureImport "behavior"
+ensureImport "class"
+ensureImport "entity"
+ensureImport "item"
+ensureImport "healingPotionItem" // depends on item
+ensureImport "race"
+ensureImport "weapon" // depends on item
+ensureImport "shield" // depends on weapon
 
 // Factories
-import "classes"
-import "entities"
-import "items"
-import "races"
-import "shields"
-import "weapons"
+ensureImport "classes"
+ensureImport "entities"
+ensureImport "items"
+ensureImport "races"
+ensureImport "shields"
+ensureImport "weapons"
 
-import "mapgen"
-import "fov"
+ensureImport "mapgen"
+ensureImport "fov"
 
-import "keybindings"
-import "settings"
+ensureImport "keybindings"
+ensureImport "settings"
 
 Display = {}
 

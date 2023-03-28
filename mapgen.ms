@@ -1,3 +1,5 @@
+ensureImport "rect"
+
 MapGenerator = {}
 
 MapGenerator.drawFilledRect = function(map, x, y, width, height, tile)
