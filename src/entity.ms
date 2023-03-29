@@ -141,6 +141,10 @@ Entity.xpToNextLevel = function()
 	return 300 * (2 ^ self.level - 1)
 end function
 
+Entity.isEquipped = function(item)
+	return (self.weapon == item) or (self.shield == item) or (self.armor == item)
+end function
+
 // If the item is equipped in any way, un-equip it.
 Entity.removeFromSlots = function(item)
 	if self.weapon == item then

@@ -4,6 +4,7 @@ env.importPaths = [
 	"./src/behaviors",
 	"./src/config",
 	"./src/factories",
+	"./src/ui",
 	"./src/util",
 ]
 
@@ -148,6 +149,7 @@ updateParticles = function(deltaTime, map, renderOffset)
 end function
 
 main = function()
+	Display.initialize()
 	isRunning = true
 	//map = mapgen.MapGenerator.buildArena()
 	map = mapgen.MapGenerator.buildRandomDungeon()
@@ -191,8 +193,6 @@ main = function()
 	end function
 	
 	text.clear()
-
-	Display.initialize()
 
 	text.print(4)
 	map.clearScreen(Display.map)
