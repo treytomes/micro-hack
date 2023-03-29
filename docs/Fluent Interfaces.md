@@ -121,6 +121,12 @@ In summary, that's a lot of boiler-plate code.
 This design pattern let's you shift the complexity away from your business logic and hopefully increase,
 but you're never really going to make the complexity go away.
 
+# Examples
+
+* [rect](https://github.com/treytomes/micro-hack/blob/develop/src/rect.ms)
+* [point](https://github.com/treytomes/micro-hack/blob/develop/src/point.ms)
+* [colorUtil](https://github.com/treytomes/micro-hack/blob/develop/src/util/colorUtil.ms)
+
 # References
 
 * [Fluent Interface](https://en.wikipedia.org/wiki/Fluent_interface)
