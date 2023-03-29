@@ -19,7 +19,7 @@ MapGenerator.drawPillar = function(map, x, y, tile)
 end function
 
 MapGenerator.drawHallway = function(map, room0, room1)
-	tile = @tile.makeFloor
+	tile = @tiles.makeFloor
 
 	dx = -1
 	if room0.centerX < room1.centerX then
@@ -45,7 +45,7 @@ MapGenerator.drawHallway = function(map, room0, room1)
 end function
 
 MapGenerator.drawDoors = function(map, room)
-	tile = @tile.makeDoor
+	tile = @tiles.makeDoor
 
 	for x in range(room.left + 1, room.right - 1)
 		if map.blocksMovement(x - 1, room.top - 1) and map.blocksMovement(x + 1, room.top - 1) and not map.blocksMovement(x, room.top - 1) then
@@ -67,13 +67,13 @@ end function
 
 MapGenerator.buildArena = function()
 	map = map.Map.make()
-	self.drawFilledRect(map, 1, 1, map.width - 2, map.height - 2, @tile.makeFloor)
+	self.drawFilledRect(map, 1, 1, map.width - 2, map.height - 2, @tiles.makeFloor)
 
 	numPillars = 10
 	for n in range(1, numPillars)
 		px = math.random(0, map.width - 4) + 2
 		py = math.random(0, map.height - 2) + 2
-		self.drawPillar(map, px, py, @tile.makeWall)
+		self.drawPillar(map, px, py, @tiles.makeWall)
 	end for
 
 	return map
@@ -96,12 +96,12 @@ end function
 
 MapGenerator.decorateStairsUpRoom = function(map, room)
 	map.stairsUp = point.make(room.centerX, room.centerY)
-	map.tiles[room.centerY][room.centerX] = tile.makeStairsUp()
+	map.tiles[room.centerY][room.centerX] = tiles.makeStairsUp()
 end function
 
 MapGenerator.decorateStairsDownRoom = function(map, room)
 	map.stairsDown = point.make(room.centerX, room.centerY)
-	map.tiles[room.centerY][room.centerX] = tile.makeStairsDown()
+	map.tiles[room.centerY][room.centerX] = tiles.makeStairsDown()
 end function
 
 MapGenerator.decorateLootRoom = function(map, room)
@@ -133,7 +133,7 @@ MapGenerator.buildRandomDungeon = function()
 
 		room = rect.make(roomX, roomY, roomWidth, roomHeight)
 		rooms.push(room)
-		self.drawFilledRect(map, room.x, room.y, room.width, room.height, @tile.makeFloor)
+		self.drawFilledRect(map, room.x, room.y, room.width, room.height, @tiles.makeFloor)
 		if n > 0 then
 			self.drawHallway(map, rooms[n - 1], rooms[n])
 		end if

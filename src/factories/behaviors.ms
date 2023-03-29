@@ -262,10 +262,9 @@ makeUserInput = function()
 		end if
 
 		if not self.isAtBottom(entity) then
-			Display.hud.color = color.silver
+			Display.hud.color = Color.silver.str()
 		else
-			// TODO: color.silver.dark
-			Display.hud.color = "#444444"
+			Display.hud.color = Color.silver.dark.str()
 		end if
 		Display.hud.row = windowBounds.top + 1
 		Display.hud.column = windowBounds.left + 1

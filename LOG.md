@@ -9,6 +9,7 @@
 * Game is published to [itch.io](https://treytomes.itch.io/micro-hack)!
 * Allow multiple keys per keybindings.
 * Inventory UI will show the tile icons.
+* Colors are micro-managed a bit more.
 
 # 20230325
 

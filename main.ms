@@ -4,11 +4,13 @@ env.importPaths = [
 	"./src/behaviors",
 	"./src/config",
 	"./src/factories",
+	"./src/util",
 ]
 
 // Library imports.
 import "coreUtil"
 import "listUtil"
+import "colorUtil"
 
 // "features" must be imported first.  "settings" must be imported last.
 
@@ -44,6 +46,7 @@ ensureImport "entities"
 ensureImport "items"
 ensureImport "races"
 ensureImport "shields"
+ensureImport "tiles"
 ensureImport "weapons"
 
 ensureImport "mapgen"
@@ -149,6 +152,7 @@ main = function()
 	//map = mapgen.MapGenerator.buildArena()
 	map = mapgen.MapGenerator.buildRandomDungeon()
 
+	text.print(1)
 	player = entities.makePlayer(map)
 	map.player = player
 
@@ -160,13 +164,18 @@ main = function()
 		return point.make(offsetX, offsetY)
 	end function
 
+	text.print(2)
 	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
+	text.print(3)
 	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
 	for n in range(11) // Generate 12 kobolds.
 		e = entities.makeKobold(map)
+		text.print(4)
 		map.entities.push(e)
+		text.print(5)
 	end for
 
+	text.print(6)
 	// For rendering purposes, it makes sense for the player to be last.
 	map.entities.push(player)
 	
@@ -180,11 +189,12 @@ main = function()
 	Service.makeMessageParticles = function(x, y, message, foregroundColor)
 		Service.fountains.push(particles.ParticleFountain.makeMessageParticles(x, y, message, foregroundColor))
 	end function
-
+	
 	text.clear()
 
 	Display.initialize()
 
+	text.print(4)
 	map.clearScreen(Display.map)
 	map.draw(Display.map, player, renderOffset)
 	drawEntities(Display.entities, map, renderOffset)

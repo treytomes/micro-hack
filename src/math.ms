@@ -67,6 +67,10 @@ clamp = function(n, min, max)
 	return n
 end function
 
+lerp = function(a, b, t)
+	return a + (b - a) * t
+end function
+
 random = function(minValue, maxValue)
 	delta = maxValue - minValue + 1
 	baseValue = floor(rnd() * delta) + minValue
