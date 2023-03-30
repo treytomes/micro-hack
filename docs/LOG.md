@@ -13,6 +13,7 @@
 * Particles can use floating-point velocities.
 * Notification and particles when you level up.
 * Increase in HP when you level up.
+* You can go down *and back up* the stairs!  Nothing new on lower levels yet though.
 
 # 20230325
 

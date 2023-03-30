@@ -42,6 +42,7 @@ ensureImport "weapon" // depends on item
 ensureImport "shield" // depends on weapon
 ensureImport "particle"
 ensureImport "particleFountain"
+ensureImport "world"
 
 // Factories
 ensureImport "classes"
@@ -123,7 +124,7 @@ drawHUD = function(display, player)
 	display.color = color.white
 	display.backColor = color.black
 
-	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel
+	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel + "   world: " + Service.world.currentLevel
 	statusBar = statusBar + " " * (67 - statusBar.len)
 	
 	display.print(statusBar)
@@ -151,13 +152,20 @@ main = function()
 	Display.initialize()
 	isRunning = true
 
-	player = entities.makePlayer()
-	player.enterMap = function(map)
-		self.position = map.stairsUp
+	Service.world = new world.World
+	Service.world.currentLevel = 1 // Start in the dungeon.
+	Service.world.player = entities.makePlayer()
+	Service.world.player.enterMap = function(map, goingDown)
+		if goingDown then
+			self.position = map.stairsUp
+		else
+			self.position = map.stairsDown
+		end if
 		map.player = self
-		map.entities.push(player)
+		map.entities.push(self)
+		Service.fov.refresh(self.position.x, self.position.y, self.rangeOfVision, map)
 	end function
-	player.leaveMap = function(map)
+	Service.world.player.leaveMap = function(map)
 		map.player = null
 		if map.entities.len > 0 then
 			n = 0
@@ -172,19 +180,18 @@ main = function()
 	end function
 	
 	Service.fov = fov.FieldOfVisionCalculator.make(map.Map.width, map.Map.height)
-	map = mapgen.MapGenerator.buildLevel(1, player)
 
 	renderOffset = function()
 		TEXT_ROWS = 26
 		TEXT_COLUMNS = 68
-		offsetX = floor(TEXT_COLUMNS / 2) - player.position.x
-		offsetY = floor(TEXT_ROWS / 2) - player.position.y
+		offsetX = floor(TEXT_COLUMNS / 2) - Service.world.player.position.x
+		offsetY = floor(TEXT_ROWS / 2) - Service.world.player.position.y
 		return point.make(offsetX, offsetY)
 	end function
 
 	// For rendering purposes, it makes sense for the player to be last.
-	player.enterMap(map)
-	
+	Service.world.player.enterMap(Service.world.map, true)
+
 	Service.messages = hud.MessageLog.make()
 	
 	Service.fountains = []
@@ -200,10 +207,10 @@ main = function()
 	
 	Display.clear()
 
-	map.clearScreen(Display.map)
-	map.draw(Display.map, player, renderOffset)
-	drawEntities(Display.entities, map, renderOffset)
-	drawHUD(Display.hud, player)
+	Service.world.map.clearScreen(Display.map)
+	Service.world.map.draw(Display.map, Service.world.player, renderOffset)
+	drawEntities(Display.entities, Service.world.map, renderOffset)
+	drawHUD(Display.hud, Service.world.player)
 
 	deltaTime = 0
 	while isRunning
@@ -214,11 +221,12 @@ main = function()
 		//text.column = 10
 		//print 1.0 / (deltaTime / 1000)
 
-		updateParticles(deltaTime, map, renderOffset)
+		updateParticles(deltaTime, Service.world.map, renderOffset)
 
 		// The next step in the game occurs when the player presses a key.
 		if key.available then
 			n = 0
+			map = Service.world.map
 			while n < map.entities.len
 				e = map.entities[n]
 				if e.isAlive then
@@ -244,13 +252,13 @@ main = function()
 				end if
 			end while
 
-			if player.isDead then
+			if Service.world.player.isDead then
 				Service.messages.report("YOU ARE DEAD!")
 			end if
 			
-			map.draw(Display.map, player, renderOffset)
-			drawEntities(Display.entities, map, renderOffset)
-			drawHUD(Display.hud, player)
+			Service.world.map.draw(Display.map, Service.world.player, renderOffset)
+			drawEntities(Display.entities, Service.world.map, renderOffset)
+			drawHUD(Display.hud, Service.world.player)
 		end if
 
 		deltaTime = time * 1000 - frameStart

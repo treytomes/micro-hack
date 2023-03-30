@@ -84,3 +84,4 @@ end function
 MessageLog.report = function(msg, foregroundColor = null, backgroundColor = null)
 	self.messages.insert(0, Message.make(msg, foregroundColor, backgroundColor))
 end function
+

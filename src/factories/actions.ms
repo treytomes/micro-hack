@@ -139,3 +139,25 @@ attack = function(targetEntity)
 	end function
 	return action
 end function
+
+takeStairsUp = function()
+	action = new EntityAction
+	action.apply = function(entity, map)
+		if Service.world.currentLevel > 0 then
+			Service.world.player.leaveMap(Service.world.map)
+			Service.world.currentLevel -= 1
+			Service.world.player.enterMap(Service.world.map, false)
+		end if
+	end function
+	return action
+end function
+
+takeStairsDown = function()
+	action = new EntityAction
+	action.apply = function(entity, map)
+		Service.world.player.leaveMap(Service.world.map)
+		Service.world.currentLevel += 1
+		Service.world.player.enterMap(Service.world.map, true)
+	end function
+	return action
+end function

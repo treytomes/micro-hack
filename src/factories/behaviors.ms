@@ -168,6 +168,12 @@ makeUserInput = function()
 		return actions.useInventoryItem(index)
 	end function
 
+	b.takeStairsUp = function()
+	end function
+
+	b.takeStairsDown = function()
+	end function
+
 	b.act = function(entity, map)
 		result = null
 
@@ -190,6 +196,11 @@ makeUserInput = function()
 				result = actions.pickUpItem(point.zero)
 			else if keybindings.rest.contains(k) then
 				result = self.healWhileResting(entity, map)
+			else if keybindings.stairsDown.contains(k) and entity.position == map.stairsDown then
+				// TODO: This should only work when standing on stairs.
+				result = actions.takeStairsDown()
+			else if keybindings.stairsUp.contains(k) and entity.position == map.stairsUp then
+				result = actions.takeStairsUp()
 			end if
 		end while
 

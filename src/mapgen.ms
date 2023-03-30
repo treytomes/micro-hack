@@ -108,8 +108,8 @@ MapGenerator.buildArena = function(map)
 
 	numPillars = 10
 	for n in range(1, numPillars)
-		px = math.random(0, map.width - 4) + 2
-		py = math.random(0, map.height - 2) + 2
+		px = math.random(0, map.width - 5) + 2
+		py = math.random(0, map.height - 5) + 2
 		self.drawPillar(map, px, py, @tiles.makeWall)
 	end for
 
