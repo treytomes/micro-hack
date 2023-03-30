@@ -65,20 +65,6 @@ MapGenerator.drawDoors = function(map, room)
 	end for
 end function
 
-MapGenerator.buildArena = function()
-	map = map.Map.make()
-	self.drawFilledRect(map, 1, 1, map.width - 2, map.height - 2, @tiles.makeFloor)
-
-	numPillars = 10
-	for n in range(1, numPillars)
-		px = math.random(0, map.width - 4) + 2
-		py = math.random(0, map.height - 2) + 2
-		self.drawPillar(map, px, py, @tiles.makeWall)
-	end for
-
-	return map
-end function
-
 MapGenerator.randomPointInRoom = function(room)
 	return point.make(math.random(room.left, room.right), math.random(room.top, room.bottom))
 end function
@@ -117,9 +103,20 @@ MapGenerator.decorateLootRoom = function(map, room)
 	end for
 end function
 
-MapGenerator.buildRandomDungeon = function()
-	map = map.Map.make()
+MapGenerator.buildArena = function(map)
+	self.drawFilledRect(map, 1, 1, map.width - 2, map.height - 2, @tiles.makeFloor)
 
+	numPillars = 10
+	for n in range(1, numPillars)
+		px = math.random(0, map.width - 4) + 2
+		py = math.random(0, map.height - 2) + 2
+		self.drawPillar(map, px, py, @tiles.makeWall)
+	end for
+
+	return map
+end function
+
+MapGenerator.buildRandomDungeon = function(map)
 	numRooms = math.random(5, 10)
 	minRoomSize = 5
 	maxRoomSize = 10
@@ -157,6 +154,25 @@ MapGenerator.buildRandomDungeon = function()
 	for room in rooms
 		self.drawDoors(map, room)
 	end for
+
+	return map
+end function
+
+MapGenerator.buildLevel = function(levelNumber, player)
+	map = map.Map.make(levelNumber)
+	if levelNumber == 0 then
+		map = self.buildArena(map)
+	else
+		map = self.buildRandomDungeon(map)
+	end if
+
+	Service.fov.refresh(map.stairsUp.x, map.stairsUp.y, player.rangeOfVision, map)
+	if levelNumber > 0 then
+		for n in range(11) // Generate 12 kobolds.
+			e = entities.makeKobold(map)
+			map.entities.push(e)
+		end for
+	end if
 
 	return map
 end function

@@ -8,8 +8,9 @@ Map.width = 64 // 68
 Map.stairsUp = point.zero
 Map.stairsDown = point.zero
 
-Map.make = function()
+Map.make = function(level)
 	m = new Map
+	m.level = level
 	m.tiles = []
 	m.entities = []
 	m.player = null

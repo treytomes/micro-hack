@@ -1,6 +1,6 @@
 Entity = {}
 
-Entity.init = function(pnt)
+Entity.init = function(pnt=null)
 	self.tile = tile.make("@", color.white, color.black, true, false)
 	self.position = pnt
 	self.isPlayer = false
@@ -23,6 +23,8 @@ Entity.init = function(pnt)
 	self.currentHP = 1
 	self.perception = 0
 	self.xp = 0
+
+	return self
 end function
 
 Entity.canSee = function(pnt)

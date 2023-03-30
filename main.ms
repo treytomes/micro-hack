@@ -150,12 +150,29 @@ end function
 main = function()
 	Display.initialize()
 	isRunning = true
-	//map = mapgen.MapGenerator.buildArena()
-	map = mapgen.MapGenerator.buildRandomDungeon()
 
-	text.print(1)
-	player = entities.makePlayer(map)
-	map.player = player
+	player = entities.makePlayer()
+	player.enterMap = function(map)
+		self.position = map.stairsUp
+		map.player = self
+		map.entities.push(player)
+	end function
+	player.leaveMap = function(map)
+		map.player = null
+		if map.entities.len > 0 then
+			n = 0
+			while n < map.entities.len
+				if map.entities[n].isPlayer then
+					map.entities.remove(n)
+				else
+					n += 1
+				end if
+			end while
+		end if
+	end function
+	
+	Service.fov = fov.FieldOfVisionCalculator.make(map.Map.width, map.Map.height)
+	map = mapgen.MapGenerator.buildLevel(1, player)
 
 	renderOffset = function()
 		TEXT_ROWS = 26
@@ -165,20 +182,8 @@ main = function()
 		return point.make(offsetX, offsetY)
 	end function
 
-	text.print(2)
-	Service.fov = fov.FieldOfVisionCalculator.make(map.width, map.height)
-	text.print(3)
-	Service.fov.refresh(player.position.x, player.position.y, player.rangeOfVision, map)
-	for n in range(11) // Generate 12 kobolds.
-		e = entities.makeKobold(map)
-		text.print(4)
-		map.entities.push(e)
-		text.print(5)
-	end for
-
-	text.print(6)
 	// For rendering purposes, it makes sense for the player to be last.
-	map.entities.push(player)
+	player.enterMap(map)
 	
 	Service.messages = hud.MessageLog.make()
 	
@@ -195,7 +200,6 @@ main = function()
 	
 	Display.clear()
 
-	text.print(4)
 	map.clearScreen(Display.map)
 	map.draw(Display.map, player, renderOffset)
 	drawEntities(Display.entities, map, renderOffset)
