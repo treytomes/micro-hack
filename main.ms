@@ -12,6 +12,7 @@ env.importPaths = [
 import "coreUtil"
 import "listUtil"
 import "colorUtil"
+import "stringUtil2"
 
 // "features" must be imported first.  "settings" must be imported last.
 
