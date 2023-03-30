@@ -1,4 +1,4 @@
-string.format = function(text, values)
+string.format = function(text, values=null)
 	if values isa map then
 		for kv in values
 			text = text.replace("${" + kv.key + "}", kv.value)
@@ -9,7 +9,7 @@ string.format = function(text, values)
 				text = text.replace("${" + n + "}", values[n])
 			end for
 		end if
-	else
+	else if values != null then
 		text += values
 	end if
 	return text
