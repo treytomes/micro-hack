@@ -76,6 +76,16 @@ Entity.modifyHP = function(amount)
 	else if self.currentHP > self.maxHP then
 		self.currentHP = self.maxHP
 	end if
+
+	delta = self.currentHP - oldHP
+
+	if delta > 0 then	
+		Service.messages.report(self.name + " was healed by " + delta + " HP.")
+		Service.makeMessageParticles(self.position, delta, color.green)
+	else if delta < 0 then
+		Service.makeMessageParticles(self.position, -delta, color.red)
+	end if
+
 	return self.currentHP - oldHP
 end function
 

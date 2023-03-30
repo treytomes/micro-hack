@@ -41,6 +41,8 @@ ensureImport "healingPotionItem" // depends on item
 ensureImport "race"
 ensureImport "weapon" // depends on item
 ensureImport "shield" // depends on weapon
+ensureImport "particle"
+ensureImport "particleFountain"
 
 // Factories
 ensureImport "classes"
@@ -185,12 +187,12 @@ main = function()
 	Service.messages = hud.MessageLog.make()
 	
 	Service.fountains = []
-	Service.makeDamageParticles = function(x, y)
-		Service.fountains.push(particles.ParticleFountain.makeDamageParticles(x, y))
+	Service.makeDeathParticles = function(pnt)
+		Service.fountains.push(particles.makeDeathParticles(pnt))
 	end function
 
-	Service.makeMessageParticles = function(x, y, message, foregroundColor)
-		Service.fountains.push(particles.ParticleFountain.makeMessageParticles(x, y, message, foregroundColor))
+	Service.makeMessageParticles = function(pnt, message, foregroundColor)
+		Service.fountains.push(particles.makeMessageParticles(pnt, message, foregroundColor))
 	end function
 	
 	text.clear()
