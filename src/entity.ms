@@ -81,9 +81,9 @@ Entity.modifyHP = function(amount)
 
 	if delta > 0 then	
 		Service.messages.report(self.name + " was healed by " + delta + " HP.")
-		Service.makeMessageParticles(self.position, delta, color.green)
+		Service.makeMessageParticles(self.position, delta, Color.green)
 	else if delta < 0 then
-		Service.makeMessageParticles(self.position, -delta, color.red)
+		Service.makeMessageParticles(self.position, -delta, Color.red)
 	end if
 
 	return self.currentHP - oldHP
@@ -143,12 +143,32 @@ Entity.rangeOfVision = function()
 end function
 
 Entity.level = function()
-	return 1 + floor(log((self.xp / 300) + 1, 2))
+	return 1 + floor(log(self.xp / 300 + 1, 2))
 end function
 
 // How much XP is needed to reach the next level?
 Entity.xpToNextLevel = function()
 	return 300 * (2 ^ self.level - 1)
+end function
+
+Entity.modifyXP = function(amount)
+	oldLevel = self.level
+	self.xp += amount
+	Service.messages.report("{0} earned {1} XP.".fill([ self.name, amount]))
+	if self.level != oldLevel then
+		self.levelUp()
+	end if
+end function
+
+Entity.levelUp = function()
+	Service.makeLevelUpParticles(self.position)
+	Service.messages.report("{0} has leveled up!".fill([ self.name ]))
+	hpDelta = self.class.hpDice.roll() + self.constitutionModifier
+	self.maxHP += hpDelta
+	//self.currentHP += hpDelta
+	self.modifyHP(hpDelta)
+
+	// TODO: This is where abilities and proficiencies will be increased.
 end function
 
 Entity.isEquipped = function(item)

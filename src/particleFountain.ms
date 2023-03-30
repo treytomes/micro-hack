@@ -1,4 +1,6 @@
 ParticleFountain = {}
+ParticleFountain.onSpawn = null
+ParticleFountain.lifeSpan = 0
 
 ParticleFountain.init = function(x, y)
 	self.x = x
@@ -13,7 +15,7 @@ ParticleFountain.init = function(x, y)
 end function
 
 ParticleFountain.isAlive = function()
-	if self.spawnRate > 0 then
+	if self.lifeSpan > 0 then
 		return true
 	end if
 	for p in self.particles
@@ -29,11 +31,14 @@ ParticleFountain.isDead = function()
 end function
 
 ParticleFountain.spawn = function()
-	self.particles.push(Particle.make(self.x, self.y, 1, 0, 300, 5000, color.white, color.black));
+	if self.onSpawn != null and self.lifeSpan > 0 then
+		self.particles.push(self.onSpawn())
+	end if
 end function
 
 ParticleFountain.draw = function(dsp, deltaTime, map, renderOffset)
 	self.spawnTimer += deltaTime
+	self.lifeSpan -= deltaTime
 	if self.spawnRate > 0 and (self.spawnTimer - self.lastSpawnTime >= self.spawnRate) then
 		self.spawn()
 		self.lastSpawnTime = self.spawnTimer

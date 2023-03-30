@@ -24,6 +24,10 @@ Color.fromHtml = function(html)
 	return self.fromList(builtinColor.toList(html))
 end function
 
+Color.random = function()
+	return (new Color).init(math.random(0, 255), math.random(0, 255), math.random(0, 255))
+end function
+
 Color.red = (new Color).init(255, 0, 0)
 Color.flame = (new Color).init(255, 63, 0)
 Color.orange = (new Color).init(255, 127, 0)

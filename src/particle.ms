@@ -46,18 +46,18 @@ Particle.erase = function(dsp)
 		return
 	end if
 
-	dsp.row = self.lastRenderOffset.y + self.y
-	dsp.column = self.lastRenderOffset.x + self.x
-	dsp.color = color.clear
-	dsp.backColor = color.clear
+	dsp.row = floor(self.lastRenderOffset.y + self.y)
+	dsp.column = floor(self.lastRenderOffset.x + self.x)
+	dsp.color = Color.clear.str()
+	dsp.backColor = Color.clear.str()
 	dsp.print(self.text)
 end function
 
 Particle.draw = function(dsp, renderOffset)
-	dsp.row = renderOffset.y + self.y
-	dsp.column = renderOffset.x + self.x
-	dsp.color = self.foregroundColor
-	dsp.backColor = self.backgroundColor
+	dsp.row = floor(renderOffset.y + self.y)
+	dsp.column = floor(renderOffset.x + self.x)
+	dsp.color = self.foregroundColor.str()
+	dsp.backColor = self.backgroundColor.str()
 	dsp.print(self.text)
 	self.lastRenderOffset = renderOffset
 end function

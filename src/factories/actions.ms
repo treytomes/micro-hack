@@ -14,7 +14,7 @@ wait = function()
 			end if
 			delta = entity.currentHP - oldHP
 			if delta != 0 then
-				Service.makeMessageParticles(entity.position, delta, color.green)
+				Service.makeMessageParticles(entity.position, delta, Color.green)
 			end if
 		else
 			entity.numRestTurns += 1
@@ -124,8 +124,7 @@ attack = function(targetEntity)
 			if self.targetEntity.isDead then
 				Service.messages.report(entity.name + " attacks " + self.targetEntity.name + ", and it is dead.")
 				Service.makeDeathParticles(self.targetEntity.position)
-				entity.xp += self.targetEntity.xp
-				Service.messages.report(entity.name + " earned " + self.targetEntity.xp + " XP.")
+				entity.modifyXP(self.targetEntity.xp)
 				self.targetEntity.xp = 0
 				self.targetEntity.onDeath(entity, map)
 			else

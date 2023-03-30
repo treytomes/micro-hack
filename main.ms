@@ -12,7 +12,6 @@ env.importPaths = [
 import "coreUtil"
 import "listUtil"
 import "colorUtil"
-import "stringUtil2"
 
 // "features" must be imported first.  "settings" must be imported last.
 
@@ -83,7 +82,7 @@ Display.clear = function()
 	for n in range(0, 3)
 		display(n).color = color.white
 		display(n).backColor = color.clear
-		display.clear()
+		display(n).clear()
 	end for
 end function
 
@@ -135,9 +134,6 @@ end function
 
 updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
-		//Display.particles.backColor = color.clear
-		//Display.particles.clear()
-		
 		n = 0
 		while n < Service.fountains.len
 			f = Service.fountains[n]
@@ -190,12 +186,14 @@ main = function()
 	Service.makeDeathParticles = function(pnt)
 		Service.fountains.push(particles.makeDeathParticles(pnt))
 	end function
-
+	Service.makeLevelUpParticles = function(pnt)
+		Service.fountains.push(particles.makeLevelUpParticles(pnt))
+	end function
 	Service.makeMessageParticles = function(pnt, message, foregroundColor)
 		Service.fountains.push(particles.makeMessageParticles(pnt, message, foregroundColor))
 	end function
 	
-	text.clear()
+	Display.clear()
 
 	text.print(4)
 	map.clearScreen(Display.map)

@@ -4,7 +4,7 @@ makeHealWhileResting = function()
 	b.healWhileResting = function(entity, map)
 		if entity.currentHP < entity.maxHP then
 			if math.Dice.make(1, 20).roll() < (entity.numRestTurns + entity.constitutionModifier) then
-				Service.makeMessageParticles(entity.position, 1, color.green)
+				Service.makeMessageParticles(entity.position, 1, Color.green)
 				entity.modifyHP(1)
 			end if
 		end if

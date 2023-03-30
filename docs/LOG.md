@@ -10,6 +10,9 @@
 * Allow multiple keys per keybindings.
 * Inventory UI will show the tile icons.
 * Colors are micro-managed a bit more.
+* Particles can use floating-point velocities.
+* Notification and particles when you level up.
+* Increase in HP when you level up.
 
 # 20230325
 
