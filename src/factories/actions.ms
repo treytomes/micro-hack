@@ -14,13 +14,10 @@ wait = function()
 			end if
 			delta = entity.currentHP - oldHP
 			if delta != 0 then
-				Service.makeMessageParticles(entity.position.x, entity.position.y, delta, color.green)
+				Service.makeMessageParticles(entity.position, delta, Color.green)
 			end if
 		else
 			entity.numRestTurns += 1
-			//if entity.isPlayer then
-			//	Service.messages.report("Rest turns=" + entity.numRestTurns)
-			//end if
 		end if
 	end function
 	return action
@@ -126,14 +123,12 @@ attack = function(targetEntity)
 			// Calculate entity death if necessary.
 			if self.targetEntity.isDead then
 				Service.messages.report(entity.name + " attacks " + self.targetEntity.name + ", and it is dead.")
-				Service.makeDamageParticles(self.targetEntity.position.x, self.targetEntity.position.y)
-				entity.xp += self.targetEntity.xp
-				Service.messages.report(entity.name + " earned " + self.targetEntity.xp + " XP.")
+				Service.makeDeathParticles(self.targetEntity.position)
+				entity.modifyXP(self.targetEntity.xp)
 				self.targetEntity.xp = 0
 				self.targetEntity.onDeath(entity, map)
 			else
 				Service.messages.report(entity.name + " attacks " + self.targetEntity.name + " : " + weaponDamage + ".")
-				Service.makeMessageParticles(self.targetEntity.position.x, self.targetEntity.position.y, weaponDamage, color.red)
 			end if
 			return true
 		else
@@ -141,6 +136,28 @@ attack = function(targetEntity)
 			Service.messages.report(entity.name + " attacks " + self.targetEntity.name + ", but misses.")
 			return false
 		end if
+	end function
+	return action
+end function
+
+takeStairsUp = function()
+	action = new EntityAction
+	action.apply = function(entity, map)
+		if Service.world.currentLevel > 0 then
+			Service.world.player.leaveMap(Service.world.map)
+			Service.world.currentLevel -= 1
+			Service.world.player.enterMap(Service.world.map, false)
+		end if
+	end function
+	return action
+end function
+
+takeStairsDown = function()
+	action = new EntityAction
+	action.apply = function(entity, map)
+		Service.world.player.leaveMap(Service.world.map)
+		Service.world.currentLevel += 1
+		Service.world.player.enterMap(Service.world.map, true)
 	end function
 	return action
 end function

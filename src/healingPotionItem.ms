@@ -16,7 +16,5 @@ end function
 
 HealingPotionItem.use = function(entity)
 	healingAmount = self.calculateHealingAmount()
-	healingAmount = entity.modifyHP(healingAmount)
-	Service.messages.report(entity.name + " was healed by " + healingAmount + " HP.")
-	Service.makeMessageParticles(entity.position.x, entity.position.y, healingAmount, color.green)	
+	healingAmount = entity.modifyHP(healingAmount)	
 end function

@@ -1,0 +1,211 @@
+makeHealWhileResting = function()
+	b = behavior.make()
+
+	b.healWhileResting = function(entity, map)
+		if entity.currentHP < entity.maxHP then
+			if math.Dice.make(1, 20).roll() < (entity.numRestTurns + entity.constitutionModifier) then
+				Service.makeMessageParticles(entity.position, 1, Color.green)
+				entity.modifyHP(1)
+			end if
+		end if
+		return actions.wait()
+	end function
+
+	b.act = function(entity, map)
+		return self.healWhileResting(entity, map)
+	end function
+
+	return b
+end function
+
+makeAttackOnCollision = function()
+	b = behavior.make()
+
+	b.onEntityCollision = function(sourceEntity, targetEntity, map)
+		// Assume every entity has the fighter class.
+		// Assume melee attacks.
+		// Assume every entity is carrying a basic 1-handed short sword with damage of 1d8.
+
+		if self.isAlly(sourceEntity, targetEntity) then
+			// Don't attack allies.
+			return
+		end if
+		
+		if features.ALWAYS_COUNTER_ATTACK then
+			// 1. Calculate initiative order.
+			sourceInitiative = math.Dice.make(1, 20, sourceEntity.dexterityModifier).roll()
+			targetInitiative = math.Dice.make(1, 20, targetEntity.dexterityModifier).roll()
+
+			// 2. Highest initiative goes first.
+			firstEntity = sourceEntity
+			secondEntity = targetEntity
+			if targetInitiative > sourceInitiative then
+				firstEntity = targetEntity
+				secondEntity = sourceEntity
+			end if
+
+			// 3. Attack roll.
+			if not actions.attack(secondEntity).apply(firstEntity, map) then
+				actions.attack(firstEntity).apply(secondEntity, map)
+			end if
+		else
+			actions.attack(targetEntity).apply(sourceEntity, map)
+		end if
+	end function
+
+	return b
+end function
+
+makeWander = function()
+	b = makeHealWhileResting()
+	b.currentDirection = point.zero
+
+	b.chooseNewDirection = function(entity)
+		dx = math.random(-1, 1)
+		dy = 0
+		if dx == 0 then
+			dy = math.random(-1, 1)
+		end if
+
+		axis = math.random(0, 1)
+		if axis == 1 then
+			// Randomly choose which axis gets priority on changing.
+			a = dx
+			dx = dy
+			dy = a
+		end if
+
+		self.currentDirection.x = dx
+		self.currentDirection.y = dy
+	end function
+
+	b.shouldChooseNewDirection = function()
+		return rnd() > 0.5
+	end function
+
+	b.wanderAround = function(entity, map)
+		if self.shouldChooseNewDirection() then
+			self.chooseNewDirection()
+		end if
+
+		if self.currentDirection != point.zero then
+			return actions.walk(self.currentDirection) 
+		else
+			return self.healWhileResting(entity, map)
+		end if
+	end function
+
+	b.act = function(entity, map)
+		return b.wanderAround(entity, map)
+	end function
+
+	return b
+end function
+
+makeSeekAllies = function()
+	b = makeWander()
+
+	b.seekAllies = function(entity, map)
+		allies = self.findNearbyEntities(entity, map)
+		if allies.len == 0 then
+			return self.wanderAround(entity, map)
+		end if
+
+		for ally in allies
+			if self.isAlly(entity, ally) then
+				action = self.moveTowards(entity, map, ally.position)
+				if action != null then
+					return action
+				end if
+			end if
+		end for
+
+		return self.wanderAround(entity, map)
+	end function
+
+	b.act = function(entity, map)
+		return self.seekAllies(entity, map)
+	end function
+
+	return b
+end function
+
+makeSeekPlayer = function()
+	b = makeSeekAllies()
+
+	b.act = function(entity, map)
+		// The entity can theoretically see the player.
+		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
+
+		if entity.canSee(map.player.position) then
+			action = self.moveTowards(entity, map, map.player.position)
+			if action != null then
+				return action
+			end if
+		end if
+		return self.seekAllies(entity, map)
+	end function
+	
+	return b
+end function
+
+makeUserInput = function()
+	b = makeHealWhileResting()
+
+	b.dropInventory = function(entity)
+		index = ui.selectItem(entity, "Drop Inventory Item")
+		if index == null then
+			return null
+		end if
+		return actions.dropInventoryItem(index)
+	end function
+
+	b.useInventory = function(entity)
+		index = ui.selectItem(entity, "Drop Inventory Item")
+		if index == null then
+			return null
+		end if
+		return actions.useInventoryItem(index)
+	end function
+
+	b.takeStairsUp = function()
+	end function
+
+	b.takeStairsDown = function()
+	end function
+
+	b.act = function(entity, map)
+		result = null
+
+		while result == null
+			delta = point.zero
+			k = key.get.code
+			if keybindings.up.contains(k) then
+				result = actions.walk(point.unitY)
+			else if keybindings.down.contains(k) then
+				result = actions.walk(point.unitY.negate)
+			else if keybindings.left.contains(k) then
+				result = actions.walk(point.unitX.negate)
+			else if keybindings.right.contains(k) then
+				result = actions.walk(point.unitX)
+			else if keybindings.inventory.contains(k) then
+				result = self.useInventory(entity)
+			else if keybindings.drop.contains(k) then
+				result = self.dropInventory(entity)
+			else if keybindings.get.contains(k) then
+				result = actions.pickUpItem(point.zero)
+			else if keybindings.rest.contains(k) then
+				result = self.healWhileResting(entity, map)
+			else if keybindings.stairsDown.contains(k) and entity.position == map.stairsDown then
+				// TODO: This should only work when standing on stairs.
+				result = actions.takeStairsDown()
+			else if keybindings.stairsUp.contains(k) and entity.position == map.stairsUp then
+				result = actions.takeStairsUp()
+			end if
+		end while
+
+		return result
+	end function
+	
+	return b
+end function

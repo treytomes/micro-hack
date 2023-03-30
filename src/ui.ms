@@ -98,3 +98,12 @@ drawWindow = function(display, bounds, title)
 
 	drawCenteredText(display, bounds.left, bounds.right, bounds.bottom, WINDOW_TITLE_FOREGROUND, WINDOW_TITLE_BACKGROUND, title)
 end function
+
+SelectList = require("SelectList")
+SelectListItem = require("SelectListItem")
+InventorySelectListItem = require("InventorySelectListItem")
+InventorySelectWindow = require("InventorySelectWindow")
+
+selectItem = function(entity, title)
+	return (new ui.InventorySelectWindow).selectItem(entity, title)
+end function

@@ -1,8 +1,7 @@
 // Entity Factory
 
-makePlayer = function(map)
-	e = new entity.Entity
-	e.init(map.stairsUp)
+makePlayer = function()
+	e = (new entity.Entity).init()
 	e.tile.char = char(57872)
 	e.isPlayer = true
 
@@ -40,8 +39,7 @@ end function
 
 // TODO: Kobolds tend to attack in packs.  Move them to level 2.  Make rats appear on level 1.
 makeKobold = function(map)
-	e = new entity.Entity
-	e.init(map.findHiddenSpawnPoint())
+	e = (new entity.Entity).init(map.findHiddenSpawnPoint())
 	e.tile.foregroundColor = color.orange
 	e.tile.char = "k"
 

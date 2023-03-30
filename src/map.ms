@@ -8,8 +8,9 @@ Map.width = 64 // 68
 Map.stairsUp = point.zero
 Map.stairsDown = point.zero
 
-Map.make = function()
+Map.make = function(level)
 	m = new Map
+	m.level = level
 	m.tiles = []
 	m.entities = []
 	m.player = null
@@ -17,7 +18,7 @@ Map.make = function()
 	for y in range(m.height)
 		row = []
 		for x in range(m.width)
-			row.push tile.makeWall
+			row.push tiles.makeWall()
 		end for
 		m.tiles.push row
 	end for
@@ -28,7 +29,7 @@ Map.getTile = function(x, y)
 	if 0 <= x and x < self.width and 0 <= y and y < self.height then
 		return self.tiles[y][x]
 	end if
-	return tile.makeWall()
+	return tiles.makeWall()
 end function
 
 Map.blocksMovement = function(x, y)
@@ -111,6 +112,7 @@ Map.findHiddenSpawnPoint = function()
 	while true
 		// I brought in the range a bit, as you will never spawn on the map edge.
 		pnt = point.make(math.random(1, self.width - 2), math.random(1, self.height - 2))
+		
 		if not self.isVisible(pnt.x, pnt.y) then
 			if not self.blocksMovement(pnt.x, pnt.y) then
 				if not self.isEntityAt(pnt) then
@@ -151,9 +153,7 @@ Map.drawTile = function(display, x, y, renderOffset)
 	if t.isCurrentlyVisible then
 		t.draw(display, rx, ry)
 	else if t.hasBeenVisited then
-		display.setCellColor rx, ry, "#444444"
-		display.setCellBackColor rx, ry, color.black
-		display.setCell rx, ry, t.char
+		t.drawDim(display, rx, ry)
 	else
 		display.setCellColor rx, ry, color.black
 		display.setCellBackColor rx, ry, color.gray

@@ -1,10 +1,19 @@
 
-# 20230328
+# Next
 
 ## Updates
 
 * Using ensureImport, which should eventually clean up the import mass in main.ms.
     * Removed the reference to `tc`.  It wasn't needed, and was apparently mucking up my scope.
+* Another big refactoring to accomodate the CI/CD pipeline.
+* Game is published to [itch.io](https://treytomes.itch.io/micro-hack)!
+* Allow multiple keys per keybindings.
+* Inventory UI will show the tile icons.
+* Colors are micro-managed a bit more.
+* Particles can use floating-point velocities.
+* Notification and particles when you level up.
+* Increase in HP when you level up.
+* You can go down *and back up* the stairs!  Nothing new on lower levels yet though.
 
 # 20230325
 
