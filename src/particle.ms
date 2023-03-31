@@ -28,16 +28,16 @@ end function
 Particle.update = function(dsp, deltaTime, map, renderOffset)
 	self.totalTime += deltaTime
 	if self.isDead then
-		self.erase(dsp)
+		//self.erase(dsp)
 	else if self.totalTime - self.lastUpdateTime > self.speed then
-		self.erase(dsp)
+		//self.erase(dsp)
 		self.x += self.dx
 		self.y += self.dy
 		self.lastUpdateTime = self.totalTime
+	end if
 
-		if self.isAlive then //and map.isVisible(self.x, self.y) then
-			self.draw(dsp, renderOffset)
-		end if
+	if self.isAlive then //and map.isVisible(self.x, self.y) then
+		self.draw(dsp, renderOffset)
 	end if
 end function
 
