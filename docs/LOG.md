@@ -9,6 +9,12 @@
 * When you pick up an item, you will get the item under your feet.
 * Armor is now a thing!  I've tweaked the attack algorithm to account for armor AC and damage absorption.
 * Every item in the game now has a level and rarity that is used to control loot spawning.  The highest level item can only be found at level 10 or lower.
+* Fixed a bug in the particle renderer.  Using page flipping now, so it should be a bit smoother.
+* Unarmed damage dice increased from 1d1 to 1d4.
+
+## Strategies
+
+* Rest every chance you get.  Definitely rest before going down a level.
 
 # 20230330
 

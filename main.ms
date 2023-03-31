@@ -71,25 +71,44 @@ Display.initialize = function()
 	Display.hud = display(0)
 	Display.hud.delimiter = ""
 
-	display(1).mode = displayMode.text
-	Display.particles = display(1)
-	Display.particles.delimiter = ""
+	display(1).mode = displayMode.off
+	display(1).delimiter = ""
 
-	display(2).mode = displayMode.text
-	Display.entities = display(2)
-	Display.entities.delimiter = ""
+	display(2).mode = displayMode.off
+	display(2).delimiter = ""
+
+	Display.particles = display(1)
+	Display.flipParticles = function()
+		if display(1).mode == displayMode.off then
+			display(1).mode = displayMode.text
+			display(2).mode = displayMode.text
+			Display.particles = display(2)
+			display(2).mode = displayMode.off
+		else
+			display(1).mode = displayMode.text
+			display(2).mode = displayMode.text
+			Display.particles = display(1)
+			display(1).mode = displayMode.off
+		end if
+	end function
 
 	display(3).mode = displayMode.text
-	Display.map = display(3)
+	Display.entities = display(3)
+	Display.entities.delimiter = ""
+
+	display(4).mode = displayMode.text
+	Display.map = display(4)
 	Display.map.delimiter = ""
 end function
 
 Display.clear = function()
-	for n in range(0, 3)
-		display(n).color = color.white
-		display(n).backColor = color.clear
-		display(n).clear()
-	end for
+	Display.hud.clear()
+	Display.flipParticles()
+	Display.particles.clear()
+	Display.flipParticles()
+	Display.particles.clear()
+	Display.entities.clear()
+	Display.map.clear()
 end function
 
 Service = {}
@@ -141,6 +160,10 @@ end function
 updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
 		n = 0
+		
+		Display.particles.backColor = color.clear
+		Display.particles.clear()
+
 		while n < Service.fountains.len
 			f = Service.fountains[n]
 			f.draw(Display.particles, deltaTime, map, renderOffset)
@@ -150,6 +173,8 @@ updateParticles = function(deltaTime, map, renderOffset)
 				n += 1
 			end if
 		end while
+
+		Display.flipParticles()
 	end if
 end function
 

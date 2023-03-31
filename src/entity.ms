@@ -151,7 +151,7 @@ end function
 
 Entity.weaponDamage = function()
 	if self.weapon == null then
-		dmg = 1
+		dmg = math.Dice.make(1, 4).roll() // unarmed damage dice
 	else
 		dmg = self.weapon.calculateWeaponDamage()
 	end if
