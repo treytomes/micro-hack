@@ -1,6 +1,3 @@
-SCREEN_MAX_X = 67
-SCREEN_MAX_Y = 25
-
 Map = {}
 Map.height = 64 // 26
 Map.width = 64 // 68

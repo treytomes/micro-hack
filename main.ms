@@ -17,6 +17,9 @@ import "stringUtil"
 
 // "features" must be imported first.  "settings" must be imported last.
 
+SCREEN_MAX_X = 67
+SCREEN_MAX_Y = 25
+
 // Base import.
 ensureImport "features"
 ensureImport "math"
@@ -102,12 +105,20 @@ Display.initialize = function()
 end function
 
 Display.clear = function()
+	Display.hud.backColor = color.clear
 	Display.hud.clear()
 	Display.flipParticles()
+	
+	Display.particles.backColor = color.clear
 	Display.particles.clear()
 	Display.flipParticles()
+	Display.particles.backColor = color.clear
 	Display.particles.clear()
+
+	Display.entities.backColor = color.clear
 	Display.entities.clear()
+	
+	Display.map.backColor = color.clear
 	Display.map.clear()
 end function
 

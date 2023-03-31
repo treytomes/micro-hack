@@ -70,6 +70,9 @@ MapGenerator.randomPointInRoom = function(room)
 end function
 
 MapGenerator.spawnItem = function(map, room, item)
+	if item == null then
+		return
+	end if
 	while true
 		pnt = self.randomPointInRoom(room)
 		if map.getEntityAt(pnt) == null then
@@ -88,36 +91,6 @@ end function
 MapGenerator.decorateStairsDownRoom = function(map, room)
 	map.stairsDown = point.make(room.centerX, room.centerY)
 	map.tiles[room.centerY][room.centerX] = tiles.makeStairsDown()
-end function
-
-MapGenerator.makeItemForLevel = function(levelNumber)
-	return itemDb.getRandomItemForLevel(levelNumber)
-
-	//if levelNumber == 1 then
-	//	return math.selectItemByChance([
-	//		[ items.basicHealingPotion, 0.9 ],
-	//		[ shields.buckler, 0.1 ],
-	//	])
-	//else if levelNumber == 2 then
-	//	return math.selectItemByChance([
-	//		[ items.basicHealingPotion, 0.8 ],
-	//		[ shields.basicShield, 0.1 ],
-	//		[ weapons.shortSword, 0.1 ],
-	//	])
-	//else if levelNumber == 3 then
-	//	return math.selectItemByChance([
-	//		[ items.basicHealingPotion, 0.7 ],
-	//		[ items.greaterHealingPotion, 0.1 ],
-	//		[ shields.towerShield, 0.1 ],
-	//	])
-	//else if levelNumber == 4 then
-	//	return math.selectItemByChance([
-	//		[ items.basicHealingPotion, 0.6 ],
-	//		[ items.greaterHealingPotion, 0.2 ],
-	//		[ items.superiorHealingPotion, 0.1 ],
-	//		[ weapons.longSword, 0.1 ],
-	//	])
-	//end if
 end function
 
 MapGenerator.decorateRoom = function(map, room)
@@ -183,6 +156,10 @@ MapGenerator.buildRandomDungeon = function(map)
 		lootRoomIndex = math.random(0, rooms.len - 1)
 	end while
 	self.decorateLootRoom(map, rooms[lootRoomIndex])
+
+	for room in rooms
+		self.decorateRoom(map, room)
+	end for
 
 	for room in rooms
 		self.drawDoors(map, room)
