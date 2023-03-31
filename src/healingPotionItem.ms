@@ -1,5 +1,5 @@
 HealingPotionItem = new item.Item
-HealingPotionItem.tile = tile.make("!", color.red, color.black)
+HealingPotionItem.tile = tile.make("!", Color.red, Color.black)
 HealingPotionItem.dice = math.Dice.make(1, 1, 0)
 
 HealingPotionItem.str = function()

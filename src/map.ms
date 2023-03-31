@@ -8,9 +8,9 @@ Map.width = 64 // 68
 Map.stairsUp = point.zero
 Map.stairsDown = point.zero
 
-Map.make = function(level)
+Map.make = function(levelNumber)
 	m = new Map
-	m.level = level
+	m.levelNumber = levelNumber
 	m.tiles = []
 	m.entities = []
 	m.player = null
@@ -87,7 +87,8 @@ Map.removeEntity = function(entity)
 		return
 	end if
 	for n in range(0, self.entities.len - 1)
-		if self.entities[n] == entity then
+		// I don't really know why I need the position check.  Maybe the equality comparison doesn't go deep enough?
+		if self.entities[n] == entity and self.entities[n].position == entity.position then
 			self.entities.remove(n)
 			return
 		end if

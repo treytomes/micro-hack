@@ -15,9 +15,13 @@ Dice.zero = function()
 	return Dice.make(0, 0)
 end function
 
+Dice.const = function(value)
+	return Dice.make(0, 0, value)
+end function
+
 Dice.roll = function()
 	if self.numDice == 0 then
-		return 0
+		return self.modifier
 	end if
 
 	sum = 0

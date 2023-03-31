@@ -1,7 +1,7 @@
 Shield = new weapon.Weapon
 Shield.armorClass = 0
 Shield.damageDice = math.Dice.zero
-Shield.tile = tile.make(")", color.aqua, color.black)
+Shield.tile = tile.make(")", Color.aqua, Color.black)
 
 Shield.str = function()
 	return self.name

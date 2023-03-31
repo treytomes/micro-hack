@@ -90,15 +90,37 @@ MapGenerator.decorateStairsDownRoom = function(map, room)
 	map.tiles[room.centerY][room.centerX] = tiles.makeStairsDown()
 end function
 
-MapGenerator.decorateLootRoom = function(map, room)
-	self.spawnItem(map, room, weapons.longSword)
-	self.spawnItem(map, room, shields.towerShield)
-	for n in range(5)
-		item = math.selectItemByChance([
-			[ items.superiorHealingPotion, 0.2 ],
-			[ items.greaterHealingPotion, 0.3 ],
-			[ items.basicHealingPotion, 0.5 ],
+MapGenerator.makeItemForLevel = function(levelNumber)
+	if levelNumber == 1 then
+		return math.selectItemByChance([
+			[ items.basicHealingPotion, 0.9 ],
+			[ shields.buckler, 0.1 ],
 		])
+	else if levelNumber == 2 then
+		return math.selectItemByChance([
+			[ items.basicHealingPotion, 0.8 ],
+			[ shields.basicShield, 0.1 ],
+			[ weapons.shortSword, 0.1 ],
+		])
+	else if levelNumber == 3 then
+		return math.selectItemByChance([
+			[ items.basicHealingPotion, 0.7 ],
+			[ items.greaterHealingPotion, 0.1 ],
+			[ shields.towerShield, 0.1 ],
+			[ weapons.longSword, 0.1 ],
+		])
+	else if levelNumber == 4 then
+		return math.selectItemByChance([
+			[ items.basicHealingPotion, 0.6 ],
+			[ items.greaterHealingPotion, 0.2 ],
+			[ items.superiorHealingPotion, 0.2 ],
+		])
+	end if
+end function
+
+MapGenerator.decorateLootRoom = function(map, room)
+	for n in range(8)
+		item = self.makeItemForLevel(map.levelNumber)
 		self.spawnItem(map, room, item)
 	end for
 end function
@@ -158,6 +180,20 @@ MapGenerator.buildRandomDungeon = function(map)
 	return map
 end function
 
+MapGenerator.makeEntityForLevel = function(map, levelNumber)
+	if levelNumber == 0 then
+		return null
+	else if levelNumber < 64 then
+		// The % of kobolds in the map increases as you go down.
+		return math.selectItemByChance([
+			[ entities.makeRat(map), (64 - levelNumber) / 64 ],
+			[ entities.makeKobold(map), levelNumber / 64 ],
+		])
+	else if level >= 64 then
+		return entities.makeKobold(map)
+	end if
+end function
+
 MapGenerator.buildLevel = function(levelNumber, player)
 	map = map.Map.make(levelNumber)
 	if levelNumber == 0 then
@@ -168,8 +204,8 @@ MapGenerator.buildLevel = function(levelNumber, player)
 
 	Service.fov.refresh(map.stairsUp.x, map.stairsUp.y, player.rangeOfVision, map)
 	if levelNumber > 0 then
-		for n in range(11) // Generate 12 kobolds.
-			e = entities.makeKobold(map)
+		for n in range(math.random(12, 24)) // Generate between 12 and 24 level-appropriate enemies.
+			e = self.makeEntityForLevel(map, levelNumber)
 			map.entities.push(e)
 		end for
 	end if

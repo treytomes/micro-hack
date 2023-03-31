@@ -5,7 +5,7 @@ unarmed.damageDice = math.Dice.make(1, 1)
 // TODO: piercing damage, weight, dual-wield
 dagger = new weapon.Weapon
 dagger.init("dagger")
-dagger.tile = tile.make("-", color.gray, color.black)
+dagger.tile = tile.make("-", Color.gray, Color.black)
 dagger.damageDice = math.Dice.make(1, 4)
 dagger.weight = 1
 dagger.goldValue = 2
@@ -14,7 +14,7 @@ dagger.description = "A small and lightweight weapon that can be easily conceale
 // TODO: piercing damage
 shortSword = new weapon.Weapon
 shortSword.init("short sword")
-shortSword.tile = tile.make("\\", color.gray, color.black)
+shortSword.tile = tile.make("\\", Color.gray, Color.black)
 shortSword.damageDice = math.Dice.make(1, 6)
 shortSword.weight = 2
 shortSword.goldValue = 10
@@ -23,7 +23,7 @@ shortSword.description = "A versatile weapon that can be used for both slashing 
 // TODO: slashing damage
 longSword = new weapon.Weapon
 longSword.init("long sword")
-longSword.tile = tile.make("/", color.gray, color.black)
+longSword.tile = tile.make("/", Color.gray, Color.black)
 longSword.damageDice = math.Dice.make(1, 8)
 longSword.weight = 3
 longSword.goldValue = 15

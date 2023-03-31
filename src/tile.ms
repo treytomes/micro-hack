@@ -1,9 +1,9 @@
 Tile = {}
 
-Tile.init = function(char, foregroundColor, backgroundColor, blocksMovement=false, blocksVision=false)
+Tile.init = function(char, foregroundColor, backgroundColor=null, blocksMovement=false, blocksVision=false)
 	self.char = char
 	self.foregroundColor = foregroundColor
-	self.backgroundColor = backgroundColor
+	self.backgroundColor = math.coalesce(backgroundColor, Color.black)
 	self.blocksMovement = blocksMovement
 	self.blocksVision = blocksVision
 

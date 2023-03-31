@@ -61,7 +61,8 @@ Behavior.findNearbyEntities = function(entity, map)
 end function
 
 Behavior.isAlly = function(source, target)
-	return source.race == target.race and not self.willAttackSameRace
+	// Inanimate objects are everybody's friend.
+	return target.race == races.item or (source.race == target.race and not self.willAttackSameRace)
 end function
 
 Behavior.act = function(entity, map)
