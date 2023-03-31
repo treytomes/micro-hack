@@ -15,7 +15,7 @@ Weapon.effectStr = function()
 end function
 
 Weapon.use = function(entity)
-	if entity.weapon == self then
+	if self.equals(entity.weapon) then
 		entity.weapon = null
 	else
 		entity.weapon = self

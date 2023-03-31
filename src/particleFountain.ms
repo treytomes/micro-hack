@@ -49,7 +49,6 @@ ParticleFountain.draw = function(dsp, deltaTime, map, renderOffset)
 		p = self.particles[n]
 		p.update(dsp, deltaTime, map, renderOffset)
 		if p.isDead then
-			p.erase(dsp)
 			self.particles.remove(n)
 		else
 			n += 1

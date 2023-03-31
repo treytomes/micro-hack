@@ -1,7 +1,9 @@
-Entity = {}
+Entity = new Object
 
-Entity.init = function(pnt=null)
-	self.tile = tile.make("@", color.white, color.black, true, false)
+Entity.init = function(tile, race, class, pnt=null)
+	super.init()
+	
+	self.tile = tile
 	self.position = pnt
 	self.isPlayer = false
 	self.behaviors = []
@@ -9,20 +11,25 @@ Entity.init = function(pnt=null)
 	self.canBeAttacked = true
 	self.numRestTurns = 0
 
-	self.race = null
-	self.name = null
-	self.class = null
+	self.race = race
+	self.class = class
+	if self.race != null then self.name = self.race.name else self.name = "N/A"
+
+	self.strength = self.race.strength.roll() + self.class.strength.roll()
+	self.dexterity = self.race.dexterity.roll() + self.class.dexterity.roll()
+	self.constitution = self.race.constitution.roll() + self.class.constitution.roll()
+	self.intelligence = self.race.intelligence.roll() + self.class.intelligence.roll()
+	self.wisdom = self.race.wisdom.roll() + self.class.wisdom.roll()
+	self.charisma = self.race.charisma.roll() + self.class.charisma.roll()
+	
+	self.maxHP = self.race.hp.roll() + self.class.hp.roll() + self.constitutionModifier
+	self.currentHP = self.maxHP
+
+	self.xp = 0
+
 	self.weapon = null
 	self.armor = null
 	self.shield = null
-
-	self.dexterity = 0
-	self.strength = 0
-	self.constitution = 0
-	self.maxHP = 1
-	self.currentHP = 1
-	self.perception = 0
-	self.xp = 0
 
 	return self
 end function
@@ -31,7 +38,7 @@ Entity.canSee = function(pnt)
 	// TODO: I could use the fov calculateLineOfSight function to check for blockers.
 	deltaX = pnt.x - self.position.x
 	deltaY = pnt.y - self.position.y
-	return deltaX ^ 2 + deltaY ^ 2 <= self.rangeOfVision ^ 2
+	return deltaX * deltaX + deltaY * deltaY <= self.rangeOfVision * self.rangeOfVision
 end function
 
 Entity.draw = function(textDisplay, renderOffset)
@@ -40,9 +47,9 @@ Entity.draw = function(textDisplay, renderOffset)
 	y = renderOffset.y + self.position.y
 
 	colorMod = self.currentHP / self.maxHP
-	foregroundColor = color.lerp(color.red, self.tile.foregroundColor, colorMod)
-	textDisplay.setCellColor x, y, foregroundColor
-	textDisplay.setCellBackColor x, y, self.tile.backgroundColor
+	foregroundColor = Color.lerp(Color.red, self.tile.foregroundColor, colorMod)
+	textDisplay.setCellColor x, y, foregroundColor.str()
+	textDisplay.setCellBackColor x, y, self.tile.backgroundColor.str()
 	textDisplay.setCell x, y, self.tile.char
 end function
 
@@ -99,6 +106,14 @@ Entity.isDead = function()
 	return self.currentHP <= 0
 end function
 
+Entity.wisdomModifier = function()
+	return floor((self.wisdom - 10) / 2)
+end function
+
+Entity.perception = function()
+	return 10 + self.wisdomModifier
+end function
+
 Entity.constitutionModifier = function()
 	return floor((self.constitution - 10) / 2)
 end function
@@ -116,6 +131,9 @@ Entity.armorClass = function()
 	if self.shield != null then
 		ac += self.shield.armorClass
 	end if
+	if self.armor != null then
+		ac += self.armor.armorClass
+	end if
 	return ac
 end function
 
@@ -132,7 +150,11 @@ Entity.maxPushCapacity = function()
 end function
 
 Entity.weaponDamage = function()
-	dmg = math.coalesce(self.weapon, weapons.unarmed).calculateWeaponDamage()
+	if self.weapon == null then
+		dmg = math.Dice.make(1, 4).roll() // unarmed damage dice
+	else
+		dmg = self.weapon.calculateWeaponDamage()
+	end if
 	if self.shield != null then
 		dmg += self.shield.calculateWeaponDamage()
 	end if
@@ -165,7 +187,7 @@ end function
 Entity.levelUp = function()
 	Service.makeLevelUpParticles(self.position)
 	Service.messages.report("{0} has leveled up!".fill([ self.name ]))
-	hpDelta = self.class.hpDice.roll() + self.constitutionModifier
+	hpDelta = self.class.hp.roll() + self.constitutionModifier
 	self.maxHP += hpDelta
 	//self.currentHP += hpDelta
 	self.modifyHP(hpDelta)
@@ -174,16 +196,16 @@ Entity.levelUp = function()
 end function
 
 Entity.isEquipped = function(item)
-	return (self.weapon == item) or (self.shield == item) or (self.armor == item)
+	return (self.weapon != null and self.weapon.equals(item)) or (self.shield != null and self.shield.equals(item)) or (self.armor != null and self.armor.equals(item))
 end function
 
 // If the item is equipped in any way, un-equip it.
 Entity.removeFromSlots = function(item)
-	if self.weapon == item then
+	if self.weapon != null and self.weapon.equals(item) then
 		self.weapon = null
-	else if self.shield == item then
+	else if self.shield != null and self.shield.equals(item) then
 		self.shield = null
-	else if self.armor == item then
+	else if self.armor != null and self.armor.equals(item) then
 		self.armor = null
 	end if
 end function

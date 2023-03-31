@@ -44,10 +44,7 @@ Behavior.findNearbyEntities = function(entity, map)
 	radius = entity.rangeOfVision ^ 2
 
 	for e in map.entities
-		if e == entity then
-			continue
-		end if
-		if e == null then
+		if e.equals(entity) then
 			continue
 		end if
 
@@ -61,7 +58,8 @@ Behavior.findNearbyEntities = function(entity, map)
 end function
 
 Behavior.isAlly = function(source, target)
-	return source.race == target.race and not self.willAttackSameRace
+	// Inanimate objects are everybody's friend.
+	return target.race.equals(races.item) or (source.race.equals(target.race) and not self.willAttackSameRace)
 end function
 
 Behavior.act = function(entity, map)

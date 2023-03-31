@@ -1,6 +1,3 @@
-SCREEN_MAX_X = 67
-SCREEN_MAX_Y = 25
-
 Map = {}
 Map.height = 64 // 26
 Map.width = 64 // 68
@@ -8,9 +5,9 @@ Map.width = 64 // 68
 Map.stairsUp = point.zero
 Map.stairsDown = point.zero
 
-Map.make = function(level)
+Map.make = function(levelNumber)
 	m = new Map
-	m.level = level
+	m.levelNumber = levelNumber
 	m.tiles = []
 	m.entities = []
 	m.player = null
@@ -57,10 +54,8 @@ end function
 Map.getEntitiesAt = function(pnt)
 	lst = []
 	for e in self.entities
-		if e != null then
-			if e.position == pnt then
-				lst.push(e)
-			end if
+		if e.position.equals(pnt) then
+			lst.push(e)
 		end if
 	end for
 	return lst
@@ -69,10 +64,8 @@ end function
 // Get the first entity found at a point.
 Map.getEntityAt = function(pnt)
 	for e in self.entities
-		if e != null then
-			if e.position.x == pnt.x and e.position.y == pnt.y then
-				return e
-			end if
+		if e.position.equals(pnt) then
+			return e
 		end if
 	end for
 	return null
@@ -87,7 +80,9 @@ Map.removeEntity = function(entity)
 		return
 	end if
 	for n in range(0, self.entities.len - 1)
-		if self.entities[n] == entity then
+		// I don't really know why I need the position check.  Maybe the equality comparison doesn't go deep enough?
+		// TODO: Does this resolve the pickUp bug?
+		if self.entities[n].equals(entity) then //and self.entities[n].position == entity.position then
 			self.entities.remove(n)
 			return
 		end if

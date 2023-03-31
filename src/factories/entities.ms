@@ -1,14 +1,14 @@
 // Entity Factory
 
 makePlayer = function()
-	e = (new entity.Entity).init()
-	e.tile.char = char(57872)
+	t = tile.make(char(57872), Color.white, Color.black, true, false)
+	e = (new entity.Entity).init(t, races.human, classes.fighter)
+
+	e.name = "player" //e.race.name
+
+	e.xp = 0
 	e.isPlayer = true
 
-	e.race = races.human
-	e.name = "player" //e.race.name
-	e.class = classes.fighter
-	
 	// Give the player some stuff to start with.
 	if features.GIVE_INITIAL_INVENTORY then
 		for item in settings.PLAYER_INITIAL_INVENTORY
@@ -16,87 +16,72 @@ makePlayer = function()
 		end for
 		
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
-		e.inventory.push(e.weapon)
+		if e.weapon != null then e.inventory.push(e.weapon)
 
 		e.shield = settings.PLAYER_INITIAL_SHIELD
-		e.inventory.push(e.shield)
-	else
-		e.weapon = null
+		if e.shield != null then e.inventory.push(e.shield)
 	end if
-
-	e.dexterity = e.class.rollForDexterity()
-	e.strength = e.class.rollForStrength()
-	e.constitution = e.class.rollForConstitution()
-	e.maxHP = e.race.hpDice.roll() + e.class.hpDice.roll() + e.constitutionModifier
-	e.currentHP = e.maxHP
-	e.perception = 8
-	e.xp = 0
 
 	e.behaviors.push(behaviors.makeUserInput())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
 	return e
 end function
 
+makeRat = function(map)
+	t = tile.make("r", Color.gray, Color.black, true, false)
+	e = (new entity.Entity).init(t, races.rat, classes.classless, map.findHiddenSpawnPoint())
+
+	e.xp = 10
+
+	// TODO: Need a priority-based behavior system.  Higher priority behaviors
+	// get to go first, then only give way to lower priority behaviors if they
+	// return null.
+	// This could all rats to seek the player, but not eachother.
+	e.behaviors.push(behaviors.makeSeekPlayer())
+	e.behaviors.push(behaviors.makeAttackOnCollision())
+	return e
+end function
+
 // TODO: Kobolds tend to attack in packs.  Move them to level 2.  Make rats appear on level 1.
 makeKobold = function(map)
-	e = (new entity.Entity).init(map.findHiddenSpawnPoint())
-	e.tile.foregroundColor = color.orange
-	e.tile.char = "k"
-
-	e.race = races.kobold
-	e.name = e.race.name
-	e.class = classes.fighter
-
-	e.weapon = math.selectItemByChance([
-		[ weapons.dagger, 0.2 ],
-		[ null, 0.8 ],
-	])
-	// TODO: Armed kobolds are too tough for a level 1 player.
-	//e.weapon = math.selectItemByChance([
-	//	[ weapons.dagger, 0.3 ],
-	//	[ weapons.shortSword, 0.3 ],
-	//	[ null, 0.4 ],
-	//])
-	if e.weapon != null then
-		e.inventory.push(e.weapon)
-	end if
-
-	e.shield = null
-	// TODO: Shielded kobolds are too much for a level 1 player.
-	//e.shield = math.selectItemByChance([
-	//	[ null, 0.3 ],
-	//	[ shields.buckler, 0.2 ],
-	//	[ shields.smallWoodenShield, 0.25 ],
-	//	[ shields.scaleShield, 0.15 ],
-	//	[ shields.spikedShield, 0.05 ],
-	//	[ shields.hideShield, 0.05 ],
-	//])
-	if e.shield != null then
-		e.inventory.push(e.shield)
-	end if
-
-	e.dexterity = e.class.rollForDexterity()
-	e.strength = e.class.rollForStrength()
-	e.constitution = e.class.rollForConstitution()
-	e.maxHP = e.race.hpDice.roll() + e.class.hpDice.roll() + e.constitutionModifier
-	e.currentHP = e.maxHP
-
-	// Reduced from 12 to 6.  They were just too hard with that much perception; along with the packing behavior.
-	e.perception = 6 // 12
-
-	// You get this much XP for killing the monster.
+	t = tile.make("k", Color.orange, Color.black, true, false)
+	e = (new entity.Entity).init(t, races.kobold, classes.classless, map.findHiddenSpawnPoint())
 	e.xp = 25
 
+	e.weapon = math.selectItemByChance([
+		[ weapons.dagger, 0.3 ],
+		[ weapons.shortSword, 0.3 ],
+		[ null, 0.4 ],
+	])
+	if e.weapon != null then e.inventory.push(e.weapon)
+
+	e.armor = math.selectItemByChance([
+		[ null, 0.5 ],
+		[ armors.leatherArmor, 0.2 ],
+		[ armors.scaleMail, 0.15 ],
+		[ armors.chainMail, 0.1 ],
+		[ armors.splintMail, 0.04 ],
+		[ armors.bandedMail, 0.01 ],
+		[ armors.plateMail, 0.05 ],
+	])
+
+	e.shield = math.selectItemByChance([
+		[ null, 0.3 ],
+		[ shields.buckler, 0.2 ],
+		[ shields.smallWoodenShield, 0.25 ],
+		[ shields.scaleShield, 0.15 ],
+		[ shields.spikedShield, 0.05 ],
+		[ shields.hideShield, 0.05 ],
+	])
+	if e.shield != null then e.inventory.push(e.shield)
+
 	e.behaviors.push(behaviors.makeSeekPlayer())
-	//e.behaviors.push(behaviors.makeWander())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
 	return e
 end function
 
 makeItem = function(map, item, spawnPoint=null)
-	e = new entity.Entity
-	e.init(math.coalesce(spawnPoint, map.findSpawnPoint()))
-	e.tile = item.tile
+	e = (new entity.Entity).init(item.tile, races.item, classes.classless, math.coalesce(spawnPoint, map.findSpawnPoint()))
 	e.name = item.name
 	e.item = item
 	e.canBeAttacked = false

@@ -1,18 +1,21 @@
-builtinColor = globals.color
-
-Color = {}
-Color.r = 0
-Color.g = 0
-Color.b = 0
-Color.a = 0
+Color = new Object()
+Color._r = 0
+Color._g = 0
+Color._b = 0
+Color._a = 0
 
 Color.init = function(r, g, b, a = 255)
-	self.r = r
-	self.g = g
-	self.b = b
-	self.a = a
-	if self.a > 255 then self.a = 255
-	if self.a < 0 then self.a = 0
+	super.init()
+
+	self._r = r
+	self._g = g
+	self._b = b
+	self._a = a
+	if self._a > 255 then self._a = 255
+	if self._a < 0 then self._a = 0
+
+	self._html = color.fromList([ self._r, self._g, self._b, self._a ])
+	
 	return self
 end function
 
@@ -21,7 +24,7 @@ Color.fromList = function(lst)
 end function
 
 Color.fromHtml = function(html)
-	return self.fromList(builtinColor.toList(html))
+	return self.fromList(color.toList(html))
 end function
 
 Color.random = function()
@@ -65,39 +68,40 @@ Color.transparent = (new Color).init(0, 0, 0, 0)
 Color.clear = Color.transparent
 Color.black = (new Color).init(0, 0, 0)
 Color.white = (new Color).init(255, 255, 255)
-Color.maroon = Color.fromHtml(builtinColor.maroon)
-Color.olive = Color.fromHtml(builtinColor.olive)
-Color.teal = Color.fromHtml(builtinColor.teal)
-Color.aqua = Color.fromHtml(builtinColor.aqua)
-Color.fuchsia = Color.fromHtml(builtinColor.fuchsia)
-Color.brown = Color.fromHtml(builtinColor.brown)
+Color.maroon = Color.fromHtml(color.maroon)
+Color.olive = Color.fromHtml(color.olive)
+Color.teal = Color.fromHtml(color.teal)
+Color.aqua = Color.fromHtml(color.aqua)
+Color.fuchsia = Color.fromHtml(color.fuchsia)
+Color.brown = Color.fromHtml(color.brown)
 
 Color.str = function()
-	return color.fromList([ self.r, self.g, self.b, self.a ])
+	return self._html
 end function
 
 Color.lerp = function(start, finish, n)
-	r = math.lerp(start.r, finish.r, n)
-	g = math.lerp(start.g, finish.g, n)
-	b = math.lerp(start.b, finish.b, n)
-	a = math.lerp(start.a, finish.a, n)
+	//return color.lerp(start._html, finish._html, n)
+	r = math.lerp(start._r, finish._r, n)
+	g = math.lerp(start._g, finish._g, n)
+	b = math.lerp(start._b, finish._b, n)
+	a = math.lerp(start._a, finish._a, n)
 	return (new Color).init(r, g, b, a)
 end function
 
 Color.add = function(clr)
-	return (new Color).init(self.r + clr.r, self.g + clr.g, self.b + clr.b, self.a + clr.a)
+	return (new Color).init(self._r + clr._r, self._g + clr._g, self._b + clr._b, self._a + clr._a)
 end function
 
 Color.subtract = function(clr)
-	return (new Color).init(self.r - clr.r, self.g - clr.g, self.b - clr.b, self.a - clr.a)
+	return (new Color).init(self._r - clr._r, self._g - clr._g, self._b - clr._b, self._a - clr._a)
 end function
 
 Color.scale = function(v)
-	return (new Color).init(v * self.r, v * self.g, v * self.b, self.a)
+	return (new Color).init(v * self._r, v * self._g, v * self._b, self._a)
 end function
 
 Color.inverted = function()
-	return (new Color).init(255 - self.r, 255 - self.g, 255 - self.b, 255)
+	return (new Color).init(255 - self._r, 255 - self._g, 255 - self._b, 255)
 end function
 
 Color.desaturated = function()

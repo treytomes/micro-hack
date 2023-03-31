@@ -1,4 +1,4 @@
-Item = {}
+Item = new Object
 Item.name = "n/a"
 Item.isConsumedOnUse = true
 Item.tile = tile.make("?", color.gray, color.black)
@@ -6,8 +6,16 @@ Item.weight = 0
 Item.goldValue = 0
 Item.description = "N/A"
 
-Item.init = function(name)
+// These 2 attributes represent the level you might find this item on, along with how often it spawns there.
+Item.level = 0
+Item.rarity = 0
+
+Item.init = function(name, level, rarity)
+	super.init()
 	self.name = name
+	self.level = level
+	self.rarity = rarity
+	itemDb.addItem(self)
 end function
 
 Item.str = function()

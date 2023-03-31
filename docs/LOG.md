@@ -1,5 +1,24 @@
-
 # Next
+
+## Updates
+
+* Rats infest the top levels of the dungeon.  Kobolds appear in increasing number as you go down.
+* Rats are relatively weak, but they'll still nibble you to death if you're not careful!
+* Kobolds have been un-nerfed.  They are now properly armed.
+* Tweaked the stats a bit.  Also new enemies should be easier to make.
+* When you pick up an item, you will get the item under your feet.
+* Armor is now a thing!  I've tweaked the attack algorithm to account for armor AC and damage absorption.
+* Every item in the game now has a level and rarity that is used to control loot spawning.  The highest level item can only be found at level 10 or lower.
+* Fixed a bug in the particle renderer.  Using page flipping now, so it should be a bit smoother.
+* Unarmed damage dice increased from 1d1 to 1d4.
+* 50% chance that *every room* will have a prize!
+* You only get 1 health potion for free.  Go find the rest yourself.
+
+## Strategies
+
+* Rest every chance you get.  Definitely rest before going down a level.
+
+# 20230330
 
 ## Updates
 

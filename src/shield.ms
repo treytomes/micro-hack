@@ -1,7 +1,7 @@
 Shield = new weapon.Weapon
 Shield.armorClass = 0
 Shield.damageDice = math.Dice.zero
-Shield.tile = tile.make(")", color.aqua, color.black)
+Shield.tile = tile.make(")", Color.aqua, Color.black)
 
 Shield.str = function()
 	return self.name
@@ -21,7 +21,7 @@ Shield.effectStr = function()
 end function
 
 Shield.use = function(entity)
-	if entity.shield == self then
+	if self.equals(entity.shield) then
 		entity.shield = null
 	else
 		entity.shield = self
