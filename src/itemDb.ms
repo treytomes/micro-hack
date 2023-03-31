@@ -17,5 +17,22 @@ getRandomItemForLevel = function(level)
 	if level >= itemsByLevel.len then level = itemsByLevel.len - 1
 
 	if itemsByLevel[level].len == 0 then return null
-	return math.selectItemByChance(itemsByLevel[level])
+
+	items = []
+	for n in range(0, level)
+		items += itemsByLevel[level]
+	end for
+
+	// Sum up the rarity column.
+	totalRarity = 0
+	for row in items
+		totalRarity += row[1]
+	end for
+
+	// Now normalize the rarities.
+	for row in items
+		row[1] /= totalRarity
+	end for 
+
+	return math.selectItemByChance(items)
 end function
