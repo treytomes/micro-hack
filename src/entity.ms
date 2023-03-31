@@ -178,7 +178,7 @@ end function
 Entity.levelUp = function()
 	Service.makeLevelUpParticles(self.position)
 	Service.messages.report("{0} has leveled up!".fill([ self.name ]))
-	hpDelta = self.class.hpDice.roll() + self.constitutionModifier
+	hpDelta = self.class.hp.roll() + self.constitutionModifier
 	self.maxHP += hpDelta
 	//self.currentHP += hpDelta
 	self.modifyHP(hpDelta)

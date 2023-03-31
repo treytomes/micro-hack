@@ -3,6 +3,7 @@
 ## Updates
 
 * Rats infest the top levels of the dungeon.  Kobolds appear in increasing number as you go down.
+* Rats are relatively weak, but they'll still nibble you to death if you're not careful!
 * Kobolds have been un-nerfed.  They are now properly armed.
 * Tweaked the stats a bit.  Also new enemies should be easier to make.
 * When you pick up an item, you will get the item under your feet.
