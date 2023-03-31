@@ -21,7 +21,7 @@ Shield.effectStr = function()
 end function
 
 Shield.use = function(entity)
-	if entity.shield == self then
+	if self.equals(entity.shield) then
 		entity.shield = null
 	else
 		entity.shield = self

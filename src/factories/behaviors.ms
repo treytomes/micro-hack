@@ -105,7 +105,7 @@ end function
 makeSeekAllies = function()
 	b = makeWander()
 
-	b.seekAllies = function(entity, map)
+	b.seekAllies_v1 = function(entity, map)
 		allies = self.findNearbyEntities(entity, map)
 		if allies.len == 0 then
 			return self.wanderAround(entity, map)
@@ -116,6 +116,44 @@ makeSeekAllies = function()
 				action = self.moveTowards(entity, map, ally.position)
 				if action != null then
 					return action
+				end if
+			end if
+		end for
+
+		return self.wanderAround(entity, map)
+	end function
+
+	b.seekAllies = function(entity, map)
+		// Seeking allies is a slow process.  Can I make it faster?
+		//return self.wanderAround(entity, map)
+		radius = entity.rangeOfVision ^ 2
+
+		for e in map.entities
+			if e.equals(entity) or not self.isAlly(entity, e) then
+				continue
+			end if
+
+			delta = entity.position.subtract(e.position)
+			dist = delta.x * delta.x + delta.y * delta.y
+			if dist > radius then
+				continue
+			end if
+
+			// The entity can theoretically see the player.
+			// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
+			delta = delta.sign()
+			if delta.x != 0 and not map.blocksMovement(entity.position.x + delta.x, entity.position.y) then
+				deltaX = point.make(delta.x, 0)
+				newPos = entity.position.add(deltaX)
+				if e.position != newPos then
+					return actions.walk(deltaX)
+				end if
+			end if
+			if delta.y != 0 and not map.blocksMovement(entity.position.x, entity.position.y + delta.y) then
+				deltaY = point.make(0, delta.y)
+				newPos = entity.position.add(deltaY)
+				if e.position != newPos then
+					return actions.walk(deltaY)
 				end if
 			end if
 		end for
@@ -134,6 +172,7 @@ makeSeekPlayer = function()
 	b = makeSeekAllies()
 
 	b.act = function(entity, map)
+		return self.seekAllies(entity, map)
 		// The entity can theoretically see the player.
 		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 
@@ -196,10 +235,10 @@ makeUserInput = function()
 				result = actions.pickUpItem(point.zero)
 			else if keybindings.rest.contains(k) then
 				result = self.healWhileResting(entity, map)
-			else if keybindings.stairsDown.contains(k) and entity.position == map.stairsDown then
+			else if keybindings.stairsDown.contains(k) and entity.position.equals(map.stairsDown) then
 				// TODO: This should only work when standing on stairs.
 				result = actions.takeStairsDown()
-			else if keybindings.stairsUp.contains(k) and entity.position == map.stairsUp then
+			else if keybindings.stairsUp.contains(k) and entity.position.equals(map.stairsUp) then
 				result = actions.takeStairsUp()
 			end if
 		end while

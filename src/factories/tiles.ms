@@ -1,4 +1,3 @@
-
 makeFloor = function()
 	return tile.make(".", Color.brown.dark, Color.black, false, false)
 end function

@@ -18,10 +18,8 @@ makePlayer = function()
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
 		if e.weapon != null then e.inventory.push(e.weapon)
 
-		e.shield = settings.PLAYER_INITIAL_SHIELD
+		e.shield = null //settings.PLAYER_INITIAL_SHIELD
 		if e.shield != null then e.inventory.push(e.shield)
-	else
-		e.weapon = null
 	end if
 
 	e.behaviors.push(behaviors.makeUserInput())
@@ -48,8 +46,6 @@ end function
 makeKobold = function(map)
 	t = tile.make("k", Color.orange, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.kobold, classes.classless, map.findHiddenSpawnPoint())
-
-	// You get this much XP for killing the monster.
 	e.xp = 25
 
 	e.weapon = math.selectItemByChance([
@@ -57,11 +53,8 @@ makeKobold = function(map)
 		[ weapons.shortSword, 0.3 ],
 		[ null, 0.4 ],
 	])
-	if e.weapon != null then
-		e.inventory.push(e.weapon)
-	end if
+	if e.weapon != null then e.inventory.push(e.weapon)
 
-	// TODO: Shielded kobolds are too much for a level 1 player.
 	e.shield = math.selectItemByChance([
 		[ null, 0.3 ],
 		[ shields.buckler, 0.2 ],
@@ -73,7 +66,6 @@ makeKobold = function(map)
 	if e.shield != null then e.inventory.push(e.shield)
 
 	e.behaviors.push(behaviors.makeSeekPlayer())
-	//e.behaviors.push(behaviors.makeWander())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
 	return e
 end function

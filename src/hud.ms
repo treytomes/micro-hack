@@ -5,17 +5,8 @@ Message.make = function(text, foregroundColor = null, backgroundColor = null)
 	self.maxLifeSpan = 5
 	m.lifeSpan = 5
 	m.text = text
-	if foregroundColor == null then
-		m.foregroundColor = color.white
-	else
-		m.foregroundColor = foregroundColor
-	end if
-	if backgroundColor == null then
-		m.backgroundColor = color.black
-	else
-		m.backgroundColor = backgroundColor
-	end if
-
+	m.foregroundColor = math.coalesce(foregroundColor, color.white)
+	m.backgroundColor = math.coalesce(backgroundColor, color.black)
 	return m
 end function
 

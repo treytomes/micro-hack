@@ -9,8 +9,9 @@ env.importPaths = [
 ]
 
 // Library imports.
-import "coreUtil"
 import "listUtil"
+import "coreUtil"
+import "objectUtil"
 import "colorUtil"
 import "stringUtil"
 

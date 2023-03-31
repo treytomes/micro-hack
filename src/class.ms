@@ -1,4 +1,4 @@
-Class = {}
+Class = new Object
 Class.name = "classless"
 Class.hp = math.Dice.zero()
 Class.dexterity = math.Dice.zero()
@@ -9,6 +9,7 @@ Class.charisma = math.Dice.zero()
 Class.wisdom = math.Dice.zero()
 
 Class.init = function(name)
+	super.init()
 	self.name = name
 	return self
 end function

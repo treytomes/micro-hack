@@ -183,13 +183,13 @@ end function
 MapGenerator.makeEntityForLevel = function(map, levelNumber)
 	if levelNumber == 0 then
 		return null
-	else if levelNumber < 64 then
+	else if levelNumber < 5 then
 		// The % of kobolds in the map increases as you go down.
 		return math.selectItemByChance([
-			[ entities.makeRat(map), (64 - levelNumber) / 64 ],
-			[ entities.makeKobold(map), levelNumber / 64 ],
+			[ entities.makeRat(map), (5 - levelNumber) / 5 ],
+			[ entities.makeKobold(map), levelNumber / 5 ],
 		])
-	else if level >= 64 then
+	else if level >= 5 then
 		return entities.makeKobold(map)
 	end if
 end function

@@ -1,4 +1,4 @@
-Race = {}
+Race = new Object
 Race.name = "n/a"
 Race.baseArmorClass = 0
 
@@ -12,6 +12,7 @@ Race.wisdom = math.Dice.const(0)
 Race.charisma = math.Dice.const(0)
 
 Race.init = function(name)
+	super.init()
 	self.name = name
 	return self
 end function

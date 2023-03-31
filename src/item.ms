@@ -1,4 +1,4 @@
-Item = {}
+Item = new Object
 Item.name = "n/a"
 Item.isConsumedOnUse = true
 Item.tile = tile.make("?", color.gray, color.black)
@@ -7,6 +7,7 @@ Item.goldValue = 0
 Item.description = "N/A"
 
 Item.init = function(name)
+	super.init()
 	self.name = name
 end function
 

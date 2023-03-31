@@ -10,6 +10,10 @@ Point.str = function()
 	return "({0}, {1})".fill([ self.x, self.y ])
 end function
 
+Point.equals = function(other)
+	return self.x == other.x and self.y == other.y
+end function
+
 Point.multiply = function(n)
 	return (new Point).init(n * self.x, n * self.y)
 end function

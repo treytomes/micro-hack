@@ -1,6 +1,8 @@
-Entity = {}
+Entity = new Object
 
 Entity.init = function(tile, race, class, pnt=null)
+	super.init()
+	
 	self.tile = tile
 	self.position = pnt
 	self.isPlayer = false
@@ -36,7 +38,7 @@ Entity.canSee = function(pnt)
 	// TODO: I could use the fov calculateLineOfSight function to check for blockers.
 	deltaX = pnt.x - self.position.x
 	deltaY = pnt.y - self.position.y
-	return deltaX ^ 2 + deltaY ^ 2 <= self.rangeOfVision ^ 2
+	return deltaX * deltaX + deltaY * deltaY <= self.rangeOfVision * self.rangeOfVision
 end function
 
 Entity.draw = function(textDisplay, renderOffset)
@@ -187,16 +189,16 @@ Entity.levelUp = function()
 end function
 
 Entity.isEquipped = function(item)
-	return (self.weapon == item) or (self.shield == item) or (self.armor == item)
+	return (self.weapon != null and self.weapon.equals(item)) or (self.shield != null and self.shield.equals(item)) or (self.armor != null and self.armor.equals(item))
 end function
 
 // If the item is equipped in any way, un-equip it.
 Entity.removeFromSlots = function(item)
-	if self.weapon == item then
+	if self.weapon != null and self.weapon.equals(item) then
 		self.weapon = null
-	else if self.shield == item then
+	else if self.shield != null and self.shield.equals(item) then
 		self.shield = null
-	else if self.armor == item then
+	else if self.armor != null and self.armor.equals(item) then
 		self.armor = null
 	end if
 end function

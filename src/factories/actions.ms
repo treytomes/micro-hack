@@ -98,7 +98,7 @@ pickUpItem = function(delta)
 	action.apply = function(entity, map)
 		entities = map.getEntitiesAt(entity.position.add(self.delta))
 		for e in entities
-			if e == entity then
+			if e.equals(entity) then
 				continue
 			else if e.hasIndex("item") then
 				self.pickUpItem(entity, map, e)
