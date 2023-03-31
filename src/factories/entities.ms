@@ -18,7 +18,7 @@ makePlayer = function()
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
 		if e.weapon != null then e.inventory.push(e.weapon)
 
-		e.shield = null //settings.PLAYER_INITIAL_SHIELD
+		e.shield = settings.PLAYER_INITIAL_SHIELD
 		if e.shield != null then e.inventory.push(e.shield)
 	end if
 
@@ -54,6 +54,16 @@ makeKobold = function(map)
 		[ null, 0.4 ],
 	])
 	if e.weapon != null then e.inventory.push(e.weapon)
+
+	e.armor = math.selectItemByChance([
+		[ null, 0.5 ],
+		[ armors.leatherArmor, 0.2 ],
+		[ armors.scaleMail, 0.15 ],
+		[ armors.chainMail, 0.1 ],
+		[ armors.splintMail, 0.04 ],
+		[ armors.bandedMail, 0.01 ],
+		[ armors.plateMail, 0.05 ],
+	])
 
 	e.shield = math.selectItemByChance([
 		[ null, 0.3 ],

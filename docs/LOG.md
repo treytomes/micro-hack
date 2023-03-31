@@ -7,6 +7,8 @@
 * Kobolds have been un-nerfed.  They are now properly armed.
 * Tweaked the stats a bit.  Also new enemies should be easier to make.
 * When you pick up an item, you will get the item under your feet.
+* Armor is now a thing!  I've tweaked the attack algorithm to account for armor AC and damage absorption.
+* Every item in the game now has a level and rarity that is used to control loot spawning.  The highest level item can only be found at level 10 or lower.
 
 # 20230330
 

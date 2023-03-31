@@ -91,36 +91,46 @@ MapGenerator.decorateStairsDownRoom = function(map, room)
 end function
 
 MapGenerator.makeItemForLevel = function(levelNumber)
-	if levelNumber == 1 then
-		return math.selectItemByChance([
-			[ items.basicHealingPotion, 0.9 ],
-			[ shields.buckler, 0.1 ],
-		])
-	else if levelNumber == 2 then
-		return math.selectItemByChance([
-			[ items.basicHealingPotion, 0.8 ],
-			[ shields.basicShield, 0.1 ],
-			[ weapons.shortSword, 0.1 ],
-		])
-	else if levelNumber == 3 then
-		return math.selectItemByChance([
-			[ items.basicHealingPotion, 0.7 ],
-			[ items.greaterHealingPotion, 0.1 ],
-			[ shields.towerShield, 0.1 ],
-			[ weapons.longSword, 0.1 ],
-		])
-	else if levelNumber == 4 then
-		return math.selectItemByChance([
-			[ items.basicHealingPotion, 0.6 ],
-			[ items.greaterHealingPotion, 0.2 ],
-			[ items.superiorHealingPotion, 0.2 ],
-		])
+	return itemDb.getRandomItemForLevel(levelNumber)
+
+	//if levelNumber == 1 then
+	//	return math.selectItemByChance([
+	//		[ items.basicHealingPotion, 0.9 ],
+	//		[ shields.buckler, 0.1 ],
+	//	])
+	//else if levelNumber == 2 then
+	//	return math.selectItemByChance([
+	//		[ items.basicHealingPotion, 0.8 ],
+	//		[ shields.basicShield, 0.1 ],
+	//		[ weapons.shortSword, 0.1 ],
+	//	])
+	//else if levelNumber == 3 then
+	//	return math.selectItemByChance([
+	//		[ items.basicHealingPotion, 0.7 ],
+	//		[ items.greaterHealingPotion, 0.1 ],
+	//		[ shields.towerShield, 0.1 ],
+	//	])
+	//else if levelNumber == 4 then
+	//	return math.selectItemByChance([
+	//		[ items.basicHealingPotion, 0.6 ],
+	//		[ items.greaterHealingPotion, 0.2 ],
+	//		[ items.superiorHealingPotion, 0.1 ],
+	//		[ weapons.longSword, 0.1 ],
+	//	])
+	//end if
+end function
+
+MapGenerator.decorateRoom = function(map, room)
+	// 50% chance the room will have a prize!
+	if math.random(0, 100) > 50 then
+		item = itemDb.getRandomItemForLevel(map.levelNumber)
+		self.spawnItem(map, room, item)
 	end if
 end function
 
 MapGenerator.decorateLootRoom = function(map, room)
 	for n in range(8)
-		item = self.makeItemForLevel(map.levelNumber)
+		item = itemDb.getRandomItemForLevel(map.levelNumber)
 		self.spawnItem(map, room, item)
 	end for
 end function
@@ -152,6 +162,7 @@ MapGenerator.buildRandomDungeon = function(map)
 
 		room = rect.make(roomX, roomY, roomWidth, roomHeight)
 		rooms.push(room)
+		//self.decorateRoom(map, room)
 		self.drawFilledRect(map, room.x, room.y, room.width, room.height, @tiles.makeFloor)
 		if n > 0 then
 			self.drawHallway(map, rooms[n - 1], rooms[n])

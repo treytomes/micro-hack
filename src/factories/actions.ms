@@ -118,6 +118,17 @@ attack = function(targetEntity)
 		if attackRoll + attackBonus >= self.targetEntity.armorClass then
 			// Its a hit!
 			weaponDamage = entity.weaponDamage
+			
+			absorption = 0
+			if entity.armor != null then
+				absorption = entity.armor.absorptionDice.roll()
+			end if
+
+			totalDamage = weaponDamage - entity.armorClass - absorption
+			if totalDamage < 0 then
+				totalDamage = 0
+			end if
+
 			self.targetEntity.modifyHP(-weaponDamage)
 
 			// Calculate entity death if necessary.
@@ -128,7 +139,11 @@ attack = function(targetEntity)
 				self.targetEntity.xp = 0
 				self.targetEntity.onDeath(entity, map)
 			else
-				Service.messages.report(entity.name + " attacks " + self.targetEntity.name + " : " + weaponDamage + ".")
+				if totalDamage > 0 then
+					Service.messages.report(entity.name + " attacks " + self.targetEntity.name + " : " + weaponDamage + ".")
+				else
+					Service.messages.report(entity.name + " attacks " + self.targetEntity.name + ", but it was ineffective!")
+				end if
 			end if
 			return true
 		else

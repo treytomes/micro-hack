@@ -131,6 +131,9 @@ Entity.armorClass = function()
 	if self.shield != null then
 		ac += self.shield.armorClass
 	end if
+	if self.armor != null then
+		ac += self.armor.armorClass
+	end if
 	return ac
 end function
 
@@ -147,7 +150,11 @@ Entity.maxPushCapacity = function()
 end function
 
 Entity.weaponDamage = function()
-	dmg = math.coalesce(self.weapon, weapons.unarmed).calculateWeaponDamage()
+	if self.weapon == null then
+		dmg = 1
+	else
+		dmg = self.weapon.calculateWeaponDamage()
+	end if
 	if self.shield != null then
 		dmg += self.shield.calculateWeaponDamage()
 	end if

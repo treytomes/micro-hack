@@ -172,7 +172,6 @@ makeSeekPlayer = function()
 	b = makeSeekAllies()
 
 	b.act = function(entity, map)
-		return self.seekAllies(entity, map)
 		// The entity can theoretically see the player.
 		// I'm allowing monsters to "see" through walls.  It makes up for the lack of a sense of smell and hearing.
 

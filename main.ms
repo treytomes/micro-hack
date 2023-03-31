@@ -42,11 +42,14 @@ ensureImport "healingPotionItem" // depends on item
 ensureImport "race"
 ensureImport "weapon" // depends on item
 ensureImport "shield" // depends on weapon
+ensureImport "armor"
 ensureImport "particle"
 ensureImport "particleFountain"
 ensureImport "world"
+ensureImport "itemDb"
 
 // Factories
+ensureImport "armors"
 ensureImport "classes"
 ensureImport "entities"
 ensureImport "items"
