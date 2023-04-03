@@ -62,7 +62,12 @@ ensureImport "races"
 ensureImport "shields"
 ensureImport "tiles"
 ensureImport "weapons"
+ensureImport "names"
 
+ensureImport "arenaGenerator"
+ensureImport "randomDungeonGenerator"
+ensureImport "cavernGenerator"
+ensureImport "townGenerator"
 ensureImport "mapgen"
 ensureImport "fov"
 

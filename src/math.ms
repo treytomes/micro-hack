@@ -81,6 +81,11 @@ random = function(minValue, maxValue)
 	return baseValue
 end function
 
+// Pull a random item from the last.
+randomChoice = function(lst)
+	return lst[random(0, lst.len - 1)]
+end function
+
 selectItemByChance = function(odds)
 	value = rnd()
 	for row in odds
@@ -98,4 +103,8 @@ coalesce = function(value, defaultValue)
 		return defaultValue
 	end if
 	return value
+end function
+
+modulo = function(a, b)
+	return a - b * floor(a / b)
 end function
