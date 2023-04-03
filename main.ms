@@ -50,6 +50,8 @@ ensureImport "particle"
 ensureImport "particleFountain"
 ensureImport "world"
 ensureImport "itemDb"
+ensureImport "itemStack"
+ensureImport "inventory"
 
 // Factories
 ensureImport "armors"

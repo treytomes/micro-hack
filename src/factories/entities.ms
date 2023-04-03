@@ -12,14 +12,14 @@ makePlayer = function()
 	// Give the player some stuff to start with.
 	if features.GIVE_INITIAL_INVENTORY then
 		for item in settings.PLAYER_INITIAL_INVENTORY
-			e.inventory.push(item)
+			e.inventory.addItem(item)
 		end for
 		
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
-		if e.weapon != null then e.inventory.push(e.weapon)
+		if e.weapon != null then e.inventory.addItem(e.weapon)
 
 		e.shield = settings.PLAYER_INITIAL_SHIELD
-		if e.shield != null then e.inventory.push(e.shield)
+		if e.shield != null then e.inventory.addItem(e.shield)
 	end if
 
 	e.behaviors.push(behaviors.makeUserInput())
@@ -53,7 +53,7 @@ makeKobold = function(map)
 		[ weapons.shortSword, 0.3 ],
 		[ null, 0.4 ],
 	])
-	if e.weapon != null then e.inventory.push(e.weapon)
+	if e.weapon != null then e.inventory.addItem(e.weapon)
 
 	e.armor = math.selectItemByChance([
 		[ null, 0.5 ],
@@ -73,7 +73,7 @@ makeKobold = function(map)
 		[ shields.spikedShield, 0.05 ],
 		[ shields.hideShield, 0.05 ],
 	])
-	if e.shield != null then e.inventory.push(e.shield)
+	if e.shield != null then e.inventory.addItem(e.shield)
 
 	e.behaviors.push(behaviors.makeSeekPlayer())
 	e.behaviors.push(behaviors.makeAttackOnCollision())

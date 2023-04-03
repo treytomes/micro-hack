@@ -7,7 +7,7 @@ Entity.init = function(tile, race, class, pnt=null)
 	self.position = pnt
 	self.isPlayer = false
 	self.behaviors = []
-	self.inventory = []
+	self.inventory = (new inventory.Inventory).init()
 	self.canBeAttacked = true
 	self.numRestTurns = 0
 
