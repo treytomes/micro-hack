@@ -56,8 +56,8 @@ InventorySelectListItem.describe = function(parent)
 	bounds.height -= 1
 	if self.entity.isEquipped(item) then
 		ui.drawText(parent.display, "Equipped.", bounds, Color.green.str())
-	else
-		ui.drawText(parent.display, "Not equipped.", bounds, Color.yellow.str())
+	//else
+	//	ui.drawText(parent.display, "Not equipped.", bounds, Color.yellow.str())
 	end if
 end function
 

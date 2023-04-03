@@ -2,6 +2,12 @@
 
 ## Updates
 
+* Remove the "Not equipped" text from the inventory UI.
+
+# 20230331
+
+## Updates
+
 * Rats infest the top levels of the dungeon.  Kobolds appear in increasing number as you go down.
 * Rats are relatively weak, but they'll still nibble you to death if you're not careful!
 * Kobolds have been un-nerfed.  They are now properly armed.
@@ -13,6 +19,7 @@
 * Unarmed damage dice increased from 1d1 to 1d4.
 * 50% chance that *every room* will have a prize!
 * You only get 1 health potion for free.  Go find the rest yourself.
+* Some performance improvements.
 
 ## Strategies
 
