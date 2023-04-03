@@ -3,6 +3,8 @@
 ## Updates
 
 * Remove the "Not equipped" text from the inventory UI.
+* Entity inventory has been upgraded from a list to an Inventory object.
+* Inventory slots are now composed of ItemStack objects in place of raw Items.
 
 # 20230331
 
