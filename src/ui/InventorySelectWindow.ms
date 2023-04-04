@@ -76,7 +76,11 @@ InventorySelectWindow.selectItem = function(entity, windowName)
 	end while
 
 	self.selectList.erase()
-	return result
+	if self.selectList.selectedItem == null then
+		return null
+	else
+		return result
+	end if
 end function
 
 return InventorySelectWindow
