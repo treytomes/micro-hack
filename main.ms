@@ -201,7 +201,7 @@ main = function()
 	isRunning = true
 
 	Service.world = new world.World
-	Service.world.currentLevel = 1 // Start in the dungeon.
+	Service.world.currentLevel = 0
 	Service.world.player = entities.makePlayer()
 	Service.world.player.enterMap = function(map, goingDown)
 		if goingDown then

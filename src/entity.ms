@@ -163,7 +163,7 @@ end function
 
 // This formula may need to be tweaked later, when perception has more uses attached.
 Entity.rangeOfVision = function()
-	return self.perception
+	return floor(self.perception / 2)
 end function
 
 Entity.level = function()

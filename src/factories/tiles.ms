@@ -2,6 +2,14 @@ makeFloor = function()
 	return tile.make(".", Color.brown.dark, Color.black, false, false)
 end function
 
+makeGrass = function()
+	return tile.make(".", Color.green.dark, Color.green.darker, false, false)
+end function
+
+makeMountain = function()
+	return tile.make("#", Color.gray.darker.darker, Color.gray.dark.dark, true, true)
+end function
+
 makeStairsUp = function()
 	return tile.make("<", Color.brown.dark, Color.black, false, false)
 end function
