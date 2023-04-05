@@ -2,9 +2,6 @@ FILL_PROBABILITY = 0.4
 SMOOTHING_ITERATIONS = 5
 THRESHOLD_SIZE = 8
 
-//makeFloor = @tiles.makeFloor
-//makeWall = @tiles.makeWall
-
 makeFloor = @tiles.makeFloor
 makeWall = @tiles.makeWall
 
@@ -196,22 +193,6 @@ generateCavernLevel = function(mapgen, map)
 
         level = newLevel
 	end for
-
-    // Fill in any isolated wall tiles by turning them into floor tiles
-	//for y in range(1, map.height - 2)
-	//	for x in range(1, map.width - 2)
-    //        if level[y][x] == 1 then
-    //            floors = 0
-    //            for dy in range(-1, 1)
-    //                for dx in range(-1, 1)
-    //                    if level[y + dy][x + dx] == 0 then floors += 1
-	//				end for
-	//			end for
-	//			
-    //            if floors == 8 then level[y][x] = 0
-	//		end if
-	//	end for
-	//end for
 
 	// Check the size of all wall regions.  Replace them with floors if they're too small.
 	wallRegions = getRegions(level, map.width, map.height, 1)

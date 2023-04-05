@@ -266,6 +266,7 @@ generateCavernLevel = function(mapgen, map)
 		end for
 	end for
 
+	// Place the stairs down.
 	foundSpot = false
 	while not foundSpot
 		x = math.random(0, map.width - 1)
@@ -277,18 +278,34 @@ generateCavernLevel = function(mapgen, map)
 		end if
 	end while
 
+	// Place the player spawn near the stairs down.
 	foundSpot = false
 	while not foundSpot
 		// Put the spawn point near the stairs down.
 		x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
 		y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
-		if not map.blocksMovement(x, y) then
+		if not map.blocksMovement(x, y) and not pnt.equals(map.stairsDown) then
 			// We need the stairsUp point for spawning, but there is no level < 0.
 			//map.tiles[y][x] = tiles.makeStairsUp()
 			map.stairsUp = point.make(x, y)
 			foundSpot = true
 		end if
 	end while
+
+	// Place a sign post.
+	foundSpot = false
+	while not foundSpot
+		// Put the spawn point near the stairs down.
+		x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
+		y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
+		pnt = point.make(x, y)
+		if not map.blocksMovement(x, y) and not map.isEntityAt(pnt) and not pnt.equals(map.stairsDown) then
+			e = entities.makeSign(map, pnt, "Under construction, please come back later!")
+			map.entities.push(e)
+			foundSpot = true
+		end if
+	end while
+
 
 	return map
 end function
