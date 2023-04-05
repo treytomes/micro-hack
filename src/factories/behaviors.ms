@@ -18,6 +18,19 @@ makeHealWhileResting = function()
 	return b
 end function
 
+makeShowMessage = function(msg)
+	b = behavior.make()
+	b.message = msg
+
+	b.onEntityCollision = function(sourceEntity, targetEntity, map)
+		//if targetEntity.isPlayer then
+			Service.messages.report("The sign reads: ""{0}""".fill(self.message))
+		//end if
+	end function
+
+	return b
+end function
+
 makeAttackOnCollision = function()
 	b = behavior.make()
 

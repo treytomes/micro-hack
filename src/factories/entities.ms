@@ -27,6 +27,20 @@ makePlayer = function()
 	return e
 end function
 
+makeSign = function(map, pnt, msg)
+	t = tile.make("-", Color.white, Color.brown, true, false)
+	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
+
+	e.canBeAttacked = false
+
+	// TODO: Need a priority-based behavior system.  Higher priority behaviors
+	// get to go first, then only give way to lower priority behaviors if they
+	// return null.
+	// This could all rats to seek the player, but not eachother.
+	e.behaviors.push(behaviors.makeShowMessage(msg))
+	return e
+end function
+
 makeRat = function(map)
 	t = tile.make("r", Color.gray, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.rat, classes.classless, map.findHiddenSpawnPoint())
@@ -81,7 +95,7 @@ makeKobold = function(map)
 end function
 
 makeItem = function(map, item, spawnPoint=null)
-	e = (new entity.Entity).init(item.tile, races.item, classes.classless, math.coalesce(spawnPoint, map.findSpawnPoint()))
+	e = (new entity.Entity).init(item.tile, races.npc, classes.classless, math.coalesce(spawnPoint, map.findSpawnPoint()))
 	e.name = item.name
 	e.item = item
 	e.canBeAttacked = false

@@ -89,7 +89,7 @@ Entity.modifyHP = function(amount)
 	delta = self.currentHP - oldHP
 
 	if delta > 0 then	
-		Service.messages.report(self.name + " was healed by " + delta + " HP.")
+		Service.messages.report("{0} was healed by {1} HP.".fill([ self.name, delta]))
 		Service.makeMessageParticles(self.position, delta, Color.green)
 	else if delta < 0 then
 		Service.makeMessageParticles(self.position, -delta, Color.red)
