@@ -30,8 +30,13 @@ Entity.init = function(tile, race, class, pnt=null)
 	self.weapon = null
 	self.armor = null
 	self.shield = null
+	self.description = ""
 
 	return self
+end function
+
+Entity.str = function()
+	return self.name
 end function
 
 Entity.canSee = function(pnt)

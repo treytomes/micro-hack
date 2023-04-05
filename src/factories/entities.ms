@@ -30,7 +30,7 @@ end function
 makeSign = function(map, pnt, msg)
 	t = tile.make("-", Color.white, Color.brown, true, false)
 	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
-
+	e.description = "The sign reads: ""{0}""".fill(msg)
 	e.canBeAttacked = false
 
 	// TODO: Need a priority-based behavior system.  Higher priority behaviors
@@ -44,7 +44,7 @@ end function
 makeRat = function(map)
 	t = tile.make("r", Color.gray, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.rat, classes.classless, map.findHiddenSpawnPoint())
-
+	e.description = "A small creature darting across the floor. As it scurries away, you get a better look and realize it is a basic rat, with beady eyes and a long, pink tail. Its fur is matted and dirty, and it seems to be searching for scraps of food."
 	e.xp = 10
 
 	// TODO: Need a priority-based behavior system.  Higher priority behaviors
@@ -61,6 +61,7 @@ makeKobold = function(map)
 	t = tile.make("k", Color.orange, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.kobold, classes.classless, map.findHiddenSpawnPoint())
 	e.xp = 25
+	e.description = "A small, reptilian humanoid, standing at about three feet tall. It has scaly, dark brown skin and beady red eyes that dart around nervously. The kobold is dressed in rags and carrying a crude weapon, and it looks up at the player with a mix of curiosity and hostility. Its sharp teeth and claws are visible as it snarls, ready to defend itself if necessary."
 
 	e.weapon = math.selectItemByChance([
 		[ weapons.dagger, 0.3 ],
