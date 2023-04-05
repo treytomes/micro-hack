@@ -3,7 +3,8 @@ SelectListItem = require("SelectListItem")
 InventorySelectListItem = new SelectListItem
 
 InventorySelectListItem.init = function(entity, inventoryIndex)
-	super.init(inventoryIndex)
+	super.init()
+	self.index = inventoryIndex
 	self.entity = entity
 	return self
 end function

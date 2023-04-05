@@ -174,3 +174,20 @@ takeStairsDown = function()
 	end function
 	return action
 end function
+
+examine = function(position)
+	action = new EntityAction
+	action.position = position
+
+	action.apply = function(entity, map)
+		entities = map.getEntitiesAt(position)
+
+		if entities.len == 0 then
+			tile = map.tiles[position.y][position.x]
+			Service.messages.report("You see a {0} there.".fill([ tile.name ]))
+		else
+			ui.examine(entities)
+		end if
+	end function
+	return action
+end function

@@ -5,6 +5,9 @@
 * Remove the "Not equipped" text from the inventory UI.
 * Entity inventory has been upgraded from a list to an Inventory object.
 * Inventory slots are now composed of ItemStack objects in place of raw Items.
+* The overworld has arrived!  Read the sign for more info.
+* rangeOfVision = perception / 2.
+* You can use the "e" key followed by an arrow to examine the tile in that direction.
 
 # 20230331
 

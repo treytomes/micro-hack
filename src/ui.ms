@@ -103,7 +103,13 @@ SelectList = require("SelectList")
 SelectListItem = require("SelectListItem")
 InventorySelectListItem = require("InventorySelectListItem")
 InventorySelectWindow = require("InventorySelectWindow")
+ExamineSelectListItem = require("ExamineSelectListItem")
+ExamineWindow = require("ExamineWindow")
 
 selectItem = function(entity, title)
 	return (new ui.InventorySelectWindow).selectItem(entity, title)
+end function
+
+examine = function(entities)
+	return (new ui.ExamineWindow).examine(entities)
 end function

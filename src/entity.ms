@@ -39,6 +39,22 @@ Entity.str = function()
 	return self.name
 end function
 
+Entity.describe = function(display, bounds)
+	ui.drawText(display, "HP: {0}/{1}".fill([self.currentHP, self.maxHP]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Strength: {0}".fill([self.strength]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Dexterity: {0} ({1})".fill([self.dexterity, self.dexterityModifier]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Constitution: {0} ({1})".fill([self.constitution, self.constitutionModifier]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Intelligence: {0}".fill([self.intelligence]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Wisdom: {0}".fill([self.wisdom]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Charisma: {0}".fill([self.charisma]), bounds, Color.orange.str())
+end function
+
 Entity.canSee = function(pnt)
 	// TODO: I could use the fov calculateLineOfSight function to check for blockers.
 	deltaX = pnt.x - self.position.x

@@ -18,19 +18,6 @@ makeHealWhileResting = function()
 	return b
 end function
 
-makeShowMessage = function(msg)
-	b = behavior.make()
-	b.message = msg
-
-	b.onEntityCollision = function(sourceEntity, targetEntity, map)
-		//if targetEntity.isPlayer then
-			Service.messages.report("The sign reads: ""{0}""".fill(self.message))
-		//end if
-	end function
-
-	return b
-end function
-
 makeAttackOnCollision = function()
 	b = behavior.make()
 
@@ -212,7 +199,7 @@ makeUserInput = function()
 	end function
 
 	b.useInventory = function(entity)
-		index = ui.selectItem(entity, "Drop Inventory Item")
+		index = ui.selectItem(entity, "Use Inventory Item")
 		if index == null then
 			return null
 		end if
@@ -223,6 +210,28 @@ makeUserInput = function()
 	end function
 
 	b.takeStairsDown = function()
+	end function
+
+	b.examine = function(entity)
+		Service.messages.report("Examine in which direction?")	
+		Service.messages.draw(display, true)
+		Service.messages.update()
+
+		k = key.get.code
+		if keybindings.up.contains(k) then
+			return actions.examine(entity.position.add(point.unitY))
+		else if keybindings.down.contains(k) then
+			return actions.examine(entity.position.add(point.unitY.negate))
+		else if keybindings.left.contains(k) then
+			return actions.examine(entity.position.add(point.unitX.negate))
+		else if keybindings.right.contains(k) then
+			return actions.examine(entity.position.add(point.unitX))
+		end if
+
+		Service.messages.report("Never mind.")
+		Service.messages.draw(display, true)
+		Service.messages.update()
+		return null // Cancel the action.
 	end function
 
 	b.act = function(entity, map)
@@ -245,10 +254,12 @@ makeUserInput = function()
 				result = self.dropInventory(entity)
 			else if keybindings.get.contains(k) then
 				result = actions.pickUpItem(point.zero)
+			else if keybindings.examine.contains(k) then
+				result = self.examine(entity)
 			else if keybindings.rest.contains(k) then
 				result = self.healWhileResting(entity, map)
 			else if keybindings.stairsDown.contains(k) and entity.position.equals(map.stairsDown) then
-				// TODO: This should only work when standing on stairs.
+				// TODO: If the player is the only entity on the map, and the stairs have been seen before, allow fast travel.
 				result = actions.takeStairsDown()
 			else if keybindings.stairsUp.contains(k) and entity.position.equals(map.stairsUp) then
 				result = actions.takeStairsUp()
