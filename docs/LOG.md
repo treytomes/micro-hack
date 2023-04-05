@@ -8,6 +8,7 @@
 * The overworld has arrived!  Read the sign for more info.
 * rangeOfVision = perception / 2.
 * You can use the "e" key followed by an arrow to examine the tile in that direction.
+* Used page flipping to get a good performance boost, and knock out the jagged entity movement bug.
 
 # 20230331
 

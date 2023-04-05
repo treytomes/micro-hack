@@ -10,13 +10,13 @@ Message.make = function(text, foregroundColor = null, backgroundColor = null)
 	return m
 end function
 
-Message.draw = function(hudDisplay, row)
-	hudDisplay.row = row
-	hudDisplay.column = 0
+Message.draw = function(row)
+	Display.hud.row = row
+	Display.hud.column = 0
 	ratio = self.lifeSpan / self.maxLifeSpan
-	hudDisplay.color = color.lerp(color.clear, self.foregroundColor, ratio)
-	hudDisplay.backColor = color.lerp(color.clear, self.backgroundColor, ratio)
-	hudDisplay.print(self.text)
+	Display.hud.color = color.lerp(color.clear, self.foregroundColor, ratio)
+	Display.hud.backColor = color.lerp(color.clear, self.backgroundColor, ratio)
+	Display.hud.print(self.text)
 end function
 
 MessageLog = {}
@@ -55,24 +55,22 @@ MessageLog.update = function()
 			n += 1
 		end if
 	end while
+	
+	self.draw()
 end function
 
-MessageLog.draw = function(hudDisplay, inverse)
+MessageLog.draw = function()
 	if self.messages.len == 0 then
 		return
 	end if
-	
-	for n in range(0, self.messages.len - 1)
-		row = n
-		if not inverse then
-			row = 25 - n
-		end if
-
-		self.messages[n].draw(hudDisplay, row)
-	end for
 end function
 
 MessageLog.report = function(msg, foregroundColor = null, backgroundColor = null)
 	self.messages.insert(0, Message.make(msg, foregroundColor, backgroundColor))
+end function
+
+MessageLog.reportNow = function(msg, foregroundColor = null, backgroundColor = null)
+	self.report(msg)
+	self.update()
 end function
 

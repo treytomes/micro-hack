@@ -103,12 +103,25 @@ Display.initialize = function()
 	end function
 
 	display(3).mode = displayMode.text
-	Display.entities = display(3)
-	Display.entities.delimiter = ""
+	display(3).delimiter = ""
 
-	display(4).mode = displayMode.text
-	Display.map = display(4)
-	Display.map.delimiter = ""
+	display(4).mode = displayMode.off
+	display(4).delimiter = ""
+
+	Display.map = display(3)
+	Display.flipMap = function()
+		if display(3).mode == displayMode.off then
+			display(3).mode = displayMode.text
+			display(4).mode = displayMode.text
+			Display.map = display(4)
+			display(4).mode = displayMode.off
+		else
+			display(3).mode = displayMode.text
+			display(4).mode = displayMode.text
+			Display.map = display(3)
+			display(3).mode = displayMode.off
+		end if
+	end function
 end function
 
 Display.clear = function()
@@ -121,9 +134,12 @@ Display.clear = function()
 	Display.flipParticles()
 	Display.particles.backColor = color.clear
 	Display.particles.clear()
-
-	Display.entities.backColor = color.clear
-	Display.entities.clear()
+	
+	Display.map.backColor = color.clear
+	Display.map.clear()
+	Display.flipMap()
+	Display.map.backColor = color.clear
+	Display.map.clear()
 	
 	Display.map.backColor = color.clear
 	Display.map.clear()
@@ -132,8 +148,6 @@ end function
 Service = {}
 
 drawEntities = function(display, map, renderOffset)
-	display.clear()
-	
 	// First draw entities that you can step on.
 	for e in map.entities
 		if map.isVisible(e.position.x, e.position.y) and not e.tile.blocksMovement then
@@ -155,23 +169,15 @@ drawHUD = function(display, player)
 	display.clear()
 	display.row = 26
 	
-	display.row = 26
-	//if player.position.y <= (26 / 2) then
-	//	display.row = 0
-	//else
-	//	display.row = 26
-	//end if
-
 	display.column = 0
 	display.color = color.white
 	display.backColor = color.black
 
-	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel + "   world: " + Service.world.currentLevel
+	statusBar = "HP: {0} / {1} LVL: {2} XP: {3} / {4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (67 - statusBar.len)
 	
 	display.print(statusBar)
 	
-	Service.messages.draw(display, true) //, player.position.y > (26 / 2))
 	Service.messages.update()
 end function
 
@@ -253,11 +259,13 @@ main = function()
 		Service.fountains.push(particles.makeMessageParticles(pnt, message, foregroundColor))
 	end function
 	
-	Display.clear()
+	//Display.clear()
 
 	Service.world.map.clearScreen(Display.map)
 	Service.world.map.draw(Display.map, Service.world.player, renderOffset)
-	drawEntities(Display.entities, Service.world.map, renderOffset)
+	drawEntities(Display.map, Service.world.map, renderOffset)
+	Display.flipMap()
+
 	drawHUD(Display.hud, Service.world.player)
 
 	deltaTime = 0
@@ -305,7 +313,9 @@ main = function()
 			end if
 			
 			Service.world.map.draw(Display.map, Service.world.player, renderOffset)
-			drawEntities(Display.entities, Service.world.map, renderOffset)
+			//drawEntities(Display.entities, Service.world.map, renderOffset)
+			drawEntities(Display.map, Service.world.map, renderOffset)
+			Display.flipMap()
 			drawHUD(Display.hud, Service.world.player)
 		end if
 
