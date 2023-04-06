@@ -24,6 +24,32 @@ makePlayer = function()
 
 	e.behaviors.push(behaviors.makeUserInput())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
+
+	e.enterMap = function(map, goingDown)
+		if goingDown then
+			self.position = map.stairsUp
+		else
+			self.position = map.stairsDown
+		end if
+		map.player = self
+		map.entities.push(self)
+		Service.fov.refresh(self.position.x, self.position.y, self.rangeOfVision, map)
+	end function
+
+	e.leaveMap = function(map)
+		map.player = null
+		if map.entities.len > 0 then
+			n = 0
+			while n < map.entities.len
+				if map.entities[n].isPlayer then
+					map.entities.remove(n)
+				else
+					n += 1
+				end if
+			end while
+		end if
+	end function
+
 	return e
 end function
 

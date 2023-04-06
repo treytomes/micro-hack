@@ -7,8 +7,14 @@
 * Inventory slots are now composed of ItemStack objects in place of raw Items.
 * The overworld has arrived!  Read the sign for more info.
 * rangeOfVision = perception / 2.
-* You can use the "e" key followed by an arrow to examine the tile in that direction.
+* Use the "e" key followed by an arrow to examine the tile in that direction.
+* Use the ";" key to activate a selection cursor.  Move the cursor around to inspect a tile.  `enter` for more details. 
 * Used page flipping to get a good performance boost, and knock out the jagged entity movement bug.
+
+## Known Bugs
+
+* If you crash the game then immediately restart it, it gets really laggy and has rendering artifacts.
+    * Probably related to page flipping.
 
 # 20230331
 

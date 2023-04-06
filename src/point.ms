@@ -38,6 +38,10 @@ Point.scale = function(v)
 	return (new Point).init(v * self.x, v * self.y)
 end function
 
+Point.floor = function()
+	return (new Point).init(floor(self.x), floor(self.y))
+end function
+
 zero = function()
 	return (new Point).init(0, 0)
 end function

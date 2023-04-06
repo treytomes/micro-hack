@@ -63,6 +63,10 @@ MessageLog.draw = function()
 	if self.messages.len == 0 then
 		return
 	end if
+	
+	for n in range(0, self.messages.len - 1)
+		self.messages[n].draw(n)
+	end for
 end function
 
 MessageLog.report = function(msg, foregroundColor = null, backgroundColor = null)

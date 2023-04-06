@@ -129,6 +129,8 @@ Map.clearScreen = function(display)
 end function
 
 Map.drawTile = function(display, x, y, renderOffset)
+	//if self.isEntityAt(point.make(x, y)) then return
+	
 	rx = renderOffset.x + x
 	ry = renderOffset.y + y
 
@@ -157,8 +159,10 @@ Map.drawTile = function(display, x, y, renderOffset)
 end function
 
 Map.draw = function(display, player, renderOffset)
-	halfHeight = self.height / 2
-	halfWidth = self.width / 2
+	//halfHeight = self.height / 2
+	//halfWidth = self.width / 2
+	halfHeight = 26 / 2
+	halfWidth = 64 / 2
 	for y in range(player.position.y - halfHeight, player.position.y + halfHeight)
 		for x in range(player.position.x - halfWidth - 2, player.position.x + halfWidth + 1)
 			self.drawTile(display, x, y, renderOffset)
