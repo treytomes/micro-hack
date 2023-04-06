@@ -12,25 +12,69 @@ makePlayer = function()
 	// Give the player some stuff to start with.
 	if features.GIVE_INITIAL_INVENTORY then
 		for item in settings.PLAYER_INITIAL_INVENTORY
-			e.inventory.push(item)
+			e.inventory.addItem(item)
 		end for
 		
 		e.weapon = settings.PLAYER_INITIAL_WEAPON
-		if e.weapon != null then e.inventory.push(e.weapon)
+		if e.weapon != null then e.inventory.addItem(e.weapon)
 
 		e.shield = settings.PLAYER_INITIAL_SHIELD
-		if e.shield != null then e.inventory.push(e.shield)
+		if e.shield != null then e.inventory.addItem(e.shield)
 	end if
 
 	e.behaviors.push(behaviors.makeUserInput())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
+
+	e.enterMap = function(map, goingDown)
+		if goingDown then
+			self.position = map.stairsUp
+		else
+			self.position = map.stairsDown
+		end if
+		map.player = self
+		map.entities.push(self)
+		Service.fov.refresh(self.position.x, self.position.y, self.rangeOfVision, map)
+	end function
+
+	e.leaveMap = function(map)
+		map.player = null
+		if map.entities.len > 0 then
+			n = 0
+			while n < map.entities.len
+				if map.entities[n].isPlayer then
+					map.entities.remove(n)
+				else
+					n += 1
+				end if
+			end while
+		end if
+	end function
+
+	return e
+end function
+
+makeSign = function(map, pnt, msg)
+	t = tile.make("-", Color.white, Color.brown, true, false)
+	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
+	e.name = "sign"
+	e.description = "The sign reads: ""{0}""".fill([msg])
+	e.canBeAttacked = false
+
+	e.describe = function(display, bounds)
+	end function
+
+	// TODO: Need a priority-based behavior system.  Higher priority behaviors
+	// get to go first, then only give way to lower priority behaviors if they
+	// return null.
+	// This could all rats to seek the player, but not eachother.
+	//e.behaviors.push(behaviors.makeShowMessage(msg))
 	return e
 end function
 
 makeRat = function(map)
 	t = tile.make("r", Color.gray, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.rat, classes.classless, map.findHiddenSpawnPoint())
-
+	e.description = "A basic rat, with beady eyes and a long, pink tail."
 	e.xp = 10
 
 	// TODO: Need a priority-based behavior system.  Higher priority behaviors
@@ -47,13 +91,14 @@ makeKobold = function(map)
 	t = tile.make("k", Color.orange, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.kobold, classes.classless, map.findHiddenSpawnPoint())
 	e.xp = 25
+	e.description = "A small, reptilian humanoid, standing at about three feet tall."
 
 	e.weapon = math.selectItemByChance([
 		[ weapons.dagger, 0.3 ],
 		[ weapons.shortSword, 0.3 ],
 		[ null, 0.4 ],
 	])
-	if e.weapon != null then e.inventory.push(e.weapon)
+	if e.weapon != null then e.inventory.addItem(e.weapon)
 
 	e.armor = math.selectItemByChance([
 		[ null, 0.5 ],
@@ -73,7 +118,7 @@ makeKobold = function(map)
 		[ shields.spikedShield, 0.05 ],
 		[ shields.hideShield, 0.05 ],
 	])
-	if e.shield != null then e.inventory.push(e.shield)
+	if e.shield != null then e.inventory.addItem(e.shield)
 
 	e.behaviors.push(behaviors.makeSeekPlayer())
 	e.behaviors.push(behaviors.makeAttackOnCollision())
@@ -81,9 +126,19 @@ makeKobold = function(map)
 end function
 
 makeItem = function(map, item, spawnPoint=null)
-	e = (new entity.Entity).init(item.tile, races.item, classes.classless, math.coalesce(spawnPoint, map.findSpawnPoint()))
+	e = (new entity.Entity).init(item.tile, races.npc, classes.classless, math.coalesce(spawnPoint, map.findSpawnPoint()))
 	e.name = item.name
 	e.item = item
 	e.canBeAttacked = false
+	e.description = item.description
+
+	e.describe = function(display, bounds)
+		ui.drawText(display, "GP:" + self.item.goldValue, bounds, Color.orange.str())
+		bounds.height -= 1
+		ui.drawText(display, "Weight:" + self.item.weight, bounds, Color.orange.str())
+		bounds.height -= 1
+		ui.drawText(display, self.item.effectStr(), bounds, Color.orange.str())
+	end function
+
 	return e
 end function

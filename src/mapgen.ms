@@ -108,65 +108,9 @@ MapGenerator.decorateLootRoom = function(map, room)
 	end for
 end function
 
-MapGenerator.buildArena = function(map)
-	self.drawFilledRect(map, 1, 1, map.width - 2, map.height - 2, @tiles.makeFloor)
-
-	numPillars = 10
-	for n in range(1, numPillars)
-		px = math.random(0, map.width - 5) + 2
-		py = math.random(0, map.height - 5) + 2
-		self.drawPillar(map, px, py, @tiles.makeWall)
-	end for
-
-	return map
-end function
-
-MapGenerator.buildRandomDungeon = function(map)
-	numRooms = math.random(5, 10)
-	minRoomSize = 5
-	maxRoomSize = 10
-	rooms = []
-	for n in range(0, numRooms - 1)
-		roomWidth = math.random(minRoomSize, maxRoomSize)
-		roomHeight = math.random(minRoomSize, maxRoomSize)
-
-		roomX = math.random(1, map.width - roomWidth - 2)
-		roomY = math.random(1, map.height - roomHeight - 2)
-
-		room = rect.make(roomX, roomY, roomWidth, roomHeight)
-		rooms.push(room)
-		//self.decorateRoom(map, room)
-		self.drawFilledRect(map, room.x, room.y, room.width, room.height, @tiles.makeFloor)
-		if n > 0 then
-			self.drawHallway(map, rooms[n - 1], rooms[n])
-		end if
-	end for
-
-	stairsUpRoomIndex = math.random(0, rooms.len - 1)
-	self.decorateStairsUpRoom(map, rooms[stairsUpRoomIndex])
-
-	stairsDownRoomIndex = math.random(0, rooms.len - 1)
-	while stairsDownRoomIndex == stairsUpRoomIndex
-		stairsDownRoomIndex = math.random(0, rooms.len - 1)
-	end while
-	self.decorateStairsDownRoom(map, rooms[stairsDownRoomIndex])
-
-	lootRoomIndex = math.random(0, rooms.len - 1)
-	while lootRoomIndex == stairsUpRoomIndex or lootRoomIndex == stairsDownRoomIndex
-		lootRoomIndex = math.random(0, rooms.len - 1)
-	end while
-	self.decorateLootRoom(map, rooms[lootRoomIndex])
-
-	for room in rooms
-		self.decorateRoom(map, room)
-	end for
-
-	for room in rooms
-		self.drawDoors(map, room)
-	end for
-
-	return map
-end function
+//MapGenerator.buildArena = function(map)
+//	return arenaGenerator.build(self, map)
+//end function
 
 MapGenerator.makeEntityForLevel = function(map, levelNumber)
 	if levelNumber == 0 then
@@ -185,9 +129,9 @@ end function
 MapGenerator.buildLevel = function(levelNumber, player)
 	map = map.Map.make(levelNumber)
 	if levelNumber == 0 then
-		map = self.buildArena(map)
+		map = townGenerator.build(self, map)
 	else
-		map = self.buildRandomDungeon(map)
+		map = randomDungeonGenerator.build(self, map)
 	end if
 
 	Service.fov.refresh(map.stairsUp.x, map.stairsUp.y, player.rangeOfVision, map)

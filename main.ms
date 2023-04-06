@@ -50,6 +50,8 @@ ensureImport "particle"
 ensureImport "particleFountain"
 ensureImport "world"
 ensureImport "itemDb"
+ensureImport "itemStack"
+ensureImport "inventory"
 
 // Factories
 ensureImport "armors"
@@ -60,7 +62,12 @@ ensureImport "races"
 ensureImport "shields"
 ensureImport "tiles"
 ensureImport "weapons"
+ensureImport "names"
 
+ensureImport "arenaGenerator"
+ensureImport "randomDungeonGenerator"
+ensureImport "cavernGenerator"
+ensureImport "townGenerator"
 ensureImport "mapgen"
 ensureImport "fov"
 
@@ -70,15 +77,22 @@ ensureImport "settings"
 Display = {}
 
 Display.initialize = function()
-	display(0).mode = displayMode.text
-	Display.hud = display(0)
-	Display.hud.delimiter = ""
+	activate = function(n)
+		display(n).mode = displayMode.text
+		display(n).delimiter = ""
+		return display(n)
+	end function
 
-	display(1).mode = displayMode.off
-	display(1).delimiter = ""
+	deactivate = function(n)
+		display(n).mode = displayMode.off
+		return display(n)
+	end function
 
-	display(2).mode = displayMode.off
-	display(2).delimiter = ""
+	Display.hud = activate(0)
+	
+	Display.particles = activate(1)
+	deactivate(1)
+	activate(2)
 
 	Display.particles = display(1)
 	Display.flipParticles = function()
@@ -95,13 +109,21 @@ Display.initialize = function()
 		end if
 	end function
 
-	display(3).mode = displayMode.text
-	Display.entities = display(3)
-	Display.entities.delimiter = ""
+	Display.map = activate(3)
+	deactivate(3)
+	activate(4)
 
-	display(4).mode = displayMode.text
-	Display.map = display(4)
-	Display.map.delimiter = ""
+	Display.flipMap = function()
+		if display(3).mode == displayMode.off then
+			activate(3)
+			Display.map = activate(4)
+			deactivate(4)
+		else
+			activate(4)
+			Display.map = activate(3)
+			deactivate(3)
+		end if
+	end function
 end function
 
 Display.clear = function()
@@ -114,19 +136,20 @@ Display.clear = function()
 	Display.flipParticles()
 	Display.particles.backColor = color.clear
 	Display.particles.clear()
-
-	Display.entities.backColor = color.clear
-	Display.entities.clear()
+	Display.flipParticles()
 	
-	Display.map.backColor = color.clear
-	Display.map.clear()
+	//Display.map.backColor = color.clear
+	//Display.map.clear()
+	//Display.flipMap()
+	//Display.map.backColor = color.clear
+	//Display.map.clear()
+	//Display.flipMap()
 end function
 
 Service = {}
 
+// TODO: This may become redundant soon.
 drawEntities = function(display, map, renderOffset)
-	display.clear()
-	
 	// First draw entities that you can step on.
 	for e in map.entities
 		if map.isVisible(e.position.x, e.position.y) and not e.tile.blocksMovement then
@@ -148,23 +171,15 @@ drawHUD = function(display, player)
 	display.clear()
 	display.row = 26
 	
-	display.row = 26
-	//if player.position.y <= (26 / 2) then
-	//	display.row = 0
-	//else
-	//	display.row = 26
-	//end if
-
 	display.column = 0
 	display.color = color.white
 	display.backColor = color.black
 
-	statusBar = "HP: " + player.currentHP + " / " + player.maxHP + " LVL: " + player.level + " XP: " + player.xp + " / " + player.xpToNextLevel + "   world: " + Service.world.currentLevel
+	statusBar = "HP: {0} / {1} LVL: {2} XP: {3} / {4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (67 - statusBar.len)
 	
 	display.print(statusBar)
 	
-	Service.messages.draw(display, true) //, player.position.y > (26 / 2))
 	Service.messages.update()
 end function
 
@@ -194,32 +209,9 @@ main = function()
 	isRunning = true
 
 	Service.world = new world.World
-	Service.world.currentLevel = 1 // Start in the dungeon.
+	Service.world.currentLevel = 0
 	Service.world.player = entities.makePlayer()
-	Service.world.player.enterMap = function(map, goingDown)
-		if goingDown then
-			self.position = map.stairsUp
-		else
-			self.position = map.stairsDown
-		end if
-		map.player = self
-		map.entities.push(self)
-		Service.fov.refresh(self.position.x, self.position.y, self.rangeOfVision, map)
-	end function
-	Service.world.player.leaveMap = function(map)
-		map.player = null
-		if map.entities.len > 0 then
-			n = 0
-			while n < map.entities.len
-				if map.entities[n].isPlayer then
-					map.entities.remove(n)
-				else
-					n += 1
-				end if
-			end while
-		end if
-	end function
-	
+		
 	Service.fov = fov.FieldOfVisionCalculator.make(map.Map.width, map.Map.height)
 
 	renderOffset = function()
@@ -247,39 +239,35 @@ main = function()
 	end function
 	
 	Display.clear()
-
+	
 	Service.world.map.clearScreen(Display.map)
 	Service.world.map.draw(Display.map, Service.world.player, renderOffset)
-	drawEntities(Display.entities, Service.world.map, renderOffset)
+	drawEntities(Display.map, Service.world.map, renderOffset)
+	Display.flipMap()
+
 	drawHUD(Display.hud, Service.world.player)
 
 	deltaTime = 0
 	while isRunning
 		frameStart = time * 1000
 
-		// FPS
-		//text.row = 10
-		//text.column = 10
-		//print 1.0 / (deltaTime / 1000)
-
 		updateParticles(deltaTime, Service.world.map, renderOffset)
 
 		// The next step in the game occurs when the player presses a key.
 		if key.available then
-			n = 0
 			map = Service.world.map
+
+			n = 0
 			while n < map.entities.len
 				e = map.entities[n]
 				if e.isAlive then
-					action = e.act(map)
-					action.apply(e, map)
+					e.act(map).apply(e, map)
 				end if
 				if e.isDead then
 					map.entities.remove(n)
 				else
 					n += 1
 				end if
-				//n += 1
 			end while
 
 			// Check for dead entities after everyone has had a chance to act.
@@ -298,7 +286,9 @@ main = function()
 			end if
 			
 			Service.world.map.draw(Display.map, Service.world.player, renderOffset)
-			drawEntities(Display.entities, Service.world.map, renderOffset)
+			drawEntities(Display.map, Service.world.map, renderOffset)
+			
+			Display.flipMap()
 			drawHUD(Display.hud, Service.world.player)
 		end if
 

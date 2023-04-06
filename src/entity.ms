@@ -7,7 +7,7 @@ Entity.init = function(tile, race, class, pnt=null)
 	self.position = pnt
 	self.isPlayer = false
 	self.behaviors = []
-	self.inventory = []
+	self.inventory = (new inventory.Inventory).init()
 	self.canBeAttacked = true
 	self.numRestTurns = 0
 
@@ -30,8 +30,29 @@ Entity.init = function(tile, race, class, pnt=null)
 	self.weapon = null
 	self.armor = null
 	self.shield = null
+	self.description = ""
 
 	return self
+end function
+
+Entity.str = function()
+	return self.name
+end function
+
+Entity.describe = function(display, bounds)
+	ui.drawText(display, "HP: {0}/{1}".fill([self.currentHP, self.maxHP]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Strength: {0}".fill([self.strength]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Dexterity: {0} ({1})".fill([self.dexterity, self.dexterityModifier]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Constitution: {0} ({1})".fill([self.constitution, self.constitutionModifier]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Intelligence: {0}".fill([self.intelligence]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Wisdom: {0}".fill([self.wisdom]), bounds, Color.orange.str())
+	bounds.height -= 1
+	ui.drawText(display, "Charisma: {0}".fill([self.charisma]), bounds, Color.orange.str())
 end function
 
 Entity.canSee = function(pnt)
@@ -89,7 +110,7 @@ Entity.modifyHP = function(amount)
 	delta = self.currentHP - oldHP
 
 	if delta > 0 then	
-		Service.messages.report(self.name + " was healed by " + delta + " HP.")
+		Service.messages.report("{0} was healed by {1} HP.".fill([ self.name, delta]))
 		Service.makeMessageParticles(self.position, delta, Color.green)
 	else if delta < 0 then
 		Service.makeMessageParticles(self.position, -delta, Color.red)
@@ -163,7 +184,7 @@ end function
 
 // This formula may need to be tweaked later, when perception has more uses attached.
 Entity.rangeOfVision = function()
-	return self.perception
+	return floor(self.perception / 2)
 end function
 
 Entity.level = function()

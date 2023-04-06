@@ -3,6 +3,8 @@ DEFAULT_FOREGROUND_COLOR = color.gray
 DEFAULT_BACKGROUND_COLOR = color.black
 
 drawCell = function(display, x, y, fg, bg, text)
+	if fg isa Color then fg = fg.str()
+	if bg isa Color then bg = bg.str()
 	display.setCell(x, y, text)
 	display.setCellColor(x, y, fg)
 	display.setCellBackColor(x, y, bg)
@@ -32,6 +34,9 @@ drawVerticalLine = function(display, x, y1, y2, fg, bg, text)
 end function
 
 drawCenteredText = function(display, x1, x2, y, fg, bg, text)
+	if fg isa Color then fg = fg.str()
+	if bg isa Color then bg = bg.str()
+	
 	centerX = floor((x1 + x2) / 2)
 	display.row = y
 	display.column = centerX - floor(text.len / 2)
@@ -78,8 +83,8 @@ WINDOW_BORDER_BACKGROUND = color.black
 WINDOW_TITLE_FOREGROUND = color.yellow
 WINDOW_TITLE_BACKGROUND = color.black
 
-drawWindow = function(display, bounds, title)
-	ui.clearRect(Display.hud, bounds)
+drawWindow = function(display, bounds, title=null)
+	ui.clearRect(display, bounds)
 
 	drawVerticalLine(display, bounds.left, bounds.top + 1, bounds.bottom - 1, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "|")
 	drawVerticalLine(display, bounds.right, bounds.top + 1, bounds.bottom - 1, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "|")
@@ -91,19 +96,27 @@ drawWindow = function(display, bounds, title)
 	drawCell(display, bounds.left, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "+")
 	drawCell(display, bounds.right, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "+")
 
-	title = " " + title + " "
-	halfLength = floor(title.len / 2)
-	drawCell(display, bounds.centerX - halfLength - 2, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "]")
-	drawCell(display, bounds.centerX - halfLength + title.len - 1, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "[")
+	if title != null then
+		title = " {0} ".fill([ title ])
+		halfLength = floor(title.len / 2)
+		drawCell(display, bounds.centerX - halfLength - 2, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "]")
+		drawCell(display, bounds.centerX - halfLength + title.len - 1, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "[")
 
-	drawCenteredText(display, bounds.left, bounds.right, bounds.bottom, WINDOW_TITLE_FOREGROUND, WINDOW_TITLE_BACKGROUND, title)
+		drawCenteredText(display, bounds.left, bounds.right, bounds.bottom, WINDOW_TITLE_FOREGROUND, WINDOW_TITLE_BACKGROUND, title)
+	end if
 end function
 
 SelectList = require("SelectList")
 SelectListItem = require("SelectListItem")
 InventorySelectListItem = require("InventorySelectListItem")
 InventorySelectWindow = require("InventorySelectWindow")
+ExamineSelectListItem = require("ExamineSelectListItem")
+ExamineWindow = require("ExamineWindow")
 
 selectItem = function(entity, title)
 	return (new ui.InventorySelectWindow).selectItem(entity, title)
+end function
+
+examine = function(entities)
+	return (new ui.ExamineWindow).examine(entities)
 end function

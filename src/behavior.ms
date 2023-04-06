@@ -59,7 +59,7 @@ end function
 
 Behavior.isAlly = function(source, target)
 	// Inanimate objects are everybody's friend.
-	return target.race.equals(races.item) or (source.race.equals(target.race) and not self.willAttackSameRace)
+	return target.race.equals(races.npc) or (source.race.equals(target.race) and not self.willAttackSameRace)
 end function
 
 Behavior.act = function(entity, map)

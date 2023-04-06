@@ -199,7 +199,7 @@ makeUserInput = function()
 	end function
 
 	b.useInventory = function(entity)
-		index = ui.selectItem(entity, "Drop Inventory Item")
+		index = ui.selectItem(entity, "Use Inventory Item")
 		if index == null then
 			return null
 		end if
@@ -210,6 +210,109 @@ makeUserInput = function()
 	end function
 
 	b.takeStairsDown = function()
+	end function
+
+	b.examine = function(entity)
+		Service.messages.reportNow("Examine in which direction?")
+
+		k = key.get.code
+		if keybindings.up.contains(k) then
+			return actions.examine(entity.position.add(point.unitY))
+		else if keybindings.down.contains(k) then
+			return actions.examine(entity.position.add(point.unitY.negate))
+		else if keybindings.left.contains(k) then
+			return actions.examine(entity.position.add(point.unitX.negate))
+		else if keybindings.right.contains(k) then
+			return actions.examine(entity.position.add(point.unitX))
+		end if
+
+		Service.messages.reportNow("Never mind.")
+		return null // Cancel the action.
+	end function
+
+	b.TEXT_ROWS = 26
+	b.TEXT_COLUMNS = 68
+
+	b.lookAround = function(entity, map)
+		BLINK_SPEED = 300 / 1000
+		lastBlinkTime = time()
+		showCursor = true
+
+		Service.messages.reportNow("Select a tile to examine it.")	
+
+		renderOffset = point.make(self.TEXT_COLUMNS, self.TEXT_ROWS).scale(0.5).floor.subtract(Service.world.player.position)
+
+		drawCursor = function()
+			if showCursor then
+				fg = Color.red
+			else
+				fg = Color.blue
+			end if
+			bg = Color.lerp(Color.black, Color.clear, 0.5)
+			ui.drawCell(Display.hud, renderOffset.x + pnt.x, renderOffset.y + pnt.y, fg, bg, "+")
+		end function
+
+		eraseCursor = function()
+			ui.drawCell(Display.hud, renderOffset.x + pnt.x, renderOffset.y + pnt.y, color.clear, color.clear, " ")
+		end function
+
+		descriptionBounds = rect.make(68 - 16, 26 - 3, 16, 3)
+		describe = function(map, pnt)
+			if map.isVisible(pnt.x, pnt.y) then
+				thing = map.getEntityAt(pnt)
+				if thing == null then thing = map.tiles[pnt.y][pnt.x]
+				text = thing.name
+			else
+				text = "hidden"
+			end if
+
+			ui.clearRect(Display.hud, descriptionBounds)
+
+			//bounds = rect.make(self.TEXT_COLUMNS - 16, self.TEXT_ROWS - 3, 16, 3)
+			width = math.max(16, text.len + 4)
+
+			descriptionBounds = rect.make(68 - width, 26 - 3, width, 3)
+			ui.drawWindow(Display.hud, descriptionBounds)
+
+			ui.drawCenteredText(Display.hud, descriptionBounds.left, descriptionBounds.right, descriptionBounds.top + 1, Color.yellow, Color.black, text)
+		end function
+
+		pnt = entity.position
+		describe(map, pnt)
+
+		while true
+			delta = point.zero
+			if key.available then
+				k = key.get.code
+
+				if keybindings.up.contains(k) then
+					delta = point.unitY
+				else if keybindings.down.contains(k) then
+					delta = point.unitY.negate
+				else if keybindings.left.contains(k) then
+					delta = point.unitX.negate
+				else if keybindings.right.contains(k) then
+					delta = point.unitX
+				else if keybindings.select.contains(k) and map.isVisible(pnt.x, pnt.y) then
+					return actions.examine(pnt)
+				else if keybindings.exit.contains(k) then
+					eraseCursor()
+					return null // Cancel the action.
+				end if
+			end if
+
+			if delta != point.zero then
+				eraseCursor()
+				pnt = pnt.add(delta)
+				describe(map, pnt)
+			end if
+
+			if time() - lastBlinkTime > BLINK_SPEED then
+				showCursor = not showCursor
+				lastBlinkTime = time()
+			end if
+			drawCursor()
+		end while
 	end function
 
 	b.act = function(entity, map)
@@ -232,10 +335,14 @@ makeUserInput = function()
 				result = self.dropInventory(entity)
 			else if keybindings.get.contains(k) then
 				result = actions.pickUpItem(point.zero)
+			else if keybindings.examine.contains(k) then
+				result = self.examine(entity)
+			else if keybindings.look.contains(k) then
+				result = self.lookAround(entity, map)
 			else if keybindings.rest.contains(k) then
 				result = self.healWhileResting(entity, map)
 			else if keybindings.stairsDown.contains(k) and entity.position.equals(map.stairsDown) then
-				// TODO: This should only work when standing on stairs.
+				// TODO: If the player is the only entity on the map, and the stairs have been seen before, allow fast travel.
 				result = actions.takeStairsDown()
 			else if keybindings.stairsUp.contains(k) and entity.position.equals(map.stairsUp) then
 				result = actions.takeStairsUp()

@@ -2,6 +2,24 @@
 
 ## Updates
 
+* Remove the "Not equipped" text from the inventory UI.
+* Entity inventory has been upgraded from a list to an Inventory object.
+* Inventory slots are now composed of ItemStack objects in place of raw Items.
+* The overworld has arrived!  Read the sign for more info.
+* rangeOfVision = perception / 2.
+* Use the "e" key followed by an arrow to examine the tile in that direction.
+* Use the ";" key to activate a selection cursor.  Move the cursor around to inspect a tile.  `enter` for more details. 
+* Used page flipping to get a good performance boost, and knock out the jagged entity movement bug.
+
+## Known Bugs
+
+* If you crash the game then immediately restart it, it gets really laggy and has rendering artifacts.
+    * Probably related to page flipping.
+
+# 20230331
+
+## Updates
+
 * Rats infest the top levels of the dungeon.  Kobolds appear in increasing number as you go down.
 * Rats are relatively weak, but they'll still nibble you to death if you're not careful!
 * Kobolds have been un-nerfed.  They are now properly armed.
@@ -13,6 +31,7 @@
 * Unarmed damage dice increased from 1d1 to 1d4.
 * 50% chance that *every room* will have a prize!
 * You only get 1 health potion for free.  Go find the rest yourself.
+* Some performance improvements.
 
 ## Strategies
 

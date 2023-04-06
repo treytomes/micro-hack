@@ -58,13 +58,9 @@ useInventoryItem = function(inventoryIndex)
 	action = new EntityAction
 	action.inventoryIndex = inventoryIndex
 	action.apply = function(entity, map)
-		item = entity.inventory[inventoryIndex]
-		item.use(entity)
-		if item.isConsumedOnUse then
-			entity.inventory.remove(inventoryIndex)
-		end if
-
-		Service.messages.report(entity.name + " used " + item.name + ".")
+		item = entity.inventory.get(self.inventoryIndex).item
+		entity.inventory.use(entity, self.inventoryIndex)
+		Service.messages.report("{0} used {1}.".fill([entity.name, item.name]))
 	end function
 	return action
 end function
@@ -73,14 +69,16 @@ dropInventoryItem = function(inventoryIndex)
 	action = new EntityAction
 	action.inventoryIndex = inventoryIndex
 	action.apply = function(entity, map)
-		item = entity.inventory[self.inventoryIndex]
+		stack = entity.inventory.get(self.inventoryIndex)
+		item = stack.item
+		entity.inventory.removeItem(self.inventoryIndex)
+		if stack.count == 0 then
+			entity.removeFromSlots(item)
+		end if
 		
 		itemEntity = entities.makeItem(map, item, entity.position)
 		map.entities.push(itemEntity)
-		Service.messages.report(entity.name + " dropped " + item.name + ".")
-
-		entity.removeFromSlots(item)
-		entity.inventory.remove(self.inventoryIndex)
+		Service.messages.report("{0} dropped {1}.".fill([entity.name, item.name]))
 	end function
 	return action
 end function
@@ -91,7 +89,7 @@ pickUpItem = function(delta)
 
 	action.pickUpItem = function(entity, map, itemEntity)
 		map.removeEntity(itemEntity)
-		entity.inventory.push(itemEntity.item)
+		entity.inventory.addItem(itemEntity.item)
 		Service.messages.report(entity.name + " picked up a " + itemEntity.name + ".")
 	end function
 
@@ -173,6 +171,23 @@ takeStairsDown = function()
 		Service.world.player.leaveMap(Service.world.map)
 		Service.world.currentLevel += 1
 		Service.world.player.enterMap(Service.world.map, true)
+	end function
+	return action
+end function
+
+examine = function(position)
+	action = new EntityAction
+	action.position = position
+
+	action.apply = function(entity, map)
+		entities = map.getEntitiesAt(position)
+
+		if entities.len == 0 then
+			tile = map.tiles[position.y][position.x]
+			Service.messages.report("You see a {0} there.".fill([ tile.name ]))
+		else
+			ui.examine(entities)
+		end if
 	end function
 	return action
 end function

@@ -6,7 +6,7 @@ Tile.init = function(char, foregroundColor, backgroundColor=null, blocksMovement
 	self.backgroundColor = math.coalesce(backgroundColor, Color.black)
 	self.blocksMovement = blocksMovement
 	self.blocksVision = blocksVision
-
+	self.name = ""
 	self.isCurrentlyVisible = not features.ENABLE_FOV
 	self.hasBeenVisited = not features.ENABLE_FOV
 end function
@@ -30,6 +30,11 @@ Tile.drawDim = function(tileDisplay, x, y)
 	tileDisplay.setCellColor x, y, fg
 	tileDisplay.setCellBackColor x, y, bg
 	tileDisplay.setCell x, y, self.char
+end function
+
+Tile.setName = function(name)
+	self.name = name
+	return self
 end function
 
 make = function(char, foregroundColor, backgroundColor, blocksMovement=false, blocksVision=false)

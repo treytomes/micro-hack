@@ -1,7 +1,6 @@
 SelectListItem = {}
 
-SelectListItem.init = function(index)
-	self.index = index
+SelectListItem.init = function()
 	return self
 end function
 
