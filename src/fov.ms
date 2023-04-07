@@ -58,7 +58,7 @@ end function
 
 calculateFOV = function(x, y, radius, map)
 	if features.ENABLE_FOV then
-		squared_radius = radius^2 // Pre-calculate squared radius for efficiency.
+		squared_radius = radius ^ 2 // Pre-calculate squared radius for efficiency.
 		hideRegion(x, y, radius + 1, map)
 
 		// Set the "visible" flag on the player's tile.
@@ -67,7 +67,11 @@ calculateFOV = function(x, y, radius, map)
 		// Iterate through all tiles within the field-of-view radius.
 		for y1 in range(y - radius, y + radius)
 			for x1 in range(x - radius, x + radius)
-				calculateLineOfSight(map, x, y, x1, y1)
+				dx = x1 - x
+				dy = y1 - y
+				if dx ^ 2 + dy ^ 2 <= squared_radius then
+					calculateLineOfSight(map, x, y, x1, y1)
+				end if
 			end for
 		end for
 	end if
