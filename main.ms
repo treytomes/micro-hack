@@ -17,15 +17,16 @@ import "stringUtil"
 
 // "features" must be imported first.  "settings" must be imported last.
 
-SCREEN_MAX_X = 67
-SCREEN_MAX_Y = 25
-
 // Base import.
 ensureImport "features"
 ensureImport "math"
 ensureImport "sounds"
 ensureImport "point"
 ensureImport "rect"
+
+SCREEN_MAX_X = 67
+SCREEN_MAX_Y = 25
+SCREEN_SIZE = point.make(SCREEN_MAX_X, SCREEN_MAX_Y)
 
 // "Graphics"
 ensureImport "ui"
@@ -215,11 +216,7 @@ main = function()
 	Service.fov = fov.FieldOfVisionCalculator.make(map.Map.width, map.Map.height)
 
 	renderOffset = function()
-		TEXT_ROWS = 26
-		TEXT_COLUMNS = 68
-		offsetX = floor(TEXT_COLUMNS / 2) - Service.world.player.position.x
-		offsetY = floor(TEXT_ROWS / 2) - Service.world.player.position.y
-		return point.make(offsetX, offsetY)
+		return SCREEN_SIZE.scale(0.5).floor.subtract(Service.world.player.position)
 	end function
 
 	// For rendering purposes, it makes sense for the player to be last.

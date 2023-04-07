@@ -36,7 +36,7 @@ walk = function(delta)
 				sounds.pop()
 			end if
 		else
-			bumpedEntity = map.getEntityAt(newPos) 
+			bumpedEntity = map.getEntityAt(newPos)
 			if bumpedEntity == null or (not bumpedEntity.canBeAttacked and not bumpedEntity.tile.blocksMovement) then
 				entity.position = entity.position.add(self.delta)
 				if entity.isPlayer then
