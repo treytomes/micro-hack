@@ -43,7 +43,7 @@ walk = function(delta)
 					Service.fov.refresh(entity.position.x, entity.position.y, entity.rangeOfVision, map)
 
 					if entity.isPlayer and bumpedEntity != null and bumpedEntity.hasIndex("item") then
-						Service.messages.report("You see a " + bumpedEntity.name + " there.")
+						Service.messages.report("You see a {0} here.".fill([ bumpedEntity.name ]))
 					end if
 				end if
 			else
@@ -90,7 +90,11 @@ pickUpItem = function(delta)
 	action.pickUpItem = function(entity, map, itemEntity)
 		map.removeEntity(itemEntity)
 		entity.inventory.addItem(itemEntity.item)
-		Service.messages.report(entity.name + " picked up a " + itemEntity.name + ".")
+		if entity.isPlayer then
+			Service.messages.report("You pick up a {0}.".fill([ itemEntity.name ]))
+		else
+			Service.messages.report("{0} picked up a {1}.".fill([ entity.name, itemEntity.name ]))
+		end if
 	end function
 
 	action.apply = function(entity, map)
@@ -184,7 +188,7 @@ examine = function(position)
 
 		if entities.len == 0 then
 			tile = map.tiles[position.y][position.x]
-			Service.messages.report("You see a {0} there.".fill([ tile.name ]))
+			Service.messages.report("You see a {0} here.".fill([ tile.name ]))
 		else
 			ui.examine(entities)
 		end if
