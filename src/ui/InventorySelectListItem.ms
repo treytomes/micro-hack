@@ -40,7 +40,7 @@ InventorySelectListItem.draw = function(parent, isSelected)
 	end for
 end function
 
-InventorySelectListItem.describe = function(parent)
+InventorySelectListItem.describe = function(parent, bounds=null)
 	stack = self.entity.inventory.get(self.index)
 	item = stack.item
 	bounds = parent.detailBounds

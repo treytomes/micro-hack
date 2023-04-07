@@ -9,7 +9,7 @@ end function
 SelectListItem.draw = function(parent, isSelected)
 end function
 
-SelectListItem.describe = function(parent)
+SelectListItem.describe = function(parent, bounds=null)
 end function
 
 return SelectListItem

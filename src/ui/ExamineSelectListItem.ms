@@ -34,8 +34,8 @@ ExamineSelectListItem.draw = function(parent, isSelected)
 	end for
 end function
 
-ExamineSelectListItem.describe = function(parent)
-	bounds = parent.detailBounds
+ExamineSelectListItem.describe = function(parent, bounds=null)
+	bounds = math.coalesce(bounds, parent.detailBounds)
 	
 	ui.clearRect(parent.display, bounds, " ", Color.clear.str(), Color.black.str())
 
