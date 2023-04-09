@@ -230,9 +230,6 @@ makeUserInput = function()
 		return null // Cancel the action.
 	end function
 
-	b.TEXT_ROWS = 26
-	b.TEXT_COLUMNS = 68
-
 	b.lookAround = function(entity, map)
 		BLINK_SPEED = 300 / 1000
 		lastBlinkTime = time()
@@ -240,7 +237,7 @@ makeUserInput = function()
 
 		Service.messages.reportNow("Select a tile to examine it.")	
 
-		renderOffset = point.make(self.TEXT_COLUMNS, self.TEXT_ROWS).scale(0.5).floor.subtract(Service.world.player.position)
+		renderOffset = SCREEN_SIZE.scale(0.5).floor.subtract(Service.world.player.position)
 
 		drawCursor = function()
 			if showCursor then
@@ -268,7 +265,6 @@ makeUserInput = function()
 
 			ui.clearRect(Display.hud, descriptionBounds)
 
-			//bounds = rect.make(self.TEXT_COLUMNS - 16, self.TEXT_ROWS - 3, 16, 3)
 			width = math.max(16, text.len + 4)
 
 			descriptionBounds = rect.make(68 - width, 26 - 3, width, 3)

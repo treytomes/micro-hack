@@ -2,6 +2,12 @@
 
 ## Updates
 
+* Improved map renderer performance.
+
+# 20230406
+
+## Updates
+
 * Remove the "Not equipped" text from the inventory UI.
 * Entity inventory has been upgraded from a list to an Inventory object.
 * Inventory slots are now composed of ItemStack objects in place of raw Items.
@@ -10,6 +16,7 @@
 * Use the "e" key followed by an arrow to examine the tile in that direction.
 * Use the ";" key to activate a selection cursor.  Move the cursor around to inspect a tile.  `enter` for more details. 
 * Used page flipping to get a good performance boost, and knock out the jagged entity movement bug.
+* Bonus: The game is almost playable from the browser!
 
 ## Known Bugs
 

@@ -11,6 +11,19 @@ Tile.init = function(char, foregroundColor, backgroundColor=null, blocksMovement
 	self.hasBeenVisited = not features.ENABLE_FOV
 end function
 
+Tile.getDrawInfo = function(dim=false)
+	fg = self.foregroundColor
+	bg = self.backgroundColor
+	if dim then
+	    if fg isa Color then fg = fg.darker.str else fg = "#444444"
+		if bg isa Color then bg = bg.darker.str else bg = color.black
+	else
+		if fg isa Color then fg = fg.str
+		if bg isa Color then bg = bg.str	
+	end if
+	return [bg, fg, self.char]
+end function
+
 Tile.draw = function(tileDisplay, x, y)
 	fg = self.foregroundColor
 	if fg isa Color then fg = fg.str
