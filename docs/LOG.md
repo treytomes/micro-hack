@@ -1,3 +1,9 @@
+# Next
+
+## Updates
+
+* Improved map renderer performance.
+
 # 20230406
 
 ## Updates
