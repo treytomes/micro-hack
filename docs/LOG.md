@@ -3,6 +3,7 @@
 ## Updates
 
 * Improved map renderer performance.
+* 1/20 chance of a critical hit in the attack algorithm.
 
 # 20230406
 

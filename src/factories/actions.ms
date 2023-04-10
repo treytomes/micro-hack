@@ -116,11 +116,16 @@ attack = function(targetEntity)
 	action.targetEntity = targetEntity
 	action.apply = function(entity, map)
 		attackRoll = math.Dice.make(1, 20).roll()
+		isCritical = attackRoll == 20
 		attackBonus = entity.baseAttackBonus + entity.strengthModifier
-		if attackRoll + attackBonus >= self.targetEntity.armorClass then
+		if isCritical or attackRoll + attackBonus >= self.targetEntity.armorClass then
 			// Its a hit!
 			weaponDamage = entity.weaponDamage
-			
+			if isCritical then
+				weaponDamage *= 2
+				Service.messages.report("Critical hit!")
+			end if
+
 			absorption = 0
 			if entity.armor != null then
 				absorption = entity.armor.absorptionDice.roll()
