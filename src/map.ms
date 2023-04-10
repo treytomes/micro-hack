@@ -158,7 +158,7 @@ Map.drawTile = function(display, x, y, renderOffset)
 	end if
 end function
 
-Map.draw = function(display, player, renderOffset)
+Map.draw_v1 = function(display, player, renderOffset)
 	//halfHeight = self.height / 2
 	//halfWidth = self.width / 2
 	halfHeight = 26 / 2
@@ -168,4 +168,70 @@ Map.draw = function(display, player, renderOffset)
 			self.drawTile(display, x, y, renderOffset)
 		end for
 	end for
+end function
+
+Map.getDrawInfo = function(display, x, y, renderOffset)
+	//if self.isEntityAt(point.make(x, y)) then return
+	
+	rx = renderOffset.x + x
+	ry = renderOffset.y + y
+
+	if not math.isInRange(rx, 0, SCREEN_MAX_X) or not math.isInRange(ry, 0, SCREEN_MAX_Y) then
+		clear
+		print "ERROR: getDrawInfo called out of range"
+		exit
+		return
+	end if
+	
+	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
+		return [color.gray, color.black, "#"]
+	end if
+
+	t = self.tiles[y][x]
+
+	if t.isCurrentlyVisible then
+		return t.getDrawInfo(false)
+	else if t.hasBeenVisited then
+		return t.getDrawInfo(true)
+	else
+		return [color.gray, color.black, "#"]
+	end if
+end function
+
+Map.draw = function(display, player, renderOffset)
+	//halfHeight = self.height / 2
+	//halfWidth = self.width / 2
+	
+	halfHeight = 26 / 2
+	halfWidth = 64 / 2
+	minx = -renderOffset.x
+	maxx = minx + SCREEN_MAX_X
+	miny = -renderOffset.y
+	maxy = miny + SCREEN_MAX_Y
+	
+	display.row = 24; display.column = 0; 
+	display.row = 25; display.column = 0
+	curRun = null
+	for y in range(maxy, miny)	// (since Y is inverted)
+		for x in range(minx, maxx)
+			info = self.getDrawInfo(display, x, y, renderOffset)
+			if curRun[:2] == info[:2] then
+				curRun[2] += info[2]
+			else
+				if curRun then
+					display.backColor = curRun[0]
+					display.color = curRun[1]
+					display.print curRun[2]
+				end if
+				curRun = info
+			end if
+		end for
+	end for
+	display.backColor = curRun[0]
+	display.color = curRun[1]
+	// careful about the very last one -- we don't want to trigger a scroll
+	display.print curRun[2][:-1]
+	display.setCellBackColor display.column, display.row, curRun[2][0]
+	display.setCellColor display.column, display.row, curRun[2][1]
+	display.setCell display.column, display.row, curRun[2][2]	
 end function

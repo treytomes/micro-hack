@@ -1,8 +1,8 @@
 # Next
 
 ## Updates
-
 * Examine window compresses to only the description if only 1 item is on the tile you select.
+* Improved map renderer performance.
 
 # 20230406
 
