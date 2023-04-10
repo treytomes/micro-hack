@@ -1,3 +1,9 @@
+# Next
+
+## Updates
+
+* Examine window compresses to only the description if only 1 item is on the tile you select.
+
 # 20230406
 
 ## Updates
