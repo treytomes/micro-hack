@@ -99,10 +99,14 @@ drawWindow = function(display, bounds, title=null)
 	if title != null then
 		title = " {0} ".fill([ title ])
 		halfLength = floor(title.len / 2)
-		drawCell(display, bounds.centerX - halfLength - 2, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "]")
-		drawCell(display, bounds.centerX - halfLength + title.len - 1, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "[")
+		drawCell(display, bounds.centerX - halfLength - 1, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "]")
+		drawCell(display, bounds.centerX - halfLength + title.len, bounds.bottom, WINDOW_BORDER_FOREGROUND, WINDOW_BORDER_BACKGROUND, "[")
 
-		drawCenteredText(display, bounds.left, bounds.right, bounds.bottom, WINDOW_TITLE_FOREGROUND, WINDOW_TITLE_BACKGROUND, title)
+		display.row = bounds.bottom
+		display.column = bounds.centerX - halfLength
+		display.backColor = WINDOW_TITLE_BACKGROUND
+		display.color = WINDOW_TITLE_FOREGROUND
+		display.print(title)
 	end if
 end function
 

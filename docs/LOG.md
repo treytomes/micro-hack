@@ -1,7 +1,7 @@
 # Next
 
 ## Updates
-
+* Examine window compresses to only the description if only 1 item is on the tile you select.
 * Improved map renderer performance.
 * 1/20 chance of a critical hit in the attack algorithm.
 

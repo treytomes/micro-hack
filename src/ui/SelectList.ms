@@ -85,7 +85,7 @@ SelectList.selectInUI = function(newIndex)
 	self.selectedInventoryIndex = newIndex
 	self.drawItem(self.selectedInventoryIndex, true)
 
-	self.selectedItem.describe(self)
+	self.selectedItem.describe(self, null)
 end function
 
 SelectList.drawItems = function()
@@ -130,7 +130,7 @@ SelectList.drawItems = function()
 	self.display.backColor = self.ITEM_BACKGROUND.str()
 	self.display.print("v" * (self.windowBounds.width / 2 - 1))
 
-	if self.selectedItem != null then self.selectedItem.describe(self)
+	if self.selectedItem != null then self.selectedItem.describe(self, null)
 end function
 
 return SelectList

@@ -9,6 +9,10 @@ Rectangle.make = function(x, y, width, height)
 	return r
 end function
 
+Rectangle.copy = function()
+	return Rectangle.make(self.x, self.y, self.width, self.height)
+end function
+
 Rectangle.left = function()
 	return self.x
 end function
