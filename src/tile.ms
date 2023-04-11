@@ -7,8 +7,13 @@ Tile.init = function(char, foregroundColor, backgroundColor=null, blocksMovement
 	self.blocksMovement = blocksMovement
 	self.blocksVision = blocksVision
 	self.name = ""
-	self.isCurrentlyVisible = not features.ENABLE_FOV
-	self.hasBeenVisited = not features.ENABLE_FOV
+	self.isVisible(not features.ENABLE_FOV)
+end function
+
+Tile.isVisible = function(value=true)
+	self.isCurrentlyVisible = value
+	self.hasBeenVisited = value
+	return self
 end function
 
 Tile.getDrawInfo = function(dim=false)

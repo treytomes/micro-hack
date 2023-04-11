@@ -10,6 +10,7 @@ Map.init = function(levelNumber)
 	self.tiles = []
 	self.entities = []
 	self.player = null
+	self.isDark = true
 
 	for y in range(self.height)
 		row = []
@@ -235,7 +236,18 @@ Map.draw = function(display, player, renderOffset)
 	display.color = curRun[1]
 	// careful about the very last one -- we don't want to trigger a scroll
 	display.print curRun[2][:-1]
-	display.setCellBackColor display.column, display.row, curRun[2][0]
-	display.setCellColor display.column, display.row, curRun[2][1]
-	display.setCell display.column, display.row, curRun[2][2]	
+
+	//if curRun[2][1].len < 3 then
+	//	Display.hud.print("({0}, {1}, {2})".fill(curRun[2]))
+	//	Display.hud.print("waiting>")
+	//	key.get
+	//end if
+
+	//display.setCellBackColor display.column, display.row, curRun[2][0]
+	//display.setCellColor display.column, display.row, curRun[2][1]
+	//display.setCell display.column, display.row, curRun[2][2]
+
+	display.setCellBackColor display.column, display.row, curRun[0]
+	display.setCellColor display.column, display.row, curRun[1]
+	display.setCell display.column, display.row, curRun[2][-1]
 end function

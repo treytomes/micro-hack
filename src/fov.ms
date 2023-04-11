@@ -51,13 +51,13 @@ end function
 hideRegion = function(x, y, radius, map)
 	for y0 in range(y - radius - 1, y + radius + 1)
 		for x0 in range(x - radius - 1, x + radius + 1)
-			map.getTile(x0, y0).isCurrentlyVisible = false
+			map.getTile(x0, y0).isCurrentlyVisible = not map.isDark
 		end for
 	end for
 end function
 
 calculateFOV = function(x, y, radius, map)
-	if features.ENABLE_FOV then
+	if features.ENABLE_FOV and map.isDark then
 		squared_radius = radius ^ 2 // Pre-calculate squared radius for efficiency.
 		hideRegion(x, y, radius + 1, map)
 

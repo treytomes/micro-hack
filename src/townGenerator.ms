@@ -250,9 +250,9 @@ generateCavernLevel = function(mapgen, map)
         for x in range(0, map.width - 1)
 			t = level[y][x]
 			if t == 0 then
-				map.tiles[y][x] = makeFloor()
+				map.tiles[y][x] = makeFloor().isVisible()
             else if t == 1 or t == 2 then
-				map.tiles[y][x] = makeWall()
+				map.tiles[y][x] = makeWall().isVisible()
 			end if
 		end for
 	end for
@@ -264,7 +264,7 @@ generateCavernLevel = function(mapgen, map)
 		x = math.random(0, map.width - 1)
 		y = math.random(0, map.height - 2)
 		if not map.blocksMovement(x, y) then
-			map.tiles[y][x] = tiles.makeStairsDown()
+			map.tiles[y][x] = tiles.makeStairsDown().isVisible()
 			map.stairsDown = point.make(x, y)
 			foundSpot = true
 		end if
@@ -300,6 +300,7 @@ generateCavernLevel = function(mapgen, map)
 		end if
 	end while
 
+	map.isDark = false
 
 	return map
 end function
