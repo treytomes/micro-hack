@@ -1,9 +1,12 @@
 # Next
 
 ## Updates
+
 * Examine window compresses to only the description if only 1 item is on the tile you select.
 * Improved map renderer performance.
 * 1/20 chance of a critical hit in the attack algorithm.
+* Light up the town.
+* Fix a render bug when rendering without FOV enabled.
 
 # 20230406
 
