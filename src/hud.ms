@@ -1,13 +1,12 @@
 Message = {}
 
-Message.make = function(text, foregroundColor = null, backgroundColor = null)
-	m = new Message()
-	self.maxLifeSpan = 5
-	m.lifeSpan = 5
-	m.text = text
-	m.foregroundColor = math.coalesce(foregroundColor, color.white)
-	m.backgroundColor = math.coalesce(backgroundColor, color.black)
-	return m
+Message.init = function(text, foregroundColor = null, backgroundColor = null, lifeSpan = 5)
+	self.maxLifeSpan = lifeSpan
+	self.lifeSpan = lifeSpan
+	self.text = text
+	self.foregroundColor = math.coalesce(foregroundColor, color.white)
+	self.backgroundColor = math.coalesce(backgroundColor, color.black)
+	return self
 end function
 
 Message.draw = function(row)
@@ -20,11 +19,11 @@ Message.draw = function(row)
 end function
 
 MessageLog = {}
+MessageLog.lifeSpan = 5
 
 MessageLog.make = function()
 	log = new MessageLog
 	self.messages = []
-	log.report("Welcome to the dungeon!")
 	return log
 end function
 
@@ -70,11 +69,11 @@ MessageLog.draw = function()
 end function
 
 MessageLog.report = function(msg, foregroundColor = null, backgroundColor = null)
-	self.messages.insert(0, Message.make(msg, foregroundColor, backgroundColor))
+	self.messages.insert(0, (new Message).init(msg, foregroundColor, backgroundColor, self.lifeSpan))
 end function
 
 MessageLog.reportNow = function(msg, foregroundColor = null, backgroundColor = null)
-	self.report(msg)
+	self.report(msg + " " * (SCREEN_MAX_X - msg.len))
 	self.update()
 end function
 

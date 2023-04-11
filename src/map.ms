@@ -5,21 +5,25 @@ Map.width = 64 // 68
 Map.stairsUp = point.zero
 Map.stairsDown = point.zero
 
-Map.make = function(levelNumber)
-	m = new Map
-	m.levelNumber = levelNumber
-	m.tiles = []
-	m.entities = []
-	m.player = null
+Map.init = function(levelNumber)
+	self.levelNumber = levelNumber
+	self.tiles = []
+	self.entities = []
+	self.player = null
 
-	for y in range(m.height)
+	for y in range(self.height)
 		row = []
-		for x in range(m.width)
+		for x in range(self.width)
 			row.push tiles.makeWall()
 		end for
-		m.tiles.push row
+		self.tiles.push row
 	end for
-	return m
+	
+	return self
+end function
+
+make = function(levelNumber)
+	return (new Map).init(levelNumber)
 end function
 
 Map.getTile = function(x, y)

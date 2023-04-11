@@ -161,6 +161,7 @@ generateCavernLevel = function(mapgen, map)
 	level = list.init2d(map.height, map.width, 0)
 
     // Fill the level with walls and floors randomly.
+	Service.messages.reportNow("Fill the map with noise.")
     for y in range(0, map.height - 1)
         for x in range(0, map.width - 1)
             if rnd() < FILL_PROBABILITY then level[y][x] = 1
@@ -169,6 +170,7 @@ generateCavernLevel = function(mapgen, map)
 	//ensureMapBorder(level, map.width, map.height)
 
     // Run the cellular automata algorithm for several iterations.
+	Service.messages.reportNow("Smoothing the noise.")
     for i in range(SMOOTHING_ITERATIONS)
         newLevel = list.init2d(map.height, map.width, 0)
 
@@ -197,23 +199,8 @@ generateCavernLevel = function(mapgen, map)
         level = newLevel
 	end for
 
-    // Fill in any isolated wall tiles by turning them into floor tiles
-	//for y in range(1, map.height - 2)
-	//	for x in range(1, map.width - 2)
-    //        if level[y][x] == 1 then
-    //            floors = 0
-    //            for dy in range(-1, 1)
-    //                for dx in range(-1, 1)
-    //                    if level[y + dy][x + dx] == 0 then floors += 1
-	//				end for
-	//			end for
-	//			
-    //            if floors == 8 then level[y][x] = 0
-	//		end if
-	//	end for
-	//end for
-
 	// Check the size of all wall regions.  Replace them with floors if they're too small.
+	Service.messages.reportNow("Remove small mountains.")
 	wallRegions = getRegions(level, map.width, map.height, 1)
 	for region in wallRegions
 		if region.len < THRESHOLD_SIZE then
@@ -224,6 +211,7 @@ generateCavernLevel = function(mapgen, map)
 	end for
 
 	// Check the size of all floor regions.  Replace them with walls if they're too small.
+	Service.messages.reportNow("Remove small fields.")
 	floorRegions = getRegions(level, map.width, map.height, 0)
 	for region in floorRegions
 		if region.len < THRESHOLD_SIZE then
@@ -234,6 +222,7 @@ generateCavernLevel = function(mapgen, map)
 	end for
 	
 	// Regenerate as the floor regions may have changed.
+	Service.messages.reportNow("Connect all regions.")
 	floorRegions = getRegions(level, map.width, map.height, 0)
 	for n in range(1, floorRegions.len - 1)
 		createPassage(level, map.width, map.height, floorRegions[n - 1], floorRegions[n])
@@ -252,9 +241,11 @@ generateCavernLevel = function(mapgen, map)
 	//	end for
 	//end for
 
+	Service.messages.reportNow("Surrounding the town with mountains.")
 	ensureMapBorder(level, map.width, map.height)
 
     // Load the map with the tile data.
+	Service.messages.reportNow("Filling the map with data.")
     for y in range(0, map.height - 1)
         for x in range(0, map.width - 1)
 			t = level[y][x]
@@ -267,6 +258,7 @@ generateCavernLevel = function(mapgen, map)
 	end for
 
 	// Place the stairs down.
+	Service.messages.reportNow("Building some stairs.")
 	foundSpot = false
 	while not foundSpot
 		x = math.random(0, map.width - 1)
@@ -279,6 +271,7 @@ generateCavernLevel = function(mapgen, map)
 	end while
 
 	// Place the player spawn near the stairs down.
+	Service.messages.reportNow("Locating a spawn point.")
 	foundSpot = false
 	while not foundSpot
 		// Put the spawn point near the stairs down.
@@ -293,6 +286,7 @@ generateCavernLevel = function(mapgen, map)
 	end while
 
 	// Place a sign post.
+	Service.messages.reportNow("Placing a sign post.")
 	foundSpot = false
 	while not foundSpot
 		// Put the spawn point near the stairs down.
@@ -311,5 +305,6 @@ generateCavernLevel = function(mapgen, map)
 end function
 
 build = function(mapgen, map)
+	Service.messages.reportNow("Building the town.")
 	return generateCavernLevel(mapgen, map)
 end function

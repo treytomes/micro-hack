@@ -108,10 +108,6 @@ MapGenerator.decorateLootRoom = function(map, room)
 	end for
 end function
 
-//MapGenerator.buildArena = function(map)
-//	return arenaGenerator.build(self, map)
-//end function
-
 MapGenerator.makeEntityForLevel = function(map, levelNumber)
 	if levelNumber == 0 then
 		return null
@@ -127,20 +123,20 @@ MapGenerator.makeEntityForLevel = function(map, levelNumber)
 end function
 
 MapGenerator.buildLevel = function(levelNumber, player)
-	map = map.Map.make(levelNumber)
+	m = map.make(levelNumber)
 	if levelNumber == 0 then
-		map = townGenerator.build(self, map)
+		m = townGenerator.build(self, m)
 	else
-		map = randomDungeonGenerator.build(self, map)
+		m = randomDungeonGenerator.build(self, m)
 	end if
 
-	Service.fov.refresh(map.stairsUp.x, map.stairsUp.y, player.rangeOfVision, map)
+	Service.fov.refresh(m.stairsUp.x, m.stairsUp.y, player.rangeOfVision, m)
 	if levelNumber > 0 then
 		for n in range(math.random(12, 24)) // Generate between 12 and 24 level-appropriate enemies.
-			e = self.makeEntityForLevel(map, levelNumber)
-			map.entities.push(e)
+			e = self.makeEntityForLevel(m, levelNumber)
+			m.entities.push(e)
 		end for
 	end if
 
-	return map
+	return m
 end function

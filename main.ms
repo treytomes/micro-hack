@@ -78,6 +78,12 @@ ensureImport "settings"
 Display = {}
 
 Display.initialize = function()
+	HUD = 0
+	PARTICLES_1 = 1
+	PARTICLES_2 = 2
+	MAP_1 = 3
+	MAP_2 = 4
+
 	activate = function(n)
 		display(n).mode = displayMode.text
 		display(n).delimiter = ""
@@ -89,40 +95,40 @@ Display.initialize = function()
 		return display(n)
 	end function
 
-	Display.hud = activate(0)
+	Display.hud = activate(HUD)
 	
-	Display.particles = activate(1)
-	deactivate(1)
-	activate(2)
+	Display.particles = activate(PARTICLES_1)
+	deactivate(PARTICLES_1)
+	activate(PARTICLES_2)
 
-	Display.particles = display(1)
+	Display.particles = display(PARTICLES_1)
 	Display.flipParticles = function()
-		if display(1).mode == displayMode.off then
-			display(1).mode = displayMode.text
-			display(2).mode = displayMode.text
-			Display.particles = display(2)
-			display(2).mode = displayMode.off
+		if display(PARTICLES_1).mode == displayMode.off then
+			display(PARTICLES_1).mode = displayMode.text
+			display(PARTICLES_2).mode = displayMode.text
+			Display.particles = display(PARTICLES_2)
+			display(PARTICLES_2).mode = displayMode.off
 		else
-			display(1).mode = displayMode.text
-			display(2).mode = displayMode.text
-			Display.particles = display(1)
-			display(1).mode = displayMode.off
+			display(PARTICLES_1).mode = displayMode.text
+			display(PARTICLES_2).mode = displayMode.text
+			Display.particles = display(PARTICLES_1)
+			display(PARTICLES_1).mode = displayMode.off
 		end if
 	end function
 
-	Display.map = activate(3)
-	deactivate(3)
-	activate(4)
+	Display.map = activate(MAP_1)
+	deactivate(MAP_1)
+	activate(MAP_2)
 
 	Display.flipMap = function()
-		if display(3).mode == displayMode.off then
-			activate(3)
-			Display.map = activate(4)
-			deactivate(4)
+		if display(MAP_1).mode == displayMode.off then
+			activate(MAP_1)
+			Display.map = activate(MAP_2)
+			deactivate(MAP_2)
 		else
-			activate(4)
-			Display.map = activate(3)
-			deactivate(3)
+			activate(MAP_2)
+			Display.map = activate(MAP_1)
+			deactivate(MAP_1)
 		end if
 	end function
 end function
@@ -130,8 +136,8 @@ end function
 Display.clear = function()
 	Display.hud.backColor = color.clear
 	Display.hud.clear()
-	Display.flipParticles()
 	
+	Display.flipParticles()
 	Display.particles.backColor = color.clear
 	Display.particles.clear()
 	Display.flipParticles()
@@ -139,12 +145,13 @@ Display.clear = function()
 	Display.particles.clear()
 	Display.flipParticles()
 	
-	//Display.map.backColor = color.clear
-	//Display.map.clear()
-	//Display.flipMap()
-	//Display.map.backColor = color.clear
-	//Display.map.clear()
-	//Display.flipMap()
+	Display.flipMap()
+	Display.map.backColor = color.clear
+	Display.map.clear()
+	Display.flipMap()
+	Display.map.backColor = color.clear
+	Display.map.clear()
+	Display.flipMap()
 end function
 
 Service = {}
@@ -207,6 +214,11 @@ end function
 
 main = function()
 	Display.initialize()
+	Display.clear()
+
+	Service.messages = hud.MessageLog.make()
+	Service.messages.lifeSpan = SCREEN_MAX_Y
+	
 	isRunning = true
 
 	Service.world = new world.World
@@ -222,8 +234,6 @@ main = function()
 	// For rendering purposes, it makes sense for the player to be last.
 	Service.world.player.enterMap(Service.world.map, true)
 
-	Service.messages = hud.MessageLog.make()
-	
 	Service.fountains = []
 	Service.makeDeathParticles = function(pnt)
 		Service.fountains.push(particles.makeDeathParticles(pnt))
@@ -234,7 +244,10 @@ main = function()
 	Service.makeMessageParticles = function(pnt, message, foregroundColor)
 		Service.fountains.push(particles.makeMessageParticles(pnt, message, foregroundColor))
 	end function
-	
+
+	Service.messages.clear()
+	Service.messages.lifeSpan = 5
+
 	Display.clear()
 	
 	Service.world.map.clearScreen(Display.map)
