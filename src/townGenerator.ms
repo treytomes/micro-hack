@@ -1,6 +1,6 @@
-FILL_PROBABILITY = 0.4
-SMOOTHING_ITERATIONS = 5
-THRESHOLD_SIZE = 8
+FILL_PROBABILITY = 0.5
+SMOOTHING_ITERATIONS = 4
+THRESHOLD_SIZE = 20
 
 //makeFloor = @tiles.makeFloor
 //makeWall = @tiles.makeWall
@@ -30,7 +30,7 @@ getRegionPoints = function(level, width, height, startX, startY, tileIndex)
 
 		for x in range(chunkPos.x - 1, chunkPos.x + 1)
 			for y in range(chunkPos.y - 1, chunkPos.y + 1)
-				if math.isInRange(x, 0, width - 1) and math.isInRange(y, 0, height - 1) and ((y == chunkPos.y) or (x == chunkPos.y)) then
+				if math.isInRange(x, 0, width - 1) and math.isInRange(y, 0, height - 1) then //and ((y == chunkPos.y) or (x == chunkPos.y)) then
 					if not mapFlags[y][x] then
 						if level[y][x] == tileIndex then
 							mapFlags[y][x] = true
@@ -140,7 +140,8 @@ drawCircle = function(level, width, height, c, passageSize)
 				drawX = c.x + x
 				drawY = c.y + y
 				if math.isInRange(drawX, 0, width) and math.isInRange(drawY, 0, height) then
-					level[y][x] = 0
+					level[y][x] = 3
+					// TODO: This code is being hit, but nothing is changing on the map?
 				end if
 			end if
 		end for
@@ -152,8 +153,9 @@ createPassage = function(level, width, height, region1, region2)
 	finish = math.randomChoice(region2)
 
 	line = getLine(start, finish)
+	//Display.hud.print("Line " + line.len + ">");key.get
 	for pnt in line
-		drawCircle(level, width, height, pnt, 1)
+		drawCircle(level, width, height, pnt, 2)
 	end for
 end function
 
@@ -177,12 +179,9 @@ generateCavernLevel = function(mapgen, map)
         // For each tile in the level, count the number of wall tiles in a 3x3 square centered around it.
         for y in range(1, map.height - 2)
             for x in range(1, map.width - 2)
-                walls = 0
-                for dy in range(-1, 1)
-                    for dx in range(-1, 1)
-                        if level[y + dy][x + dx] == 1 then walls += 1
-					end for
-				end for
+                walls = level[y - 1][x - 1] + level[y - 1][x + 0] + level[y - 1][x + 1] +
+						level[y + 0][x - 1] + level[y + 0][x + 0] + level[y + 0][x + 1] +
+						level[y + 1][x - 1] + level[y + 1][x + 0] + level[y + 1][x + 1]
 
                 if walls > 4 then
                 	// If the tile is a wall and has fewer than 4 wall neighbors, turn it into a floor tile.
@@ -222,11 +221,11 @@ generateCavernLevel = function(mapgen, map)
 	end for
 	
 	// Regenerate as the floor regions may have changed.
-	Service.messages.reportNow("Connect all regions.")
 	floorRegions = getRegions(level, map.width, map.height, 0)
 	for n in range(1, floorRegions.len - 1)
 		createPassage(level, map.width, map.height, floorRegions[n - 1], floorRegions[n])
-	end for	
+	end for
+	//Display.hud.print(">");key.get
 
     // Add some random noise to the level to make it look more natural.
 	// TODO: Use the tree tile here.
@@ -251,8 +250,12 @@ generateCavernLevel = function(mapgen, map)
 			t = level[y][x]
 			if t == 0 then
 				map.tiles[y][x] = makeFloor().isVisible()
+				map.tiles[y][x].foregroundColor = Color.yellow
             else if t == 1 or t == 2 then
 				map.tiles[y][x] = makeWall().isVisible()
+            else if t == 3 then
+				map.tiles[y][x] = makeFloor().isVisible()
+				map.tiles[y][x].foregroundColor = Color.red
 			end if
 		end for
 	end for
