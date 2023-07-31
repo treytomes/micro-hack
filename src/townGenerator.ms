@@ -221,6 +221,7 @@ generateCavernLevel = function(mapgen, map)
 	end for
 	
 	// Regenerate as the floor regions may have changed.
+	Service.messages.reportNow("Connect all regions.")
 	floorRegions = getRegions(level, map.width, map.height, 0)
 	for n in range(1, floorRegions.len - 1)
 		createPassage(level, map.width, map.height, floorRegions[n - 1], floorRegions[n])

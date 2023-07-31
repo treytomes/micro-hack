@@ -224,7 +224,7 @@ main = function()
 	Service.world = new world.World
 	Service.world.currentLevel = 0
 	Service.world.player = entities.makePlayer()
-		
+	
 	Service.fov = fov.FieldOfVisionCalculator.make(map.Map.width, map.Map.height)
 
 	renderOffset = function()
