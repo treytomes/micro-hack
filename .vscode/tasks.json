@@ -8,15 +8,15 @@
 			"type": "process",
 			"command": "",
 			"windows": {
-				"command": "C:\\Users\\TreyTomes\\tools\\MiniMicro\\Mini Micro.exe",
-				"args": [ "-usr \"${workspaceFolder}\\src\"" ],
+				"command": "C:\\Users\\TreyTomes\\projects\\MiniMicro\\Mini Micro.exe",
+				"args": [ "-usr \"${workspaceFolder}\"" ],
 				"options": {
-					"cwd": "C:\\Users\\TreyTomes\\tools\\MiniMicro"
+					"cwd": "C:\\Users\\TreyTomes\\projects\\MiniMicro"
 				}
 			},
 			"group": "build",
 			"presentation": {
-				"reveal": "always",
+				"reveal": "always", 
 				"panel": "new"
 			}
 		}
