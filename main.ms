@@ -141,9 +141,10 @@ drawHUD = function(display, player)
 	// display.backColor = color.black
 
 	statusBar = "HP: {0} / {1} LVL: {2} XP: {3} / {4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
-	statusBar = statusBar + " " * (67 - statusBar.len)
+	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len)
 	
-	display.print(statusBar, 0, 39, color.white, color.black)
+	display.print(statusBar, 0, constants.UI_DISPLAY_YMAX, color.white, color.black)
+	display.print(" " * constants.UI_DISPLAY_WIDTH, 0, constants.UI_DISPLAY_HEIGHT, color.white, color.black)
 
 	Service.messages.update()
 end function

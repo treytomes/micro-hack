@@ -15,7 +15,7 @@ end function
 
 InventorySelectWindow.reset = function(entity)
 	list = self.generateList(entity)
-	self.selectList.init(Display.hud, rect.make(4, 4, constants.TILE_DISPLAY_WIDTH - 4 * 2, constants.TILE_DISPLAY_HEIGHT - 4 * 2))
+	self.selectList.init(Display.hud, rect.make(4, 4, constants.UI_DISPLAY_WIDTH - 4 * 2, constants.UI_DISPLAY_HEIGHT - 4 * 2))
 	self.selectList.reset(list)
 end function
 
