@@ -1,6 +1,6 @@
 cache = {}
-cache["pop"] = file.loadSound("/sys/sounds/pop.wav")
+cache.pop = file.loadSound("/sys/sounds/pop.wav")
 
 pop = function()
-	cache["pop"].play()
+	cache.pop.play()
 end function

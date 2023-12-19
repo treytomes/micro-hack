@@ -19,13 +19,14 @@ import "stringUtil"
 
 // Base import.
 ensureImport "features"
+ensureImport "constants"
 ensureImport "math"
 ensureImport "sounds"
 ensureImport "point"
 ensureImport "rect"
 
-SCREEN_MAX_X = 67
-SCREEN_MAX_Y = 25
+SCREEN_MAX_X = constants.TILE_DISPLAY_WIDTH - 1
+SCREEN_MAX_Y = constants.TILE_DISPLAY_HEIGHT - 1
 SCREEN_SIZE = point.make(SCREEN_MAX_X, SCREEN_MAX_Y)
 
 // "Graphics"
@@ -72,65 +73,14 @@ ensureImport "townGenerator"
 ensureImport "mapgen"
 ensureImport "fov"
 
-ensureImport "constants"
 ensureImport "keybindings"
 ensureImport "settings"
 
 Display = {}
 
-HeadsUpDisplay = {}
-
-HeadsUpDisplay.initTiles = function(displayNumber)
-	display(displayNumber).mode = displayMode.tile
-	display(displayNumber).tileSet = file.loadImage("assets/OEM437_8.png")
-	display(displayNumber).tileSetTileSize = 8
-	display(displayNumber).cellSize = 16
-	display(displayNumber).extent = [constants.TILE_DISPLAY_WIDTH, constants.TILE_DISPLAY_HEIGHT]
-	return display(displayNumber)
-end function
-
-HeadsUpDisplay.init = function(displayNumberFront, displayNumberBack)
-	self.display = self.initTiles(displayNumberFront)
-	self.displayBack = self.initTiles(displayNumberBack)
-	return self
-end function
-
-HeadsUpDisplay.setCellBackColor = function(x, y, backColor)
-	if backColor isa Color then
-		backColor = backColor.str()
-	end if
-	self.displayBack.setCell x, y, constants.TILE_INDEX_SOLID
-	self.displayBack.setCellTint x, y, backColor
-end function
-
-HeadsUpDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#00000000")
-	if tile isa string then
-		tile = code(tile)
-	end if
-	if color isa Color then
-		color = color.str()
-	end if
-	self.display.setCell x, y, tile
-	self.display.setCellTint x, y, color
-	self.setCellBackColor x, y, backColor
-end function
-
-HeadsUpDisplay.clear = function()
-	for y in range(0, constants.TILE_DISPLAY_YMAX)
-		for x in range(0, constants.TILE_DISPLAY_XMAX)
-			self.setCell x, y, 0, color.black, color.clear
-		end for
-	end for
-end function
-
-HeadsUpDisplay.print = function(text, x, y, color="#FFFFFF", backColor="#00000000")
-	for ch in text
-		self.setCell x, y, code(ch), color, backColor
-		x += 1
-	end for
-end function
-
 Display.initialize = function()
+	MapDisplay = require("MapDisplay")
+	
 	HUD = 0
 	HUD_BACK = 1
 	PARTICLES_0 = 2
@@ -149,12 +99,7 @@ Display.initialize = function()
 		return display(n)
 	end function
 
-	activateTiles = function(n)
-		return HeadsUpDisplay.init(n)
-	end function
-
-	// Display.hud = activate(0)
-	Display.hud = HeadsUpDisplay.init(HUD, HUD_BACK)
+	Display.hud = ui.HeadsUpDisplay.init(HUD, HUD_BACK)
 	
 	Display.particles = activate(PARTICLES_0)
 	deactivate(PARTICLES_0)
@@ -175,21 +120,7 @@ Display.initialize = function()
 		end if
 	end function
 
-	Display.map = activate(MAP_0)
-	deactivate(MAP_0)
-	activate(MAP_1)
-
-	Display.flipMap = function()
-		if display(MAP_0).mode == displayMode.off then
-			activate(MAP_0)
-			Display.map = activate(MAP_1)
-			deactivate(MAP_1)
-		else
-			activate(MAP_1)
-			Display.map = activate(MAP_0)
-			deactivate(MAP_0)
-		end if
-	end function
+	Display.map = MapDisplay.init(MAP_0, MAP_1)
 end function
 
 Display.clear = function()
@@ -206,10 +137,10 @@ Display.clear = function()
 	
 	//Display.map.backColor = color.clear
 	//Display.map.clear()
-	//Display.flipMap()
+	//Display.map.flip
 	//Display.map.backColor = color.clear
 	//Display.map.clear()
-	//Display.flipMap()
+	//Display.map.flip
 end function
 
 Service = {}
@@ -303,9 +234,10 @@ main = function()
 	Display.clear()
 	
 	Service.world.map.clearScreen(Display.map)
-	Service.world.map.draw(Display.map, Service.world.player, renderOffset)
+	Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 	drawEntities(Display.map, Service.world.map, renderOffset)
-	Display.flipMap()
+	Display.map.flip
+	Display.map.setCell 5, 5, "*", color.red, color.blue
 
 	drawHUD(Display.hud, Service.world.player)
 
@@ -313,9 +245,10 @@ main = function()
 	while isRunning
 		frameStart = time * 1000
 
-		updateParticles(deltaTime, Service.world.map, renderOffset)
+		// updateParticles(deltaTime, Service.world.map, renderOffset) // TODO
 
 		// The next step in the game occurs when the player presses a key.
+	// Service.messages.report("move?")
 		if key.available then
 			map = Service.world.map
 
@@ -347,10 +280,11 @@ main = function()
 				Service.messages.report("YOU ARE DEAD!")
 			end if
 			
-			Service.world.map.draw(Display.map, Service.world.player, renderOffset)
+	// Service.messages.report("move")
+			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 			drawEntities(Display.map, Service.world.map, renderOffset)
-			
-			Display.flipMap()
+			Display.map.flip
+
 			drawHUD(Display.hud, Service.world.player)
 		end if
 

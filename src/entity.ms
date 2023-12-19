@@ -62,16 +62,16 @@ Entity.canSee = function(pnt)
 	return deltaX * deltaX + deltaY * deltaY <= self.rangeOfVision * self.rangeOfVision
 end function
 
-Entity.draw = function(textDisplay, renderOffset)
+Entity.draw = function(dsp, renderOffset)
 	//self.tile.draw(self.position.x, self.position.y)
 	x = renderOffset.x + self.position.x
 	y = renderOffset.y + self.position.y
 
 	colorMod = self.currentHP / self.maxHP
 	foregroundColor = Color.lerp(Color.red, self.tile.foregroundColor, colorMod)
-	textDisplay.setCellColor x, y, foregroundColor.str()
-	textDisplay.setCellBackColor x, y, self.tile.backgroundColor.str()
-	textDisplay.setCell x, y, self.tile.char
+	// dsp.setCellColor x, y, foregroundColor.str()
+	// dsp.setCellBackColor x, y, self.tile.backgroundColor.str()
+	dsp.setCell x, y, self.tile.char, foregroundColor, self.tile.backgroundColor
 end function
 
 Entity.act = function(map)

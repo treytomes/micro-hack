@@ -119,6 +119,7 @@ InventorySelectListItem = require("InventorySelectListItem")
 InventorySelectWindow = require("InventorySelectWindow")
 ExamineSelectListItem = require("ExamineSelectListItem")
 ExamineWindow = require("ExamineWindow")
+HeadsUpDisplay = require("HeadsUpDisplay")
 
 selectItem = function(entity, title)
 	return (new ui.InventorySelectWindow).selectItem(entity, title)
