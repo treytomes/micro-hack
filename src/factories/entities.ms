@@ -2,7 +2,7 @@
 
 makePlayer = function()
 	// t = tile.make(char(57872), Color.white, Color.black, true, false) // TODO
-	t = tile.make(char(2), Color.white, Color.black, true, false)
+	t = tile.make(255+16-3, Color.white, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.human, classes.fighter)
 
 	e.name = "player" //e.race.name

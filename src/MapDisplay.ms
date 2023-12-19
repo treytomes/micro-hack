@@ -3,8 +3,8 @@ MapDisplay = {}
 MapDisplay.initTiles = function(displayNumber)
 	dsp = new TileDisplay // Create a detached TileDisplay.
 	// display(displayNumber).mode = displayMode.tile
-	dsp.tileSet = file.loadImage("assets/OEM437_8.png")
-	dsp.tileSetTileSize = 8
+	dsp.tileSet = file.loadImage("assets/OEM437_16_ex.png")
+	dsp.tileSetTileSize = 16
 	dsp.cellSize = 16
 	dsp.extent = [constants.TILE_DISPLAY_WIDTH, constants.TILE_DISPLAY_HEIGHT]
 	return dsp
@@ -65,9 +65,6 @@ end function
 MapDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#00000000")
 	if tile isa string then
 		tile = code(tile)
-	end if
-	if tile > 255 then
-		tile = code("?")
 	end if
 	
 	if color isa Color then

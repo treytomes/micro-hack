@@ -29,10 +29,6 @@ Tile.draw = function(dsp, x, y)
 	if fg isa Color then fg = fg.str
 	bg = self.backgroundColor
 	if bg isa Color then bg = bg.str
-	
-	// tileDisplay.setCellColor x, y, fg
-	// tileDisplay.setCellBackColor x, y, bg
-	// tileDisplay.setCell x, y, self.char
 	dsp.setCell x, y, self.char, fg, bg
 end function
 
@@ -41,10 +37,6 @@ Tile.drawDim = function(dsp, x, y)
 	if fg isa Color then fg = fg.darker.str else fg = "#444444"
 	bg = self.backgroundColor
 	if bg isa Color then bg = bg.darker.str else bg = color.black
-	
-	// tileDisplay.setCellColor x, y, fg
-	// tileDisplay.setCellBackColor x, y, bg
-	// tileDisplay.setCell x, y, self.char
 	dsp.setCell x, y, self.char, fg, bg
 end function
 
