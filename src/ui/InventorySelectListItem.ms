@@ -20,23 +20,24 @@ InventorySelectListItem.draw = function(parent, isSelected)
 		bg = parent.ITEM_BACKGROUND.str()
 		fg = parent.ITEM_FOREGROUND.str()
 	end if
-	parent.display.backColor = bg
-	parent.display.color = fg
 
 	x = parent.listBounds.left
 	y = parent.getItemRow(self.index)
 	
-	item.tile.draw(parent.display, x, y)
+	// The backgroundColor won't actually be visible.  It'll be overwritten in that last for-loop.
+	parent.display.setCell x, y, item.tile.char, item.tile.foregroundColor, item.tile.backgroundColor
 
-	parent.display.row = y
-	parent.display.column = x + 2
-	parent.display.print(stack.str())
+	// parent.display.row = y
+	// parent.display.column = x + 2
+	// parent.display.print(stack.str())
+	parent.display.print stack.str(), x + 2, y, fg, bg
 	if self.entity.isEquipped(item) then
-		parent.display.print(" [E]")
+		// parent.display.print(" [E]")
+		parent.display.print " [E]", x + 2 + stack.str().len, y, fg, bg
 	end if
 
 	for x in range(parent.listBounds.left, parent.listBounds.right)
-		parent.display.setCellBackColor(x, y, bg)
+		parent.display.setCellBackColor x, y, bg
 	end for
 end function
 

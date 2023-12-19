@@ -15,25 +15,18 @@ end function
 
 ExamineWindow.reset = function(entities)
 	list = self.generateList(entities)
-	self.selectList.init(Display.hud, rect.make(4, 4, 68 - 4 * 2, 26 - 4 * 2))
+	self.selectList.init(Display.hud, rect.make(4, 4, constants.TILE_DISPLAY_WIDTH - 4 * 2, constants.TILE_DISPLAY_HEIGHT - 4 * 2))
 	self.selectList.reset(list)
 end function
 
-ExamineWindow.draw = function(title, description="")
+ExamineWindow.draw = function(title) //, description="")
 	windowBounds = self.selectList.windowBounds
 	ui.drawWindow(Display.hud, windowBounds, title)
-	ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 1, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, "|")
+	ui.drawVerticalLine(Display.hud, windowBounds.centerX, windowBounds.top + 1, windowBounds.bottom - 1, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, 179)
+	ui.drawCell(Display.hud, windowBounds.centerX, windowBounds.top, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, 207)
 	
-	Display.hud.color = ui.WINDOW_BORDER_FOREGROUND
-	Display.hud.row = windowBounds.top
-	Display.hud.column = windowBounds.centerX
-	Display.hud.print("+")
-	
-	Display.hud.backColor = color.black
-	Display.hud.color = color.white
-	Display.hud.row = windowBounds.bottom - 1
-	Display.hud.column = windowBounds.left + 1
-	Display.hud.print(description)
+	// Unused?
+	// Display.hud.print description, windowBounds.left + 1, windowBounds.bottom - 1, color.white, color.black
 
 	self.selectList.drawItems()
 end function

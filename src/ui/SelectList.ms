@@ -30,7 +30,7 @@ SelectList.listBounds = function()
 end function
 
 SelectList.detailBounds = function()
-	return rect.make(self.windowBounds.centerX + 1, self.windowBounds.top + 1, self.windowBounds.width / 2 - 2, self.windowBounds.height - 2)
+	return rect.make(self.windowBounds.centerX + 1, self.windowBounds.top + 2, self.windowBounds.width / 2 - 2, self.windowBounds.height - 3)
 end function
 
 SelectList.maxDisplayLines = function()

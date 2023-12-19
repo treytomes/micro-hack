@@ -72,12 +72,72 @@ ensureImport "townGenerator"
 ensureImport "mapgen"
 ensureImport "fov"
 
+ensureImport "constants"
 ensureImport "keybindings"
 ensureImport "settings"
 
 Display = {}
 
+HeadsUpDisplay = {}
+
+HeadsUpDisplay.initTiles = function(displayNumber)
+	display(displayNumber).mode = displayMode.tile
+	display(displayNumber).tileSet = file.loadImage("assets/OEM437_8.png")
+	display(displayNumber).tileSetTileSize = 8
+	display(displayNumber).cellSize = 16
+	display(displayNumber).extent = [constants.TILE_DISPLAY_WIDTH, constants.TILE_DISPLAY_HEIGHT]
+	return display(displayNumber)
+end function
+
+HeadsUpDisplay.init = function(displayNumberFront, displayNumberBack)
+	self.display = self.initTiles(displayNumberFront)
+	self.displayBack = self.initTiles(displayNumberBack)
+	return self
+end function
+
+HeadsUpDisplay.setCellBackColor = function(x, y, backColor)
+	if backColor isa Color then
+		backColor = backColor.str()
+	end if
+	self.displayBack.setCell x, y, constants.TILE_INDEX_SOLID
+	self.displayBack.setCellTint x, y, backColor
+end function
+
+HeadsUpDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#00000000")
+	if tile isa string then
+		tile = code(tile)
+	end if
+	if color isa Color then
+		color = color.str()
+	end if
+	self.display.setCell x, y, tile
+	self.display.setCellTint x, y, color
+	self.setCellBackColor x, y, backColor
+end function
+
+HeadsUpDisplay.clear = function()
+	for y in range(0, constants.TILE_DISPLAY_YMAX)
+		for x in range(0, constants.TILE_DISPLAY_XMAX)
+			self.setCell x, y, 0, color.black, color.clear
+		end for
+	end for
+end function
+
+HeadsUpDisplay.print = function(text, x, y, color="#FFFFFF", backColor="#00000000")
+	for ch in text
+		self.setCell x, y, code(ch), color, backColor
+		x += 1
+	end for
+end function
+
 Display.initialize = function()
+	HUD = 0
+	HUD_BACK = 1
+	PARTICLES_0 = 2
+	PARTICLES_1 = 3
+	MAP_0 = 4
+	MAP_1 = 5
+
 	activate = function(n)
 		display(n).mode = displayMode.text
 		display(n).delimiter = ""
@@ -89,40 +149,45 @@ Display.initialize = function()
 		return display(n)
 	end function
 
-	Display.hud = activate(0)
-	
-	Display.particles = activate(1)
-	deactivate(1)
-	activate(2)
+	activateTiles = function(n)
+		return HeadsUpDisplay.init(n)
+	end function
 
-	Display.particles = display(1)
+	// Display.hud = activate(0)
+	Display.hud = HeadsUpDisplay.init(HUD, HUD_BACK)
+	
+	Display.particles = activate(PARTICLES_0)
+	deactivate(PARTICLES_0)
+	activate(PARTICLES_1)
+
+	Display.particles = display(PARTICLES_0)
 	Display.flipParticles = function()
-		if display(1).mode == displayMode.off then
-			display(1).mode = displayMode.text
-			display(2).mode = displayMode.text
-			Display.particles = display(2)
-			display(2).mode = displayMode.off
+		if display(PARTICLES_0).mode == displayMode.off then
+			display(PARTICLES_0).mode = displayMode.text
+			display(PARTICLES_1).mode = displayMode.text
+			Display.particles = display(PARTICLES_1)
+			display(PARTICLES_1).mode = displayMode.off
 		else
-			display(1).mode = displayMode.text
-			display(2).mode = displayMode.text
-			Display.particles = display(1)
-			display(1).mode = displayMode.off
+			display(PARTICLES_0).mode = displayMode.text
+			display(PARTICLES_1).mode = displayMode.text
+			Display.particles = display(PARTICLES_0)
+			display(PARTICLES_0).mode = displayMode.off
 		end if
 	end function
 
-	Display.map = activate(3)
-	deactivate(3)
-	activate(4)
+	Display.map = activate(MAP_0)
+	deactivate(MAP_0)
+	activate(MAP_1)
 
 	Display.flipMap = function()
-		if display(3).mode == displayMode.off then
-			activate(3)
-			Display.map = activate(4)
-			deactivate(4)
+		if display(MAP_0).mode == displayMode.off then
+			activate(MAP_0)
+			Display.map = activate(MAP_1)
+			deactivate(MAP_1)
 		else
-			activate(4)
-			Display.map = activate(3)
-			deactivate(3)
+			activate(MAP_1)
+			Display.map = activate(MAP_0)
+			deactivate(MAP_0)
 		end if
 	end function
 end function
@@ -167,20 +232,20 @@ drawEntities = function(display, map, renderOffset)
 end function
 
 drawHUD = function(display, player)
-	display.color = color.clear
-	display.backColor = color.clear
+	// display.color = color.clear
+	// display.backColor = color.clear
 	display.clear()
-	display.row = 26
+	// display.row = 26
 	
-	display.column = 0
-	display.color = color.white
-	display.backColor = color.black
+	// display.column = 0
+	// display.color = color.white
+	// display.backColor = color.black
 
 	statusBar = "HP: {0} / {1} LVL: {2} XP: {3} / {4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (67 - statusBar.len)
 	
-	display.print(statusBar)
-	
+	display.print(statusBar, 0, 39, color.white, color.black)
+
 	Service.messages.update()
 end function
 

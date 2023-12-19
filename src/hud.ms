@@ -11,12 +11,10 @@ Message.make = function(text, foregroundColor = null, backgroundColor = null)
 end function
 
 Message.draw = function(row)
-	Display.hud.row = row
-	Display.hud.column = 0
 	ratio = self.lifeSpan / self.maxLifeSpan
-	Display.hud.color = color.lerp(color.clear, self.foregroundColor, ratio)
-	Display.hud.backColor = color.lerp(color.clear, self.backgroundColor, ratio)
-	Display.hud.print(self.text)
+	fg = color.lerp(color.clear, self.foregroundColor, ratio)
+	bg = color.lerp(color.clear, self.backgroundColor, ratio)
+	Display.hud.print self.text, 0, row, fg, bg
 end function
 
 MessageLog = {}
