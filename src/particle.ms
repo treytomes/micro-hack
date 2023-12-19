@@ -43,11 +43,7 @@ Particle.draw = function(dsp, renderOffset)
 	y = floor(renderOffset.y + self.y)
 
 	if 0 <= x and x <= SCREEN_MAX_X and 0 <= y and y <= SCREEN_MAX_Y then
-		dsp.row = floor(renderOffset.y + self.y)
-		dsp.column = floor(renderOffset.x + self.x)
-		dsp.color = self.foregroundColor.str()
-		dsp.backColor = self.backgroundColor.str()
-		dsp.print(self.text)
+		dsp.setCell x, y, self.text, self.foregroundColor, self.backgroundColor 
 	end if
 end function
 

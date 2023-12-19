@@ -9,10 +9,11 @@ HeadsUpDisplay.initTiles = function(displayNumber)
 	return display(displayNumber)
 end function
 
-HeadsUpDisplay.init = function(displayNumberFront, displayNumberBack)
-	self.display = self.initTiles(displayNumberFront)
-	self.displayBack = self.initTiles(displayNumberBack)
-	return self
+HeadsUpDisplay.make = function(displayNumberFront, displayNumberBack)
+	dsp = new HeadsUpDisplay
+	dsp.display = dsp.initTiles(displayNumberFront)
+	dsp.displayBack = dsp.initTiles(displayNumberBack)
+	return dsp
 end function
 
 HeadsUpDisplay.setCellBackColor = function(x, y, backColor)

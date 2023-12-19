@@ -81,12 +81,12 @@ Display = {}
 Display.initialize = function()
 	MapDisplay = require("MapDisplay")
 	
-	HUD = 0
-	HUD_BACK = 1
-	PARTICLES_0 = 2
-	PARTICLES_1 = 3
-	MAP_0 = 4
-	MAP_1 = 5
+	// HUD = 0
+	// HUD_BACK = 1
+	// PARTICLES_0 = 2
+	// PARTICLES_1 = 3
+	// MAP_0 = 4
+	// MAP_1 = 5
 
 	activate = function(n)
 		display(n).mode = displayMode.text
@@ -99,48 +99,16 @@ Display.initialize = function()
 		return display(n)
 	end function
 
-	Display.hud = ui.HeadsUpDisplay.init(HUD, HUD_BACK)
+	Display.hud = ui.HeadsUpDisplay.make(0, 1)
 	
-	Display.particles = activate(PARTICLES_0)
-	deactivate(PARTICLES_0)
-	activate(PARTICLES_1)
+	Display.particles = MapDisplay.make(2, 3)
 
-	Display.particles = display(PARTICLES_0)
-	Display.flipParticles = function()
-		if display(PARTICLES_0).mode == displayMode.off then
-			display(PARTICLES_0).mode = displayMode.text
-			display(PARTICLES_1).mode = displayMode.text
-			Display.particles = display(PARTICLES_1)
-			display(PARTICLES_1).mode = displayMode.off
-		else
-			display(PARTICLES_0).mode = displayMode.text
-			display(PARTICLES_1).mode = displayMode.text
-			Display.particles = display(PARTICLES_0)
-			display(PARTICLES_0).mode = displayMode.off
-		end if
-	end function
-
-	Display.map = MapDisplay.init(MAP_0, MAP_1)
+	Display.map = MapDisplay.make(4, 5)
 end function
 
 Display.clear = function()
-	Display.hud.backColor = color.clear
 	Display.hud.clear()
-	Display.flipParticles()
-	
-	Display.particles.backColor = color.clear
 	Display.particles.clear()
-	Display.flipParticles()
-	Display.particles.backColor = color.clear
-	Display.particles.clear()
-	Display.flipParticles()
-	
-	//Display.map.backColor = color.clear
-	//Display.map.clear()
-	//Display.map.flip
-	//Display.map.backColor = color.clear
-	//Display.map.clear()
-	//Display.map.flip
 end function
 
 Service = {}
@@ -184,8 +152,7 @@ updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
 		n = 0
 		
-		Display.particles.backColor = color.clear
-		Display.particles.clear()
+		Display.particles.clear color.clear
 
 		while n < Service.fountains.len
 			f = Service.fountains[n]
@@ -197,7 +164,7 @@ updateParticles = function(deltaTime, map, renderOffset)
 			end if
 		end while
 
-		Display.flipParticles()
+		Display.particles.flip
 	end if
 end function
 
@@ -245,10 +212,9 @@ main = function()
 	while isRunning
 		frameStart = time * 1000
 
-		// updateParticles(deltaTime, Service.world.map, renderOffset) // TODO
+		updateParticles(deltaTime, Service.world.map, renderOffset)
 
 		// The next step in the game occurs when the player presses a key.
-	// Service.messages.report("move?")
 		if key.available then
 			map = Service.world.map
 
@@ -280,7 +246,6 @@ main = function()
 				Service.messages.report("YOU ARE DEAD!")
 			end if
 			
-	// Service.messages.report("move")
 			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 			drawEntities(Display.map, Service.world.map, renderOffset)
 			Display.map.flip

@@ -10,26 +10,27 @@ MapDisplay.initTiles = function(displayNumber)
 	return dsp
 end function
 
-MapDisplay.init = function(displayNumberFront, displayNumberBack)
-	self.isActive = false
+MapDisplay.make = function(displayNumberFront, displayNumberBack)
+	dsp = new MapDisplay
+	dsp.isActive = false
 
-	self.displayNumberFront = displayNumberFront
-	self.displayNumberBack = displayNumberBack
+	dsp.displayNumberFront = displayNumberFront
+	dsp.displayNumberBack = displayNumberBack
 
-	self.activeDisplay = 0
+	dsp.activeDisplay = 0
 
-	self.display0 = self.initTiles(displayNumberFront)
-	self.display0Back = self.initTiles(displayNumberBack)
+	dsp.display0 = dsp.initTiles(displayNumberFront)
+	dsp.display0Back = dsp.initTiles(displayNumberBack)
 
-	self.display1 = self.initTiles(displayNumberFront)
-	self.display1Back = self.initTiles(displayNumberBack)
+	dsp.display1 = dsp.initTiles(displayNumberFront)
+	dsp.display1Back = dsp.initTiles(displayNumberBack)
 	
-	self.display = self.display0
-	self.displayBack = self.display0Back
-	self.display.install self.displayNumberFront
-	self.displayBack.install self.displayNumberBack
+	dsp.display = dsp.display0
+	dsp.displayBack = dsp.display0Back
+	dsp.display.install dsp.displayNumberFront
+	dsp.displayBack.install dsp.displayNumberBack
 
-	return self
+	return dsp
 end function
 
 MapDisplay.flip = function()
@@ -77,10 +78,10 @@ MapDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#0000000
 	self.setCellBackColor x, y, backColor
 end function
 
-MapDisplay.clear = function()
+MapDisplay.clear = function(fg="#000000", bg="#00000000")
 	for y in range(0, constants.TILE_DISPLAY_YMAX)
 		for x in range(0, constants.TILE_DISPLAY_XMAX)
-			self.setCell x, y, 0, color.black, color.clear
+			self.setCell x, y, 0, fg, bg
 		end for
 	end for
 end function
