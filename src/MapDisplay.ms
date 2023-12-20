@@ -54,6 +54,20 @@ MapDisplay.flip = function()
 	return self
 end function
 
+MapDisplay.scrollTo = function(x, y)
+	self.display0.scrollX = x
+	self.display0.scrollY = y
+
+	self.display0Back.scrollX = x
+	self.display0Back.scrollY = y
+
+	self.display1.scrollX = x
+	self.display1.scrollY = y
+
+	self.display1Back.scrollX = x
+	self.display1Back.scrollY = y
+end function
+
 MapDisplay.setCellBackColor = function(x, y, backColor)
 	if backColor isa Color then
 		backColor = backColor.str()

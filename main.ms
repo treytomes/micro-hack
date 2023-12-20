@@ -201,11 +201,12 @@ main = function()
 	
 	Display.clear()
 	
-	Service.world.map.clearScreen(Display.map)
+	Service.world.map.clear(Display.map)
+	// Service.world.map.draw_v2(Display.map)
 	Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 	drawEntities(Display.map, Service.world.map, renderOffset)
 	Display.map.flip
-	Display.map.setCell 5, 5, "*", color.red, color.blue
+	// Display.map.setCell 5, 5, "*", color.red, color.blue
 
 	drawHUD(Display.hud, Service.world.player)
 
@@ -247,6 +248,7 @@ main = function()
 				Service.messages.report("YOU ARE DEAD!")
 			end if
 			
+
 			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 			drawEntities(Display.map, Service.world.map, renderOffset)
 			Display.map.flip

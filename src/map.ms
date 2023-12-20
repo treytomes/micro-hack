@@ -118,7 +118,7 @@ Map.findHiddenSpawnPoint = function()
 	end while
 end function
 
-Map.clearScreen = function(dsp)
+Map.clear = function(dsp)
 	for y in range(0, SCREEN_MAX_Y)
 		for x in range(0, SCREEN_MAX_X)
 			dsp.setCell x, y, "#", color.black, color.gray
@@ -126,11 +126,15 @@ Map.clearScreen = function(dsp)
 	end for
 end function
 
-Map.drawTile = function(dsp, x, y, renderOffset)
+Map.drawTile = function(dsp, x, y, renderOffset=null)
 	//if self.isEntityAt(point.make(x, y)) then return
 	
-	rx = renderOffset.x + x
-	ry = renderOffset.y + y
+	rx = x
+	ry = y
+	if renderOffset != null then
+		rx += renderOffset.x
+		ry += renderOffset.y
+	end if
 
 	if not math.isInRange(rx, 0, SCREEN_MAX_X) or not math.isInRange(ry, 0, SCREEN_MAX_Y) then
 		return
@@ -158,6 +162,15 @@ Map.draw_v1 = function(display, player, renderOffset)
 	for y in range(player.position.y - halfHeight, player.position.y + halfHeight + 1)
 		for x in range(player.position.x - halfWidth, player.position.x + halfWidth + 1)
 			self.drawTile display, x, y, renderOffset
+		end for
+	end for
+end function
+
+// In this version we draw the entire map to the TileDisplay, then use built-in functions to scroll the map later on.
+Map.draw_v2 = function(dsp)
+	for y in range(0, self.height - 1)
+		for x in range(0, self.width - 1)
+			self.drawTile dsp, x, y
 		end for
 	end for
 end function
