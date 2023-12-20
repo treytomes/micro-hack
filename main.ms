@@ -140,7 +140,7 @@ drawHUD = function(display, player)
 	// display.color = color.white
 	// display.backColor = color.black
 
-	statusBar = "HP: {0} / {1} LVL: {2} XP: {3} / {4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
+	statusBar = "HP: {0}/{1} LVL: {2} XP: {3}/{4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len)
 	
 	display.print(statusBar, 0, constants.UI_DISPLAY_YMAX, color.white, color.black)
@@ -206,7 +206,6 @@ main = function()
 	Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
 	drawEntities(Display.map, Service.world.map, renderOffset)
 	Display.map.flip
-	// Display.map.setCell 5, 5, "*", color.red, color.blue
 
 	drawHUD(Display.hud, Service.world.player)
 

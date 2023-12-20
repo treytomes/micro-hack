@@ -267,47 +267,89 @@ generateCavernLevel = function(mapgen, map)
 	end for
 
 	// Place the stairs down.
-	foundSpot = false
-	while not foundSpot
-		x = math.random(0, map.width - 1)
-		y = math.random(0, map.height - 2)
-		if not map.blocksMovement(x, y) then
-			map.tiles[y][x] = tiles.makeStairsDown()
-			map.stairsDown = point.make(x, y)
-			foundSpot = true
-		end if
-	end while
+	pnt = findSpawnPoint(map)
+	map.tiles[pnt.y][pnt.x] = tiles.makeStairsDown()
+	map.stairsDown = pnt
+
+	// foundSpot = false
+	// while not foundSpot
+	// 	x = math.random(0, map.width - 1)
+	// 	y = math.random(0, map.height - 2)
+	// 	if not map.blocksMovement(x, y) then
+	// 		map.tiles[y][x] = tiles.makeStairsDown()
+	// 		map.stairsDown = point.make(x, y)
+	// 		foundSpot = true
+	// 	end if
+	// end while
 
 	// Place the player spawn near the stairs down.
-	foundSpot = false
-	while not foundSpot
-		// Put the spawn point near the stairs down.
-		x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
-		y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
-		if not map.blocksMovement(x, y) and not pnt.equals(map.stairsDown) then
-			// We need the stairsUp point for spawning, but there is no level < 0.
-			//map.tiles[y][x] = tiles.makeStairsUp()
-			map.stairsUp = point.make(x, y)
-			foundSpot = true
-		end if
-	end while
+	pnt = findSpawnPointInRadius(map, map.stairsDown, 5)
+	map.stairsUp = pnt
+
+	// foundSpot = false
+	// while not foundSpot
+	// 	// Put the spawn point near the stairs down.
+	// 	x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
+	// 	y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
+	// 	if not map.blocksMovement(x, y) and not pnt.equals(map.stairsDown) then
+	// 		// We need the stairsUp point for spawning, but there is no level < 0.
+	// 		//map.tiles[y][x] = tiles.makeStairsUp()
+	// 		map.stairsUp = point.make(x, y)
+	// 		foundSpot = true
+	// 	end if
+	// end while
 
 	// Place a sign post.
-	foundSpot = false
-	while not foundSpot
-		// Put the spawn point near the stairs down.
-		x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
-		y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
-		pnt = point.make(x, y)
-		if not map.blocksMovement(x, y) and not map.isEntityAt(pnt) and not pnt.equals(map.stairsDown) then
-			e = entities.makeSign(map, pnt, "Under construction, please come back later!")
-			map.entities.push(e)
-			foundSpot = true
-		end if
-	end while
+	pnt = findSpawnPointInRadius(map, map.stairsDown, 5)
+	e = entities.makeSign(map, pnt, "Under construction, please come back later!")
+	map.entities.push(e)
 
+	// foundSpot = false
+	// while not foundSpot
+	// 	// Put the spawn point near the stairs down.
+	// 	x = math.random(map.stairsDown.x - 5, map.stairsDown.x + 5)
+	// 	y = math.random(map.stairsDown.y - 5, map.stairsDown.y + 5)
+	// 	pnt = point.make(x, y)
+	// 	if not map.blocksMovement(x, y) and not map.isEntityAt(pnt) and not pnt.equals(map.stairsDown) then
+	// 		e = entities.makeSign(map, pnt, "Under construction, please come back later!")
+	// 		map.entities.push(e)
+	// 		foundSpot = true
+	// 	end if
+	// end while
+
+	// pnt = findSpawnPointInRadius(map, map.stairsDown, 20)
+	// e = entities.makeSimpleVillager(map, pnt, "Welcome to Village!")
+	// map.entities.push(e)
+
+	for n in range(10)
+		pnt = findSpawnPointInRadius(map, map.stairsDown, 20)
+		e = entities.makeSimpleVillager(map, pnt, "Welcome to Village!")
+		map.entities.push(e)
+	end for
 
 	return map
+end function
+
+findSpawnPoint = function(map)
+	while true
+		sx = math.random(0, map.width - 1)
+		sy = math.random(0, map.height - 1)
+		if not map.blocksMovement(sx, sy) then
+			return point.make(sx, sy)
+		end if
+	end while
+end function
+
+findSpawnPointInRadius = function(map, pnt, radius)
+	while true
+		// Put the spawn point near the stairs down.
+		sx = math.random(pnt.x - radius, pnt.x + radius)
+		sy = math.random(pnt.y - radius, pnt.y + radius)
+		sp = point.make(sx, sy)
+		if not map.blocksMovement(sx, sy) and not map.isEntityAt(sp) and not sp.equals(map.stairsDown) then
+			return sp
+		end if
+	end while
 end function
 
 build = function(mapgen, map)

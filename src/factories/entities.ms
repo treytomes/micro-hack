@@ -72,6 +72,28 @@ makeSign = function(map, pnt, msg)
 	return e
 end function
 
+// Let's start with a villager that is basically a walking signpost.
+makeSimpleVillager = function(map, pnt, msg)
+	if math.random(0, 100) < 50 then
+		name = names.boy
+		t = tile.make(268, Color.blue.lighter, true, false)
+	else
+		name = names.girl
+		t = tile.make(268, Color.pink.lighter, true, false)
+	end if
+	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
+	e.name = name.str()
+	e.fullName = name
+	e.description = "{0}: ""{1}""".fill([e.name, msg])
+	e.canBeAttacked = false
+
+	e.describe = function(display, bounds)
+	end function
+
+	e.behaviors.push(behaviors.makeWander())
+	return e
+end function
+
 makeRat = function(map)
 	t = tile.make("r", Color.gray, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.rat, classes.classless, map.findHiddenSpawnPoint())
