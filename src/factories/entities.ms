@@ -73,7 +73,7 @@ makeSign = function(map, pnt, msg)
 end function
 
 // Let's start with a villager that is basically a walking signpost.
-makeSimpleVillager = function(map, pnt, msg)
+makeSimpleVillager = function(map, pnt)
 	if math.random(0, 100) < 50 then
 		name = names.boy
 		t = tile.make(268, Color.blue.lighter, true, false)
@@ -84,13 +84,18 @@ makeSimpleVillager = function(map, pnt, msg)
 	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
 	e.name = name.str()
 	e.fullName = name
-	e.description = "{0}: ""{1}""".fill([e.name, msg])
+	e.description = "A simple villager leading a simple life."
 	e.canBeAttacked = false
 
 	e.describe = function(display, bounds)
 	end function
 
-	e.behaviors.push(behaviors.makeWander())
+	e.examineOverride = function()
+		ui.showMessage(phrases.getRandom(), e.name)
+		return true
+	end function
+
+	e.behaviors.push(behaviors.makeWander(0.1, 0.7))
 	return e
 end function
 

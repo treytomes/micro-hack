@@ -119,6 +119,7 @@ InventorySelectListItem = require("InventorySelectListItem")
 InventorySelectWindow = require("InventorySelectWindow")
 ExamineSelectListItem = require("ExamineSelectListItem")
 ExamineWindow = require("ExamineWindow")
+MessageWindow = require("MessageWindow")
 HeadsUpDisplay = require("HeadsUpDisplay")
 
 selectItem = function(entity, title)
@@ -127,4 +128,8 @@ end function
 
 examine = function(entities)
 	return (new ui.ExamineWindow).examine(entities)
+end function
+
+showMessage = function(message, title="Message")
+	ui.MessageWindow.make(message, title).show()
 end function

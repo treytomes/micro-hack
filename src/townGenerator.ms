@@ -323,7 +323,7 @@ generateCavernLevel = function(mapgen, map)
 
 	for n in range(10)
 		pnt = findSpawnPointInRadius(map, map.stairsDown, 20)
-		e = entities.makeSimpleVillager(map, pnt, "Welcome to Village!")
+		e = entities.makeSimpleVillager(map, pnt)
 		map.entities.push(e)
 	end for
 

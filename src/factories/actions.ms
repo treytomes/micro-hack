@@ -185,13 +185,24 @@ examine = function(position)
 
 	action.apply = function(entity, map)
 		entities = map.getEntitiesAt(position)
-
 		if entities.len == 0 then
 			tile = map.tiles[position.y][position.x]
 			Service.messages.report("You see a {0} here.".fill([ tile.name ]))
-		else
+			return
+		end if
+
+		foundEntity = false
+		for e in entities
+			if e.examineOverride() then
+				foundEntity = true
+				break
+			end if
+		end for
+
+		if not foundEntity then
 			ui.examine(entities)
 		end if
 	end function
+
 	return action
 end function

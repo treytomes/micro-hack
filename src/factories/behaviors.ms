@@ -56,23 +56,30 @@ makeAttackOnCollision = function()
 	return b
 end function
 
-makeWander = function()
+makeWander = function(changeDirectionChance = 0.5, pauseChance = 0.5)
 	b = makeHealWhileResting()
+	b.pauseChance = pauseChance
+	b.changeDirectionChance = changeDirectionChance
 	b.currentDirection = point.zero
 
 	b.chooseNewDirection = function(entity)
-		dx = math.random(-1, 1)
-		dy = 0
-		if dx == 0 then
-			dy = math.random(-1, 1)
-		end if
+		if rnd() < pauseChance then
+			dx = 0
+			dy = 0
+		else
+			dx = math.random(-1, 1)
+			dy = 0
+			if dx == 0 then
+				dy = math.random(-1, 1)
+			end if
 
-		axis = math.random(0, 1)
-		if axis == 1 then
-			// Randomly choose which axis gets priority on changing.
-			a = dx
-			dx = dy
-			dy = a
+			axis = math.random(0, 1)
+			if axis == 1 then
+				// Randomly choose which axis gets priority on changing.
+				a = dx
+				dx = dy
+				dy = a
+			end if
 		end if
 
 		self.currentDirection.x = dx
@@ -80,7 +87,7 @@ makeWander = function()
 	end function
 
 	b.shouldChooseNewDirection = function()
-		return rnd() > 0.5
+		return rnd() < self.changeDirectionChance
 	end function
 
 	b.wanderAround = function(entity, map)

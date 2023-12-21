@@ -65,6 +65,7 @@ ensureImport "shields"
 ensureImport "tiles"
 ensureImport "weapons"
 ensureImport "names"
+ensureImport "phrases"
 
 ensureImport "arenaGenerator"
 ensureImport "randomDungeonGenerator"
@@ -260,3 +261,5 @@ main = function()
 end function
 
 main()
+clear
+print "All done!"

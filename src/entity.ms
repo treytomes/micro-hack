@@ -39,6 +39,11 @@ Entity.str = function()
 	return self.name
 end function
 
+// This function will return true if the examine functionality has been overridden.
+Entity.examineOverride = function()
+	return false
+end function
+
 Entity.describe = function(display, bounds)
 	ui.drawText(display, "HP: {0}/{1}".fill([self.currentHP, self.maxHP]), bounds, Color.orange.str())
 	bounds.height -= 1
