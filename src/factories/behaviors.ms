@@ -237,6 +237,7 @@ makeUserInput = function()
 		return null // Cancel the action.
 	end function
 
+	// TODO: Mismatch caused by different tile sizes.
 	b.lookAround = function(entity, map)
 		BLINK_SPEED = 300 / 1000
 		lastBlinkTime = time()
@@ -253,14 +254,18 @@ makeUserInput = function()
 				fg = Color.blue
 			end if
 			bg = Color.lerp(Color.black, Color.clear, 0.5)
-			ui.drawCell(Display.hud, renderOffset.x + pnt.x, renderOffset.y + pnt.y, fg, bg, "+")
+
+			// ui.drawCell(Display.map, renderOffset.x + pnt.x, renderOffset.y + pnt.y, fg, bg, "+")
+			Display.map.setCell renderOffset.x + pnt.x, renderOffset.y + pnt.y, "+", fg, bg
 		end function
 
 		eraseCursor = function()
-			ui.drawCell(Display.hud, renderOffset.x + pnt.x, renderOffset.y + pnt.y, color.clear, color.clear, " ")
+			// ui.drawCell(Display.map, renderOffset.x + pnt.x, renderOffset.y + pnt.y, color.clear, color.clear, " ")
+
+			Service.world.map.drawTile Display.map, pnt.x, pnt.y, renderOffset
 		end function
 
-		descriptionBounds = rect.make(68 - 16, 26 - 3, 16, 3)
+		descriptionBounds = rect.make(constants.UI_DISPLAY_WIDTH - 16, constants.UI_DISPLAY_HEIGHT - 3, 16, 3)
 		describe = function(map, pnt)
 			if map.isVisible(pnt.x, pnt.y) then
 				thing = map.getEntityAt(pnt)
@@ -270,11 +275,13 @@ makeUserInput = function()
 				text = "hidden"
 			end if
 
-			ui.clearRect(Display.hud, descriptionBounds)
+			// ui.clearRect(Display.hud, descriptionBounds)
 
 			width = math.max(16, text.len + 4)
+			clearBounds = rect.make(0, constants.UI_DISPLAY_HEIGHT - 3, constants.UI_DISPLAY_WIDTH, 3)
+			ui.clearRect(Display.hud, clearBounds, " ", color.clear, color.clear)
 
-			descriptionBounds = rect.make(68 - width, 26 - 3, width, 3)
+			descriptionBounds = rect.make(constants.UI_DISPLAY_WIDTH - width, constants.UI_DISPLAY_HEIGHT - 3, width, 3)
 			ui.drawWindow(Display.hud, descriptionBounds)
 
 			ui.drawCenteredText(Display.hud, descriptionBounds.left, descriptionBounds.right, descriptionBounds.top + 1, Color.yellow, Color.black, text)
@@ -314,7 +321,12 @@ makeUserInput = function()
 				showCursor = not showCursor
 				lastBlinkTime = time()
 			end if
+
+			Service.world.map.clear(Display.map)
+			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
+			drawEntities(Display.map, Service.world.map, renderOffset)
 			drawCursor()
+			Display.map.flip
 		end while
 	end function
 

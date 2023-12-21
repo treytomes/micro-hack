@@ -192,12 +192,14 @@ examine = function(position)
 		end if
 
 		foundEntity = false
-		for e in entities
-			if e.examineOverride() then
-				foundEntity = true
-				break
-			end if
-		end for
+		if Service.world.player.position.subtract(position).length <= 1 then
+			for e in entities
+				if e.examineOverride() then
+					foundEntity = true
+					break
+				end if
+			end for
+		end if
 
 		if not foundEntity then
 			ui.examine(entities)

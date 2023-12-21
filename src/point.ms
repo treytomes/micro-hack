@@ -42,6 +42,10 @@ Point.floor = function()
 	return (new Point).init(floor(self.x), floor(self.y))
 end function
 
+Point.length = function()
+	return (self.x * self.x + self.y * self.y) ^ 0.5
+end function
+
 zero = function()
 	return (new Point).init(0, 0)
 end function
