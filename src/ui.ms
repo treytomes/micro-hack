@@ -130,6 +130,6 @@ examine = function(entities)
 	return (new ui.ExamineWindow).examine(entities)
 end function
 
-showMessage = function(message, title="Message")
-	ui.MessageWindow.make(message, title).show()
+showMessage = function(message, options, title="Message")
+	return ui.MessageWindow.make(message, options, title).show()
 end function

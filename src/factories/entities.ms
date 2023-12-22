@@ -91,7 +91,14 @@ makeSimpleVillager = function(map, pnt)
 	end function
 
 	e.examineOverride = function()
-		ui.showMessage(phrases.getRandom(), e.name)
+		message = phrases.getRandom()
+		options = [
+			"That's nice.",
+			"Bugger off.",
+			"You don't say?",
+		]
+		result = ui.showMessage(message, options, e.name)
+		Service.messages.report("You said: '{0}'".fill([ options[result] ]))
 		return true
 	end function
 
