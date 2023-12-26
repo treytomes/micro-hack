@@ -202,7 +202,16 @@ makeUserInput = function()
 		if index == null then
 			return null
 		end if
-		return actions.dropInventoryItem(index)
+
+		stack = entity.inventory.get(index)
+		if stack.count > 1 then
+			count = ui.selectInteger(1, stack.count, "How much?")
+			// Service.messages.report("You selected {0}.".fill([count]))
+		else
+			count = 1
+		end if
+
+		return actions.dropInventoryItem(index, count)
 	end function
 
 	b.useInventory = function(entity)

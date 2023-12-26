@@ -14,11 +14,11 @@ InventorySelectListItem.draw = function(parent, isSelected)
 	item = stack.item
 
 	if isSelected then
-		bg = parent.ITEM_BACKGROUND_SELECTED.str()
-		fg = parent.ITEM_FOREGROUND_SELECTED.str()
+		bg = parent.ITEM_BACKGROUND_SELECTED
+		fg = parent.ITEM_FOREGROUND_SELECTED
 	else
-		bg = parent.ITEM_BACKGROUND.str()
-		fg = parent.ITEM_FOREGROUND.str()
+		bg = parent.ITEM_BACKGROUND
+		fg = parent.ITEM_FOREGROUND
 	end if
 
 	x = parent.listBounds.left

@@ -65,20 +65,30 @@ useInventoryItem = function(inventoryIndex)
 	return action
 end function
 
-dropInventoryItem = function(inventoryIndex)
+dropInventoryItem = function(inventoryIndex, count)
 	action = new EntityAction
 	action.inventoryIndex = inventoryIndex
+	action.count = count
 	action.apply = function(entity, map)
 		stack = entity.inventory.get(self.inventoryIndex)
 		item = stack.item
-		entity.inventory.removeItem(self.inventoryIndex)
-		if stack.count == 0 then
-			entity.removeFromSlots(item)
+		count = self.count
+		while count > 0
+			entity.inventory.removeItem(self.inventoryIndex)
+			if stack.count == 0 then
+				entity.removeFromSlots(item)
+			end if
+			
+			itemEntity = entities.makeItem(map, item, entity.position)
+			map.entities.push(itemEntity)
+			count -= 1
+		end while
+
+		if self.count == 1 then
+			Service.messages.report("{0} dropped {1}.".fill([entity.name, item.name]))
+		else
+			Service.messages.report("{0} dropped {1} x{2}.".fill([entity.name, item.name, self.count]))
 		end if
-		
-		itemEntity = entities.makeItem(map, item, entity.position)
-		map.entities.push(itemEntity)
-		Service.messages.report("{0} dropped {1}.".fill([entity.name, item.name]))
 	end function
 	return action
 end function

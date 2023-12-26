@@ -92,7 +92,7 @@ end function
 Entity.onDeath = function(killedByEntity, map)
 	// Drop some loot.
 	while self.inventory.len > 0
-		actions.dropInventoryItem(0).apply(self, map)
+		actions.dropInventoryItem(0, 1).apply(self, map)
 	end while
 end function
 

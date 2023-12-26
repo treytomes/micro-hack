@@ -121,6 +121,7 @@ ExamineSelectListItem = require("ExamineSelectListItem")
 ExamineWindow = require("ExamineWindow")
 MessageWindow = require("MessageWindow")
 HeadsUpDisplay = require("HeadsUpDisplay")
+IntegerSelectWindow = require("IntegerSelectWindow")
 
 selectItem = function(entity, title)
 	return (new ui.InventorySelectWindow).selectItem(entity, title)
@@ -132,4 +133,9 @@ end function
 
 showMessage = function(message, options, title="Message")
 	return ui.MessageWindow.make(message, options, title).show()
+end function
+
+selectInteger = function(min, max, title="How many?")
+	wnd = ui.IntegerSelectWindow.make(min, max, title)
+	return wnd.select()
 end function

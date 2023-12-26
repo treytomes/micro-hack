@@ -91,25 +91,22 @@ end function
 SelectList.drawItems = function()
 	ui.clearRect(self.display, self.listBounds, " ", Color.clear.str(), Color.black.str())
 
-	self.display.color = color.gray
 	n = 1
+	x = self.windowBounds.left + 1
 	y = self.windowBounds.bottom - 1
+	bg = Color.black
 
 	if not self.isAtTop then
-		self.display.color = self.LIST_MORE_FOREGROUND.str()
+		fg = self.LIST_MORE_FOREGROUND
+		self.display.print("^" * (self.windowBounds.width / 2 - 1), x, y, fg, bg)
 	else
-		self.display.color = self.LIST_NOMORE_FOREGROUND.str()
+		fg = self.LIST_NOMORE_FOREGROUND
+		self.display.print("^" * (self.windowBounds.width / 2 - 1), x, y, fg, bg)
 	end if
-	self.display.row = y
-	self.display.column = self.windowBounds.left + 1
-	self.display.backColor = color.black
-	self.display.print("^" * (self.windowBounds.width / 2 - 1))
 	y -= 1
 
 	if self.list.len == 0 then
-		self.display.row = y
-		self.display.column = self.windowBounds.left + 1
-		self.display.print("You've got nothing.")
+		self.display.print("You've got nothing.", self.windowBounds.left + 1, y, fg, bg)
 	else
 		for n in range(self.firstDisplayIndex, self.lastDisplayIndex)
 			if math.isInRange(n, 0, self.list.len - 1) then
@@ -125,10 +122,10 @@ SelectList.drawItems = function()
 	else
 		self.display.color = self.LIST_NOMORE_FOREGROUND.str()
 	end if
-	self.display.row = self.windowBounds.top + 1
-	self.display.column = self.windowBounds.left + 1
-	self.display.backColor = self.ITEM_BACKGROUND.str()
-	self.display.print("v" * (self.windowBounds.width / 2 - 1))
+	x = self.windowBounds.left + 1
+	y = self.windowBounds.top + 1
+	bg = self.ITEM_BACKGROUND
+	self.display.print("v" * (self.windowBounds.width / 2 - 1), x, y, fg, bg)
 
 	if self.selectedItem != null then self.selectedItem.describe(self)
 end function
