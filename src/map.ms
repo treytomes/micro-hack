@@ -119,7 +119,7 @@ Map.findHiddenSpawnPoint = function()
 end function
 
 Map.clear = function(dsp)
-	for y in range(0, SCREEN_MAX_Y)
+	for y in range(0, SCREEN_MAX_Y - 1)
 		for x in range(0, SCREEN_MAX_X)
 			dsp.setCell x, y, "#", color.black, color.gray
 		end for
@@ -159,7 +159,7 @@ end function
 Map.draw_v1 = function(display, player, renderOffset)
 	halfHeight = constants.TILE_DISPLAY_HEIGHT / 2 - 1
 	halfWidth = constants.TILE_DISPLAY_WIDTH / 2 - 1
-	for y in range(player.position.y - halfHeight, player.position.y + halfHeight + 1)
+	for y in range(player.position.y - halfHeight, player.position.y + halfHeight + 1 - 1) // The -1 at the end here accounts for a HUD rendering problem. 
 		for x in range(player.position.x - halfWidth, player.position.x + halfWidth + 1)
 			self.drawTile display, x, y, renderOffset
 		end for

@@ -98,7 +98,7 @@ makeSimpleVillager = function(map, pnt)
 			"You don't say?",
 		]
 		result = ui.showMessage(message, options, e.name)
-		Service.messages.report("You said: '{0}'".fill([ options[result] ]))
+		Service.messages.report("You said: ""{0}""".fill([ options[result] ]))
 		return true
 	end function
 
