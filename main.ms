@@ -82,39 +82,48 @@ Display = {}
 Display.initialize = function()
 	MapDisplay = require("MapDisplay")
 	
-	// HUD = 0
-	// HUD_BACK = 1
-	// PARTICLES_0 = 2
-	// PARTICLES_1 = 3
-	// MAP_0 = 4
-	// MAP_1 = 5
+	PIXEL_0 = 1
 
-	activate = function(n)
-		display(n).mode = displayMode.text
-		display(n).delimiter = ""
-		return display(n)
-	end function
-
-	deactivate = function(n)
-		display(n).mode = displayMode.off
-		return display(n)
-	end function
-
-	Display.hud = ui.HeadsUpDisplay.make(0, 1)
+	HUD = 2
+	HUD_BACK = 3
 	
-	Display.particles = MapDisplay.make(2, 3)
+	PARTICLES_0 = 4
+	PARTICLES_1 = 5
+	
+	MAP_0 = 6
+	MAP_1 = 7
 
-	Display.map = MapDisplay.make(4, 5)
+	Display.hud = ui.HeadsUpDisplay.make(HUD, HUD_BACK)
+
+	// display(PIXEL_0).install Display.pixels
+	// Display.pixels = new PixelDisplay
+	// Display.pixels.mode = displayMode.pixel
+	Display.pixels = new PixelDisplay
+	Display.pixels.install PIXEL_0
+	
+	Display.particles = MapDisplay.make(PARTICLES_0, PARTICLES_1)
+
+	Display.map = MapDisplay.make(MAP_0, MAP_1)
 end function
 
 Display.clear = function()
 	Display.hud.clear()
+	// Display.pixels.clear()
+	if display(1).mode == displayMode.off then
+		Display.pixels = new PixelDisplay
+		Display.pixels.install 1 //PIXEL_0
+		// display(2).mode = displayMode.pixel
+		// display(2).color = color.clear
+		// Display.pixels = display(2)
+	end if
+	Display.pixels.clear color.clear // Why is this set to "off"???
 	Display.particles.clear()
 end function
 
 Service = {}
 
 // TODO: This may become redundant soon.
+// The map owns the entity collection.  The rendering should happen there too.
 drawEntities = function(display, map, renderOffset)
 	// First draw entities that you can step on.
 	for e in map.entities
@@ -140,6 +149,8 @@ drawHUD = function(display, player)
 	// display.column = 0
 	// display.color = color.white
 	// display.backColor = color.black
+
+	// drawMiniMap()
 
 	statusBar = "HP: {0}/{1} LVL: {2} XP: {3}/{4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len)

@@ -149,16 +149,56 @@ Map.drawTile = function(dsp, x, y, renderOffset=null)
 
 	if t.isCurrentlyVisible then
 		t.draw(dsp, rx, ry)
+
+		// // Draw minimap.
+		// c = t.foregroundColor.str()
+		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	else if t.hasBeenVisited then
 		t.drawDim(dsp, rx, ry)
+
+		// // Draw minimap.
+		// c = t.foregroundColor.str()
+		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	else
 		dsp.setCell rx, ry, "#", color.black, color.gray
+
+		// // Draw minimap.
+		// c = color.gray
+		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	end if
+end function
+
+Map.drawMiniMap = function()
+	Display.pixels.drawRect constants.PIXEL_WIDTH - self.width - 2, constants.PIXEL_HEIGHT - self.height - 2, self.width + 2, self.height + 2, color.brown, 2
+
+	for y in range(0, self.height)
+		for x in range(0, self.width)
+			if self.getTile(x, y).hasBeenVisited then
+				tile = self.getTile(x, y)
+				c = tile.foregroundColor.str()
+				Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+			else
+				c = color.gray
+				Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+			end if
+		end for
+	end for
+
+	for e in self.entities
+		x = e.position.x
+		y = e.position.y
+		c = e.tile.foregroundColor.str()
+
+		Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+	end for
 end function
 
 Map.draw_v1 = function(display, player, renderOffset)
 	halfHeight = constants.TILE_DISPLAY_HEIGHT / 2 - 1
 	halfWidth = constants.TILE_DISPLAY_WIDTH / 2 - 1
+
+	self.drawMiniMap()
+
 	for y in range(player.position.y - halfHeight, player.position.y + halfHeight + 1 - 1) // The -1 at the end here accounts for a HUD rendering problem. 
 		for x in range(player.position.x - halfWidth, player.position.x + halfWidth + 1)
 			self.drawTile display, x, y, renderOffset
