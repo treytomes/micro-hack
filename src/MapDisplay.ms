@@ -38,18 +38,18 @@ MapDisplay.flip = function()
 		self.activeDisplay = 1
 
 		self.display = self.display1
-		self.displayBack = self.display1Back
+		// self.displayBack = self.display1Back
 
 		self.display0.install self.displayNumberFront
-		self.display0Back.install self.displayNumberBack
+		// self.display0Back.install self.displayNumberBack
 	else
 		self.activeDisplay = 0
 
 		self.display = self.display0
-		self.displayBack = self.display0Back
+		// self.displayBack = self.display0Back
 
 		self.display1.install self.displayNumberFront
-		self.display1Back.install self.displayNumberBack
+		// self.display1Back.install self.displayNumberBack
 	end if
 	return self
 end function
@@ -58,22 +58,22 @@ MapDisplay.scrollTo = function(x, y)
 	self.display0.scrollX = x
 	self.display0.scrollY = y
 
-	self.display0Back.scrollX = x
-	self.display0Back.scrollY = y
+	// self.display0Back.scrollX = x
+	// self.display0Back.scrollY = y
 
 	self.display1.scrollX = x
 	self.display1.scrollY = y
 
-	self.display1Back.scrollX = x
-	self.display1Back.scrollY = y
+	// self.display1Back.scrollX = x
+	// self.display1Back.scrollY = y
 end function
 
 MapDisplay.setCellBackColor = function(x, y, backColor)
-	if backColor isa Color then
-		backColor = backColor.str()
-	end if
-	self.displayBack.setCell x, y, constants.TILE_INDEX_SOLID
-	self.displayBack.setCellTint x, y, backColor
+	// if backColor isa Color then
+	// 	backColor = backColor.str()
+	// end if
+	// self.displayBack.setCell x, y, constants.TILE_INDEX_SOLID
+	// self.displayBack.setCellTint x, y, backColor
 end function
 
 MapDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#00000000")
@@ -86,7 +86,7 @@ MapDisplay.setCell = function(x, y, tile, color="#FFFFFF", backColor = "#0000000
 	end if
 	self.display.setCell x, y, tile
 	self.display.setCellTint x, y, color
-	self.setCellBackColor x, y, backColor
+	// self.setCellBackColor x, y, backColor
 end function
 
 MapDisplay.clear = function(fg="#000000", bg="#00000000")

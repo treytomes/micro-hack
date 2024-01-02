@@ -1,7 +1,6 @@
 // Entity Factory
 
 makePlayer = function()
-	// t = tile.make(char(57872), Color.white, Color.black, true, false) // TODO
 	t = tile.make(255+16-3, Color.white, Color.black, true, false)
 	e = (new entity.Entity).init(t, races.human, classes.fighter)
 
@@ -55,7 +54,7 @@ makePlayer = function()
 end function
 
 makeSign = function(map, pnt, msg)
-	t = tile.make("-", Color.white, Color.brown, true, false)
+	t = tile.make(24 * 16 + 8, Color.white, Color.brown, true, false)
 	e = (new entity.Entity).init(t, races.npc, classes.classless, pnt)
 	e.name = "sign"
 	e.description = "The sign reads: ""{0}""".fill([msg])

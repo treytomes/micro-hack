@@ -1,9 +1,15 @@
 Tile = {}
 
+// TODO: Remove tile background color.
+
 Tile.init = function(char, foregroundColor, backgroundColor=null, blocksMovement=false, blocksVision=false)
 	self.char = char
 	self.foregroundColor = foregroundColor
 	self.backgroundColor = math.coalesce(backgroundColor, Color.black)
+	
+	// The map color is used for the minimap.
+	self.mapColor = self.foregroundColor
+	
 	self.blocksMovement = blocksMovement
 	self.blocksVision = blocksVision
 	self.name = ""
@@ -42,6 +48,11 @@ end function
 
 Tile.setName = function(name)
 	self.name = name
+	return self
+end function
+
+Tile.setMapColor = function(c)
+	self.mapColor = c
 	return self
 end function
 
