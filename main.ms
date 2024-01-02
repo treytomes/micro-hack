@@ -82,10 +82,10 @@ Display = {}
 Display.initialize = function()
 	MapDisplay = require("MapDisplay")
 	
-	PIXEL_0 = 1
+	HUD = 1
+	HUD_BACK = 2
 
-	HUD = 2
-	HUD_BACK = 3
+	PIXEL_0 = 3
 	
 	PARTICLES_0 = 4
 	PARTICLES_1 = 5
@@ -153,7 +153,7 @@ drawHUD = function(display, player)
 	// drawMiniMap()
 
 	statusBar = "HP: {0}/{1} LVL: {2} XP: {3}/{4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
-	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len)
+	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len - 10)
 	
 	display.print(statusBar, 0, constants.UI_DISPLAY_YMAX, color.white, color.black)
 	display.print(" " * constants.UI_DISPLAY_WIDTH, 0, constants.UI_DISPLAY_HEIGHT, color.white, color.black)

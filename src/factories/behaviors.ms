@@ -205,7 +205,7 @@ makeUserInput = function()
 
 		stack = entity.inventory.get(index)
 		if stack.count > 1 then
-			count = ui.selectInteger(1, stack.count, "How much?")
+			count = ui.selectInteger(1, stack.count, "How many?")
 			// Service.messages.report("You selected {0}.".fill([count]))
 		else
 			count = 1

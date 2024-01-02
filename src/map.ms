@@ -169,27 +169,49 @@ Map.drawTile = function(dsp, x, y, renderOffset=null)
 end function
 
 Map.drawMiniMap = function()
-	Display.pixels.drawRect constants.PIXEL_WIDTH - self.width - 2, constants.PIXEL_HEIGHT - self.height - 2, self.width + 2, self.height + 2, color.brown, 2
+	cellSize = 2
+	renderWidth = self.width * cellSize
+	renderHeight = self.height * cellSize
+
+	borderSize = 2
+	borderX = constants.PIXEL_WIDTH - renderWidth - borderSize * 2
+	borderY = constants.PIXEL_HEIGHT - renderHeight - borderSize * 2
+	borderWidth = renderWidth + borderSize * 2
+	borderHeight = renderHeight + borderSize * 2
+	Display.pixels.drawRect borderX, borderY, borderWidth, borderHeight, color.brown, borderSize
 
 	for y in range(0, self.height)
 		for x in range(0, self.width)
-			if self.getTile(x, y).hasBeenVisited then
-				tile = self.getTile(x, y)
+			tile = self.getTile(x, y)
+			rx = constants.PIXEL_WIDTH - (renderWidth - x * cellSize) - borderSize - 1
+			ry = constants.PIXEL_HEIGHT - (renderHeight - y * cellSize) - borderSize - 1
+			if tile.hasBeenVisited then
 				c = tile.foregroundColor.str()
-				Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+				// Display.pixels.setPixel rx, ry, c
+				Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
 			else
 				c = color.gray
-				Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+				// Display.pixels.setPixel rx, ry, c
+				Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
 			end if
 		end for
 	end for
 
 	for e in self.entities
-		x = e.position.x
-		y = e.position.y
+		ex = e.position.x
+		ey = e.position.y
+
+		if not self.isVisible(ex, ey) then
+			continue
+		end if
+
 		c = e.tile.foregroundColor.str()
 
-		Display.pixels.setPixel constants.PIXEL_WIDTH - (self.width - x) - 1, constants.PIXEL_HEIGHT - (self.height - y) - 1, c
+		rx = constants.PIXEL_WIDTH - (renderWidth - ex * cellSize) - borderSize - 1
+		ry = constants.PIXEL_HEIGHT - (renderHeight - ey * cellSize) - borderSize - 1
+
+		// Display.pixels.setPixel rx, ry, c
+		Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
 	end for
 end function
 
