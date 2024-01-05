@@ -103,7 +103,11 @@ Display.initialize = function()
 	
 	Display.particles = MapDisplay.make(PARTICLES_0, PARTICLES_1)
 
+	// display(MAP_0).mode = displayMode.off
+	// display(MAP_1).mode = displayMode.off
+
 	Display.map = MapDisplay.make(MAP_0, MAP_1)
+
 end function
 
 Display.clear = function()

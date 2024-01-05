@@ -20,6 +20,7 @@ MapDisplay.make = function(displayNumberFront, displayNumberBack)
 	dsp.activeDisplay = 0
 
 	dsp.display0 = dsp.initTiles(displayNumberFront)
+
 	dsp.display0Back = dsp.initTiles(displayNumberBack)
 
 	dsp.display1 = dsp.initTiles(displayNumberFront)
@@ -28,6 +29,7 @@ MapDisplay.make = function(displayNumberFront, displayNumberBack)
 	dsp.display = dsp.display0
 	dsp.displayBack = dsp.display0Back
 	dsp.display.install dsp.displayNumberFront
+	// TODO: displayBack is unused, but still has to be set.  Why?
 	dsp.displayBack.install dsp.displayNumberBack
 
 	return dsp
