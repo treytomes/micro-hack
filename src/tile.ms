@@ -21,8 +21,8 @@ Tile.getDrawInfo = function(dim=false)
 	fg = self.foregroundColor
 	bg = self.backgroundColor
 	if dim then
-	    if fg isa Color then fg = fg.darker.str else fg = "#444444"
-		if bg isa Color then bg = bg.darker.str else bg = color.black
+	    if fg isa Color then fg = fg.darker.str else fg = Color.white.darker //"#444444"
+		if bg isa Color then bg = bg.darker.str else bg = Color.black
 	else
 		if fg isa Color then fg = fg.str
 		if bg isa Color then bg = bg.str	
@@ -40,9 +40,9 @@ end function
 
 Tile.drawDim = function(dsp, x, y)
 	fg = self.foregroundColor
-	if fg isa Color then fg = fg.darker.str else fg = "#444444"
+	if fg isa Color then fg = fg.darker.str else fg = Color.white.darker //"#444444"
 	bg = self.backgroundColor
-	if bg isa Color then bg = bg.darker.str else bg = color.black
+	if bg isa Color then bg = bg.darker.str else bg = Color.black
 	dsp.setCell x, y, self.char, fg, bg
 end function
 
