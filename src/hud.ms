@@ -5,15 +5,15 @@ Message.make = function(text, foregroundColor = null, backgroundColor = null)
 	self.maxLifeSpan = 5
 	m.lifeSpan = 5
 	m.text = text
-	m.foregroundColor = math.coalesce(foregroundColor, color.white)
-	m.backgroundColor = math.coalesce(backgroundColor, color.black)
+	m.foregroundColor = math.coalesce(foregroundColor, Color.white)
+	m.backgroundColor = math.coalesce(backgroundColor, Color.black)
 	return m
 end function
 
 Message.draw = function(row)
 	ratio = self.lifeSpan / self.maxLifeSpan
-	fg = color.lerp(color.clear, self.foregroundColor, ratio)
-	bg = color.lerp(color.clear, self.backgroundColor, ratio)
+	fg = Color.lerp(Color.clear, self.foregroundColor, ratio)
+	bg = Color.lerp(Color.clear, self.backgroundColor, ratio)
 	Display.hud.print self.text, 0, row, fg, bg
 end function
 

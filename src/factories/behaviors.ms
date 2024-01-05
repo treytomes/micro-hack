@@ -269,7 +269,7 @@ makeUserInput = function()
 		end function
 
 		eraseCursor = function()
-			// ui.drawCell(Display.map, renderOffset.x + pnt.x, renderOffset.y + pnt.y, color.clear, color.clear, " ")
+			// ui.drawCell(Display.map, renderOffset.x + pnt.x, renderOffset.y + pnt.y, Color.clear, Color.clear, " ")
 
 			Service.world.map.drawTile Display.map, pnt.x, pnt.y, renderOffset
 		end function
@@ -288,7 +288,7 @@ makeUserInput = function()
 
 			width = math.max(16, text.len + 4)
 			clearBounds = rect.make(0, constants.UI_DISPLAY_HEIGHT - 3, constants.UI_DISPLAY_WIDTH, 3)
-			ui.clearRect(Display.hud, clearBounds, " ", color.clear, color.clear)
+			ui.clearRect(Display.hud, clearBounds, " ", Color.clear, Color.clear)
 
 			descriptionBounds = rect.make(constants.UI_DISPLAY_WIDTH - width, constants.UI_DISPLAY_HEIGHT - 3, width, 3)
 			ui.drawWindow(Display.hud, descriptionBounds)

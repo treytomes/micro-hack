@@ -39,7 +39,7 @@ end function
 HeadsUpDisplay.clear = function()
 	for y in range(0, constants.UI_DISPLAY_YMAX)
 		for x in range(0, constants.UI_DISPLAY_XMAX)
-			self.setCell x, y, 0, color.black, color.clear
+			self.setCell x, y, 0, Color.black, Color.clear
 		end for
 	end for
 end function

@@ -26,7 +26,7 @@ ExamineWindow.draw = function(title) //, description="")
 	ui.drawCell(Display.hud, windowBounds.centerX, windowBounds.top, ui.WINDOW_BORDER_FOREGROUND, ui.WINDOW_BORDER_BACKGROUND, 207)
 	
 	// Unused?
-	// Display.hud.print description, windowBounds.left + 1, windowBounds.bottom - 1, color.white, color.black
+	// Display.hud.print description, windowBounds.left + 1, windowBounds.bottom - 1, Color.white, Color.black
 
 	self.selectList.drawItems()
 end function

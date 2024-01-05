@@ -121,7 +121,7 @@ end function
 Map.clear = function(dsp)
 	for y in range(0, SCREEN_MAX_Y - 1)
 		for x in range(0, SCREEN_MAX_X)
-			dsp.setCell x, y, 24 * 16 + 2, color.white, color.white
+			dsp.setCell x, y, 24 * 16 + 2, Color.white, Color.white
 		end for
 	end for
 end function
@@ -141,7 +141,7 @@ Map.drawTile = function(dsp, x, y, renderOffset=null)
 	end if
 
 	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
-		dsp.setCell rx, ry, 24 * 16 + 2, color.white, color.white
+		dsp.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
 		return
 	end if
 
@@ -160,10 +160,10 @@ Map.drawTile = function(dsp, x, y, renderOffset=null)
 		// c = t.foregroundColor.str()
 		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	else
-		dsp.setCell rx, ry, 24 * 16 + 2, color.white, color.white
+		dsp.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
 
 		// // Draw minimap.
-		// c = color.gray
+		// c = Color.gray
 		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	end if
 end function
@@ -178,7 +178,7 @@ Map.drawMiniMap = function()
 	borderY = constants.PIXEL_HEIGHT - renderHeight - borderSize * 2
 	borderWidth = renderWidth + borderSize * 2
 	borderHeight = renderHeight + borderSize * 2
-	Display.pixels.drawRect borderX, borderY, borderWidth, borderHeight, color.brown, borderSize
+	Display.pixels.drawRect borderX, borderY, borderWidth, borderHeight, Color.brown, borderSize
 
 	for y in range(0, self.height)
 		for x in range(0, self.width)
@@ -186,14 +186,11 @@ Map.drawMiniMap = function()
 			rx = constants.PIXEL_WIDTH - (renderWidth - x * cellSize) - borderSize - 1
 			ry = constants.PIXEL_HEIGHT - (renderHeight - y * cellSize) - borderSize - 1
 			if tile.hasBeenVisited then
-				c = tile.mapColor.str()
-				// Display.pixels.setPixel rx, ry, c
-				Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
+				c = tile.mapColor
 			else
-				c = color.gray
-				// Display.pixels.setPixel rx, ry, c
-				Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
+				c = Color.gray
 			end if
+			Display.pixels.drawRect rx, ry, cellSize, cellSize, c.str(), 1
 		end for
 	end for
 
@@ -205,13 +202,13 @@ Map.drawMiniMap = function()
 			continue
 		end if
 
-		c = e.tile.mapColor.str()
+		c = e.tile.mapColor
 
 		rx = constants.PIXEL_WIDTH - (renderWidth - ex * cellSize) - borderSize - 1
 		ry = constants.PIXEL_HEIGHT - (renderHeight - ey * cellSize) - borderSize - 1
 
 		// Display.pixels.setPixel rx, ry, c
-		Display.pixels.drawRect rx, ry, cellSize, cellSize, c, 1
+		Display.pixels.drawRect rx, ry, cellSize, cellSize, c.str(), 1
 	end for
 end function
 
@@ -251,7 +248,7 @@ Map.getDrawInfo = function(display, x, y, renderOffset)
 	end if
 	
 	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
-		return [color.gray, color.black, "#"]
+		return [Color.gray, Color.black, "#"]
 	end if
 
 	t = self.tiles[y][x]
@@ -261,7 +258,7 @@ Map.getDrawInfo = function(display, x, y, renderOffset)
 	else if t.hasBeenVisited then
 		return t.getDrawInfo(true)
 	else
-		return [color.gray, color.black, "#"]
+		return [Color.gray, Color.black, "#"]
 	end if
 end function
 

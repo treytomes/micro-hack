@@ -64,7 +64,7 @@ SelectList.scrollDown = function()
 end function
 
 SelectList.erase = function()
-	ui.clearRect(self.display, self.windowBounds, " ", color.clear, color.clear)
+	ui.clearRect(self.display, self.windowBounds, " ", Color.clear, Color.clear)
 end function
 
 SelectList.getItemRow = function(itemIndex)

@@ -117,10 +117,10 @@ Display.clear = function()
 		Display.pixels = new PixelDisplay
 		Display.pixels.install 1 //PIXEL_0
 		// display(2).mode = displayMode.pixel
-		// display(2).color = color.clear
+		// display(2).color = Color.clear.str()
 		// Display.pixels = display(2)
 	end if
-	Display.pixels.clear color.clear // Why is this set to "off"???
+	Display.pixels.clear Color.clear.str() // Why is this set to "off"???
 	Display.particles.clear()
 end function
 
@@ -145,22 +145,22 @@ drawEntities = function(display, map, renderOffset)
 end function
 
 drawHUD = function(display, player)
-	// display.color = color.clear
-	// display.backColor = color.clear
+	// display.color = Color.clear.str()
+	// display.backColor = Color.clear.str()
 	display.clear()
 	// display.row = 26
 	
 	// display.column = 0
-	// display.color = color.white
-	// display.backColor = color.black
+	// display.color = Color.white.str()
+	// display.backColor = Color.black.str()
 
 	// drawMiniMap()
 
 	statusBar = "HP: {0}/{1} LVL: {2} XP: {3}/{4}   world: {5}".fill([player.currentHP, player.maxHP, player.level, player.xp, player.xpToNextLevel, Service.world.currentLevel])
 	statusBar = statusBar + " " * (constants.UI_DISPLAY_WIDTH - statusBar.len - 10)
 	
-	display.print(statusBar, 0, constants.UI_DISPLAY_YMAX, color.white, color.black)
-	display.print(" " * constants.UI_DISPLAY_WIDTH, 0, constants.UI_DISPLAY_HEIGHT, color.white, color.black)
+	display.print(statusBar, 0, constants.UI_DISPLAY_YMAX, Color.white.str(), Color.black.str())
+	display.print(" " * constants.UI_DISPLAY_WIDTH, 0, constants.UI_DISPLAY_HEIGHT, Color.white.str(), Color.black.str())
 
 	Service.messages.update()
 end function
@@ -169,7 +169,7 @@ updateParticles = function(deltaTime, map, renderOffset)
 	if Service.fountains.len > 0 then
 		n = 0
 		
-		Display.particles.clear color.clear
+		Display.particles.clear Color.clear.str()
 
 		while n < Service.fountains.len
 			f = Service.fountains[n]

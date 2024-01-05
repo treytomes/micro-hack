@@ -1,6 +1,6 @@
 DEFAULT_TEXT = " "
-DEFAULT_FOREGROUND_COLOR = color.gray
-DEFAULT_BACKGROUND_COLOR = color.black
+DEFAULT_FOREGROUND_COLOR = Color.gray
+DEFAULT_BACKGROUND_COLOR = Color.black
 
 drawCell = function(display, x, y, fg, bg, text)
 	if fg isa Color then fg = fg.str()
@@ -85,10 +85,10 @@ drawText = function(display, text, bounds, fg, bg=null)
 	return lineCount
 end function
 
-WINDOW_BORDER_FOREGROUND = color.blue
-WINDOW_BORDER_BACKGROUND = color.black
-WINDOW_TITLE_FOREGROUND = color.yellow
-WINDOW_TITLE_BACKGROUND = color.black
+WINDOW_BORDER_FOREGROUND = Color.blue
+WINDOW_BORDER_BACKGROUND = Color.black
+WINDOW_TITLE_FOREGROUND = Color.yellow
+WINDOW_TITLE_BACKGROUND = Color.black
 
 drawWindow = function(display, bounds, title=null)
 	ui.clearRect(display, bounds)
