@@ -217,9 +217,9 @@ main = function()
 	
 	Display.clear()
 	
-	Service.world.map.clear(Display.map)
-	// Service.world.map.draw_v2(Display.map)
-	Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
+	Service.world.map.clear()
+	// Service.world.map.draw_v2()
+	Service.world.map.draw_v1(renderOffset)
 	drawEntities(Display.map, Service.world.map, renderOffset)
 	Display.map.flip
 
@@ -264,7 +264,7 @@ main = function()
 			end if
 			
 
-			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
+			Service.world.map.draw_v1(renderOffset)
 			drawEntities(Display.map, Service.world.map, renderOffset)
 			Display.map.flip
 

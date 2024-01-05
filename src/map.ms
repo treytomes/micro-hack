@@ -118,15 +118,15 @@ Map.findHiddenSpawnPoint = function()
 	end while
 end function
 
-Map.clear = function(dsp)
+Map.clear = function()
 	for y in range(0, SCREEN_MAX_Y - 1)
 		for x in range(0, SCREEN_MAX_X)
-			dsp.setCell x, y, 24 * 16 + 2, Color.white, Color.white
+			Display.map.setCell x, y, 24 * 16 + 2, Color.white, Color.white
 		end for
 	end for
 end function
 
-Map.drawTile = function(dsp, x, y, renderOffset=null)
+Map.drawTile = function(x, y, renderOffset=null)
 	//if self.isEntityAt(point.make(x, y)) then return
 	
 	rx = x
@@ -141,26 +141,26 @@ Map.drawTile = function(dsp, x, y, renderOffset=null)
 	end if
 
 	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
-		dsp.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
+		Display.map.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
 		return
 	end if
 
 	t = self.tiles[y][x]
 
 	if t.isCurrentlyVisible then
-		t.draw(dsp, rx, ry)
+		t.draw(Display.map, rx, ry)
 
 		// // Draw minimap.
 		// c = t.foregroundColor.str()
 		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	else if t.hasBeenVisited then
-		t.drawDim(dsp, rx, ry)
+		t.drawDim(Display.map, rx, ry)
 
 		// // Draw minimap.
 		// c = t.foregroundColor.str()
 		// Display.pixels.setPixel constants.PIXEL_WIDTH - x - 1, constants.PIXEL_HEIGHT - y - 1, c
 	else
-		dsp.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
+		Display.map.setCell rx, ry, 24 * 16 + 2, Color.white, Color.white
 
 		// // Draw minimap.
 		// c = Color.gray
@@ -212,88 +212,89 @@ Map.drawMiniMap = function()
 	end for
 end function
 
-Map.draw_v1 = function(display, player, renderOffset)
+Map.draw_v1 = function(renderOffset)
 	halfHeight = constants.TILE_DISPLAY_HEIGHT / 2 - 1
 	halfWidth = constants.TILE_DISPLAY_WIDTH / 2 - 1
 
 	self.drawMiniMap()
 
+	player = Service.world.player
 	for y in range(player.position.y - halfHeight, player.position.y + halfHeight + 1 - 1) // The -1 at the end here accounts for a HUD rendering problem. 
 		for x in range(player.position.x - halfWidth, player.position.x + halfWidth + 1)
-			self.drawTile display, x, y, renderOffset
+			self.drawTile x, y, renderOffset
 		end for
 	end for
 end function
 
 // In this version we draw the entire map to the TileDisplay, then use built-in functions to scroll the map later on.
-Map.draw_v2 = function(dsp)
+Map.draw_v2 = function()
 	for y in range(0, self.height - 1)
 		for x in range(0, self.width - 1)
-			self.drawTile dsp, x, y
+			self.drawTile x, y
 		end for
 	end for
 end function
 
-Map.getDrawInfo = function(display, x, y, renderOffset)
-	//if self.isEntityAt(point.make(x, y)) then return
+// Map.getDrawInfo = function(x, y, renderOffset)
+// 	//if self.isEntityAt(point.make(x, y)) then return
 	
-	rx = renderOffset.x + x
-	ry = renderOffset.y + y
+// 	rx = renderOffset.x + x
+// 	ry = renderOffset.y + y
 
-	if not math.isInRange(rx, 0, SCREEN_MAX_X) or not math.isInRange(ry, 0, SCREEN_MAX_Y) then
-		clear
-		print "ERROR: getDrawInfo called out of range"
-		exit
-		return
-	end if
+// 	if not math.isInRange(rx, 0, SCREEN_MAX_X) or not math.isInRange(ry, 0, SCREEN_MAX_Y) then
+// 		clear
+// 		print "ERROR: getDrawInfo called out of range"
+// 		exit
+// 		return
+// 	end if
 	
-	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
-		return [Color.gray, Color.black, "#"]
-	end if
+// 	if not math.isInRange(x, 0, self.width - 1) or not math.isInRange(y, 0, self.height - 1) then
+// 		return [Color.gray, Color.black, "#"]
+// 	end if
 
-	t = self.tiles[y][x]
+// 	t = self.tiles[y][x]
 
-	if t.isCurrentlyVisible then
-		return t.getDrawInfo(false)
-	else if t.hasBeenVisited then
-		return t.getDrawInfo(true)
-	else
-		return [Color.gray, Color.black, "#"]
-	end if
-end function
+// 	if t.isCurrentlyVisible then
+// 		return t.getDrawInfo(false)
+// 	else if t.hasBeenVisited then
+// 		return t.getDrawInfo(true)
+// 	else
+// 		return [Color.gray, Color.black, "#"]
+// 	end if
+// end function
 
-Map.draw = function(dsp, player, renderOffset)
-	//halfHeight = self.height / 2
-	//halfWidth = self.width / 2
+// Map.draw = function(renderOffset)
+// 	//halfHeight = self.height / 2
+// 	//halfWidth = self.width / 2
 	
-	halfHeight = constants.TILE_DISPLAY_HEIGHT / 2
-	halfWidth = constants.TILE_DISPLAY_WIDTH / 2
-	minx = -renderOffset.x
-	maxx = minx + SCREEN_MAX_X
-	miny = -renderOffset.y
-	maxy = miny + SCREEN_MAX_Y
+// 	halfHeight = constants.TILE_DISPLAY_HEIGHT / 2
+// 	halfWidth = constants.TILE_DISPLAY_WIDTH / 2
+// 	minx = -renderOffset.x
+// 	maxx = minx + SCREEN_MAX_X
+// 	miny = -renderOffset.y
+// 	maxy = miny + SCREEN_MAX_Y
 	
-	display.row = constants.TILE_DISPLAY_HEIGHT - 1; display.column = 0
-	curRun = null
-	for y in range(maxy, miny)	// (since Y is inverted)
-		for x in range(minx, maxx)
-			info = self.getDrawInfo(display, x, y, renderOffset)
-			if curRun[:2] == info[:2] then
-				curRun[2] += info[2]
-			else
-				if curRun then
-					dsp.setCell x, y, curRun[2], curRun[1], curRun[0]
-				end if
-				curRun = info
-			end if
-		end for
-	end for
+// 	display.row = constants.TILE_DISPLAY_HEIGHT - 1; display.column = 0
+// 	curRun = null
+// 	for y in range(maxy, miny)	// (since Y is inverted)
+// 		for x in range(minx, maxx)
+// 			info = self.getDrawInfo(Map.display, x, y, renderOffset)
+// 			if curRun[:2] == info[:2] then
+// 				curRun[2] += info[2]
+// 			else
+// 				if curRun then
+// 					dsp.setCell x, y, curRun[2], curRun[1], curRun[0]
+// 				end if
+// 				curRun = info
+// 			end if
+// 		end for
+// 	end for
 
-	// display.backColor = curRun[0]
-	// display.color = curRun[1]
-	// // careful about the very last one -- we don't want to trigger a scroll
-	// display.print curRun[2][:-1]
-	// display.setCellBackColor display.column, display.row, curRun[2][0]
-	// display.setCellColor display.column, display.row, curRun[2][1]
-	// display.setCell display.column, display.row, curRun[2][2]
-end function
+// 	// display.backColor = curRun[0]
+// 	// display.color = curRun[1]
+// 	// // careful about the very last one -- we don't want to trigger a scroll
+// 	// display.print curRun[2][:-1]
+// 	// display.setCellBackColor display.column, display.row, curRun[2][0]
+// 	// display.setCellColor display.column, display.row, curRun[2][1]
+// 	// display.setCell display.column, display.row, curRun[2][2]
+// end function

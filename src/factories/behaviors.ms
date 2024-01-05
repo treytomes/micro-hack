@@ -271,7 +271,7 @@ makeUserInput = function()
 		eraseCursor = function()
 			// ui.drawCell(Display.map, renderOffset.x + pnt.x, renderOffset.y + pnt.y, Color.clear, Color.clear, " ")
 
-			Service.world.map.drawTile Display.map, pnt.x, pnt.y, renderOffset
+			Service.world.map.drawTile pnt.x, pnt.y, renderOffset
 		end function
 
 		descriptionBounds = rect.make(constants.UI_DISPLAY_WIDTH - 16, constants.UI_DISPLAY_HEIGHT - 3, 16, 3)
@@ -331,8 +331,8 @@ makeUserInput = function()
 				lastBlinkTime = time()
 			end if
 
-			Service.world.map.clear(Display.map)
-			Service.world.map.draw_v1(Display.map, Service.world.player, renderOffset)
+			Service.world.map.clear()
+			Service.world.map.draw_v1(renderOffset)
 			drawEntities(Display.map, Service.world.map, renderOffset)
 			drawCursor()
 			Display.map.flip
