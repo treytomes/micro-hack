@@ -316,6 +316,7 @@ makeUserInput = function()
 					return actions.examine(pnt)
 				else if keybindings.exit.contains(k) then
 					eraseCursor()
+					Display.map.flip
 					return null // Cancel the action.
 				end if
 			end if
